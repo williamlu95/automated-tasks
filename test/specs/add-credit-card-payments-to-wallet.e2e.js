@@ -19,8 +19,13 @@ const CREDIT_CARD_ACCOUNT = {
 };
 
 const TODAY = new Date();
+
 const CUSTOM_CASH_AUTOPAY_DAY = 22;
 const DOUBLE_CASH_AUTOPAY_DAY = 2;
+
+const AMAZON_PRIME_REWARDS_AUTOPAY_DAY = 15;
+const CHASE_FREEDOM_FLEX_AUTOPAY_DAY = 20;
+const CHASE_FREEDOM_UNLIMITED_AUTOPAY_DAY = 26;
 
 const getCitiAccount = () => {
   const customCashDate = new Date();
@@ -35,6 +40,34 @@ const getCitiAccount = () => {
   return customDiff < doubleDiff
     ? CREDIT_CARD_ACCOUNT.CITI_CUSTOM_CASH
     : CREDIT_CARD_ACCOUNT.CITI_DOUBLE_CASH;
+};
+
+const getChaseAccount = () => {
+  const amazonPrimeRewardsDate = new Date();
+  amazonPrimeRewardsDate.setDate(AMAZON_PRIME_REWARDS_AUTOPAY_DAY);
+
+  const chaseFreedomFlexDate = new Date();
+  chaseFreedomFlexDate.setDate(CHASE_FREEDOM_FLEX_AUTOPAY_DAY);
+
+  const chaseFreedomUnlimitedDate = new Date();
+  chaseFreedomUnlimitedDate.setDate(CHASE_FREEDOM_UNLIMITED_AUTOPAY_DAY);
+
+  const amazonDiff = Math.abs(TODAY - amazonPrimeRewardsDate);
+  const flexDiff = Math.abs(TODAY - chaseFreedomFlexDate);
+  const unlimitedDiff = Math.abs(TODAY - chaseFreedomUnlimitedDate);
+
+  const closestDate = Math.min(amazonDiff, flexDiff, unlimitedDiff);
+
+  switch (closestDate) {
+    case amazonDiff:
+      return CREDIT_CARD_ACCOUNT.AMAZON_PRIME_REWARDS;
+    case flexDiff:
+      return CREDIT_CARD_ACCOUNT.CHASE_FREEDOM_FLEX;
+    case unlimitedDiff:
+      return CREDIT_CARD_ACCOUNT.CHASE_FREEDOM_UNLIMITED;
+    default:
+      return '';
+  }
 };
 
 const getAccount = (name) => {
@@ -64,6 +97,10 @@ const getAccount = (name) => {
 
   if (name.toUpperCase().includes(CREDIT_CARD_TRANSACTION.DISCOVER_IT)) {
     return CREDIT_CARD_ACCOUNT.DISCOVER_IT;
+  }
+
+  if (name.toUpperCase().includes(CREDIT_CARD_TRANSACTION.CHASE)) {
+    return getChaseAccount();
   }
 
   if (name.toUpperCase().includes(CREDIT_CARD_TRANSACTION.CITI)) {
