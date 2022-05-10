@@ -16,12 +16,16 @@ const CREDIT_CARD_ACCOUNT = {
   AMAZON_PRIME_REWARDS: 'Amazon Prime Rewards Visa Signature',
   DISCOVER_IT: 'Discover It',
   AMEX_BLUE_CASH: 'American Express Blue Cash Everyday',
+  AMEX_GOLD_CARD: 'American Express Gold Card',
 };
 
 const TODAY = new Date();
 
 const CUSTOM_CASH_AUTOPAY_DAY = 22;
 const DOUBLE_CASH_AUTOPAY_DAY = 2;
+
+const AMEX_BLUE_CASH_DAY = 28;
+const AMEX_GOLD_CARD_DAY = 7;
 
 const AMAZON_PRIME_REWARDS_AUTOPAY_DAY = 15;
 const CHASE_FREEDOM_FLEX_AUTOPAY_DAY = 20;
@@ -40,6 +44,21 @@ const getCitiAccount = () => {
   return customDiff < doubleDiff
     ? CREDIT_CARD_ACCOUNT.CITI_CUSTOM_CASH
     : CREDIT_CARD_ACCOUNT.CITI_DOUBLE_CASH;
+};
+
+const getAmexAccount = () => {
+  const blueCashDate = new Date();
+  blueCashDate.setDate(AMEX_BLUE_CASH_DAY);
+
+  const goldCardDate = new Date();
+  goldCardDate.setDate(AMEX_GOLD_CARD_DAY);
+
+  const blueDiff = Math.abs(TODAY - blueCashDate);
+  const goldDiff = Math.abs(TODAY - goldCardDate);
+
+  return blueDiff < goldDiff
+    ? CREDIT_CARD_ACCOUNT.AMEX_BLUE_CASH
+    : CREDIT_CARD_ACCOUNT.AMEX_GOLD_CARD;
 };
 
 const getChaseAccount = () => {
@@ -91,12 +110,12 @@ const getAccount = (name) => {
     return CREDIT_CARD_ACCOUNT.WELLS_FARGO_PLATINUM;
   }
 
-  if (name.toUpperCase().includes(CREDIT_CARD_TRANSACTION.AMEX_BLUE_CASH)) {
-    return CREDIT_CARD_ACCOUNT.AMEX_BLUE_CASH;
-  }
-
   if (name.toUpperCase().includes(CREDIT_CARD_TRANSACTION.DISCOVER_IT)) {
     return CREDIT_CARD_ACCOUNT.DISCOVER_IT;
+  }
+
+  if (name.toUpperCase().includes(CREDIT_CARD_TRANSACTION.AMEX)) {
+    return getAmexAccount();
   }
 
   if (name.toUpperCase().includes(CREDIT_CARD_TRANSACTION.CHASE)) {
