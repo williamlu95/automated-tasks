@@ -15,6 +15,14 @@ exports.config = {
   ],
   exclude: [
   ],
+  suites: {
+    morning: [
+      './test/specs/add-income-to-wallet.e2e.js',
+    ],
+    night: [
+      './test/specs/add-credit-card-payments-to-wallet.e2e.js',
+    ],
+  },
   maxInstances: 1,
   capabilities: [{
     browserName: 'chrome',
