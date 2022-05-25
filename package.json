@@ -10,7 +10,6 @@
         "@wdio/local-runner": "^7.16.15",
         "@wdio/mocha-framework": "^7.16.15",
         "@wdio/spec-reporter": "^7.16.14",
-        "chromedriver": "^98.0.1",
         "eslint": "^8.9.0",
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-plugin-import": "^2.25.4",
@@ -22,6 +21,7 @@
         "wdio:mac": "NODE_ENV=mac wdio run wdio.conf.js"
     },
     "dependencies": {
+        "chromedriver": "^101.0.0",
         "date-fns": "^2.28.0",
         "dotenv": "^16.0.0",
         "plaid": "^9.10.1",
