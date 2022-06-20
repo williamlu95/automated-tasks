@@ -15,7 +15,7 @@ const CREDIT_CARD_ACCOUNT = {
   CITI_CUSTOM_CASH: 'Citi Custom Cash',
   AMAZON_PRIME_REWARDS: 'Amazon Prime Rewards Visa Signature',
   DISCOVER_IT: 'Discover It',
-  AMEX_BLUE_CASH: 'American Express Blue Cash Everyday',
+  AMEX_BLUE_CASH: 'American Express Blue Cash Preferred',
   AMEX_GOLD_CARD: 'American Express Gold Card',
 };
 
