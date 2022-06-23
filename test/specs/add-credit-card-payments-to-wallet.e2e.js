@@ -31,9 +31,6 @@ const AMAZON_PRIME_REWARDS_AUTOPAY_DAY = 15;
 const CHASE_FREEDOM_FLEX_AUTOPAY_DAY = 20;
 const CHASE_FREEDOM_UNLIMITED_AUTOPAY_DAY = 26;
 
-const WELLS_FARGO_PROPEL_AUTOPAY_DAY = 13;
-const WELLS_FARGO_PLATINUM_AUTOPAY_DAY = 21;
-
 const getCitiAccount = () => {
   const customCashDate = new Date();
   customCashDate.setDate(CUSTOM_CASH_AUTOPAY_DAY);
@@ -62,21 +59,6 @@ const getAmexAccount = () => {
   return blueDiff < goldDiff
     ? CREDIT_CARD_ACCOUNT.AMEX_BLUE_CASH
     : CREDIT_CARD_ACCOUNT.AMEX_GOLD_CARD;
-};
-
-const getWellsFargoAccount = () => {
-  const propelDate = new Date();
-  propelDate.setDate(WELLS_FARGO_PROPEL_AUTOPAY_DAY);
-
-  const platinumDate = new Date();
-  platinumDate.setDate(WELLS_FARGO_PLATINUM_AUTOPAY_DAY);
-
-  const propelDiff = Math.abs(TODAY - propelDate);
-  const platinumDiff = Math.abs(TODAY - platinumDate);
-
-  return propelDiff < platinumDiff
-    ? CREDIT_CARD_ACCOUNT.WELLS_FARGO_PROPEL
-    : CREDIT_CARD_ACCOUNT.WELLS_FARGO_PLATINUM;
 };
 
 const getChaseAccount = () => {
@@ -124,8 +106,12 @@ const getAccount = (name) => {
     return CREDIT_CARD_ACCOUNT.DISCOVER_IT;
   }
 
-  if (name.toUpperCase().includes(CREDIT_CARD_TRANSACTION.WELLS_FARGO)) {
-    return getWellsFargoAccount();
+  if (name.toUpperCase().includes(CREDIT_CARD_TRANSACTION.WELLS_FARGO_PROPEL)) {
+    return CREDIT_CARD_ACCOUNT.WELLS_FARGO_PROPEL;
+  }
+
+  if (name.toUpperCase().includes(CREDIT_CARD_TRANSACTION.WELLS_FARGO_PLATINUM)) {
+    return CREDIT_CARD_ACCOUNT.WELLS_FARGO_PLATINUM;
   }
 
   if (name.toUpperCase().includes(CREDIT_CARD_TRANSACTION.AMEX)) {
