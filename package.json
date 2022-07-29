@@ -21,7 +21,7 @@
         "wdio:mac": "NODE_ENV=mac wdio run wdio.conf.js"
     },
     "dependencies": {
-        "chromedriver": "^101.0.0",
+        "chromedriver": "^103.0.0",
         "date-fns": "^2.28.0",
         "dotenv": "^16.0.0",
         "plaid": "^9.10.1",
