@@ -1,5 +1,9 @@
 import Page from './page';
 
+const {
+  WALLET_LOGIN, WALLET_PASSWORD,
+} = process.env;
+
 class WalletLoginPage extends Page {
   get usernameInput() {
     return $('input[type="email"]');
@@ -13,10 +17,10 @@ class WalletLoginPage extends Page {
     return $('button[type="submit"]');
   }
 
-  async login(username, password) {
+  async login() {
     await browser.waitUntil(() => this.usernameInput && this.usernameInput.isClickable());
-    await this.usernameInput.setValue(username);
-    await this.passwordInput.setValue(password);
+    await this.usernameInput.setValue(WALLET_LOGIN);
+    await this.passwordInput.setValue(WALLET_PASSWORD);
     await this.signInButton.click();
     await browser.waitUntil(async () => {
       const url = await browser.getUrl();

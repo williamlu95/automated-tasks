@@ -1,25 +1,13 @@
 import LoginPage from '../pageobjects/wallet-login-page';
 import DashBoardPage from '../pageobjects/wallet-dashboard-page';
 import { TEMPLATE_TYPE } from '../pageobjects/add-record-modal';
-import { getPayrollTransactions } from '../plaid/plaid-api';
-
-const {
-  WALLET_LOGIN,
-  WALLET_PASSWORD,
-  CHASE_CHECKING_ID,
-  WELLS_FARGO_CHECKING_ID,
-} = process.env;
-
-const BANK_TYPE = {
-  CHASE: 'chase',
-  WELLS_FARGO: 'wellsFargo',
-};
+import { BANK_NAME, getPayrollTransactions } from '../plaid/plaid-api';
 
 const BANK_TEXT = {
-  [BANK_TYPE.CHASE]: {
+  [BANK_NAME.CHASE]: {
     template: TEMPLATE_TYPE.CHASE_INCOME,
   },
-  [BANK_TYPE.WELLS_FARGO]: {
+  [BANK_NAME.WELLS_FARGO]: {
     template: TEMPLATE_TYPE.WELLS_FARGO_INCOME,
   },
 };
@@ -50,25 +38,25 @@ describe('Add income to wallet', () => {
 
   before(async () => {
     const [wellsFargoTransactions, chaseTransactions] = await Promise.all([
-      getPayrollTransactions(process.env.WELLS_FARGO_ACCESS_TOKEN, [WELLS_FARGO_CHECKING_ID]),
-      getPayrollTransactions(process.env.CHASE_ACCESS_TOKEN, [CHASE_CHECKING_ID]),
+      getPayrollTransactions(BANK_NAME.WELLS_FARGO),
+      getPayrollTransactions(BANK_NAME.CHASE),
     ]);
 
     wellsFargoTransactions.forEach(({ amount }) => {
       transactions.push({
-        amount, type: BANK_TYPE.WELLS_FARGO,
+        amount, type: BANK_NAME.WELLS_FARGO,
       });
     });
 
     chaseTransactions.forEach(({ amount }) => {
       transactions.push({
-        amount, type: BANK_TYPE.CHASE,
+        amount, type: BANK_NAME.CHASE,
       });
     });
 
     if (transactions.length) {
       await LoginPage.open();
-      await LoginPage.login(WALLET_LOGIN, WALLET_PASSWORD);
+      await LoginPage.login();
       runTransactionContext();
     }
   });

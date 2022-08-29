@@ -1,13 +1,9 @@
-const Twilio = require('twilio');
-const dotenv = require('dotenv');
-
-dotenv.config();
+require('dotenv').config();
+const { sendTextMessage } = require('./test/twilio/twilio');
 
 const {
-  PERSONAL_PHONE_NUMBER, TWILIO_SID, TWILIO_AUTH_TOKEN, TWILIO_PHONE_NUMBER, LOG_LEVEL,
+  LOG_LEVEL,
 } = process.env;
-
-const client = new Twilio(TWILIO_SID, TWILIO_AUTH_TOKEN);
 
 exports.config = {
   specs: [
@@ -50,14 +46,7 @@ exports.config = {
   },
   onComplete(_exitCode, _config, _capabilities, results) {
     if (results.failed > 0) {
-      client.messages
-        .create({
-          body: `${results.failed} automated script${results.failed > 1 ? 's' : ''} failed to complete.`,
-          from: TWILIO_PHONE_NUMBER,
-          to: PERSONAL_PHONE_NUMBER,
-        })
-        // eslint-disable-next-line no-console
-        .then((message) => console.log(message.sid));
+      sendTextMessage(`${results.failed} automated script${results.failed > 1 ? 's' : ''} failed to complete.`);
     }
   },
 };

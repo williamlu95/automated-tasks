@@ -1,10 +1,6 @@
 import LoginPage from '../pageobjects/wallet-login-page';
 import DashBoardPage from '../pageobjects/wallet-dashboard-page';
-import { getCreditCardTransactions, CREDIT_CARD_TRANSACTION } from '../plaid/plaid-api';
-
-const {
-  WALLET_LOGIN, WALLET_PASSWORD, CHASE_CHECKING_ID,
-} = process.env;
+import { getCreditCardTransactions, CREDIT_CARD_TRANSACTION, BANK_NAME } from '../plaid/plaid-api';
 
 const CREDIT_CARD_ACCOUNT = {
   CHASE_FREEDOM_UNLIMITED: 'Chase Freedom Unlimited',
@@ -157,10 +153,7 @@ describe('Add credit card payments to wallet', () => {
   });
 
   before(async () => {
-    const chaseTransactions = await getCreditCardTransactions(
-      process.env.CHASE_ACCESS_TOKEN,
-      [CHASE_CHECKING_ID],
-    );
+    const chaseTransactions = await getCreditCardTransactions(BANK_NAME.CHASE);
 
     chaseTransactions.forEach(({ amount, name }) => {
       transactions.push({
@@ -170,7 +163,7 @@ describe('Add credit card payments to wallet', () => {
 
     if (transactions.length) {
       await LoginPage.open();
-      await LoginPage.login(WALLET_LOGIN, WALLET_PASSWORD);
+      await LoginPage.login();
       runTransactionContext();
     }
   });
