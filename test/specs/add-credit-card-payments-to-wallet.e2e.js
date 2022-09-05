@@ -1,3 +1,4 @@
+import { addMonths } from 'date-fns';
 import LoginPage from '../pageobjects/wallet-login-page';
 import DashBoardPage from '../pageobjects/wallet-dashboard-page';
 import { getCreditCardTransactions, CREDIT_CARD_TRANSACTION, BANK_NAME } from '../plaid/plaid-api';
@@ -20,8 +21,8 @@ const TODAY = new Date();
 const CUSTOM_CASH_AUTOPAY_DAY = 22;
 const DOUBLE_CASH_AUTOPAY_DAY = 2;
 
-const AMEX_BLUE_CASH_DAY = 28;
-const AMEX_GOLD_CARD_DAY = 7;
+const AMEX_BLUE_CASH_DAY = 1;
+const AMEX_GOLD_CARD_DAY = 14;
 
 const AMAZON_PRIME_REWARDS_AUTOPAY_DAY = 15;
 const CHASE_FREEDOM_FLEX_AUTOPAY_DAY = 20;
@@ -49,7 +50,11 @@ const getAmexAccount = () => {
   const goldCardDate = new Date();
   goldCardDate.setDate(AMEX_GOLD_CARD_DAY);
 
-  const blueDiff = Math.abs(TODAY - blueCashDate);
+  const blueDiff = Math.min(
+    Math.abs(TODAY - blueCashDate),
+    Math.abs(TODAY - addMonths(blueCashDate, 1)),
+  );
+
   const goldDiff = Math.abs(TODAY - goldCardDate);
 
   return blueDiff < goldDiff
