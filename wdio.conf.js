@@ -14,6 +14,7 @@ exports.config = {
   suites: {
     morning: [
       './test/specs/add-income-to-wallet.e2e.js',
+      './test/specs/verify-account-balances.e2e.js',
     ],
     night: [
       './test/specs/add-credit-card-payments-to-wallet.e2e.js',
@@ -31,15 +32,15 @@ exports.config = {
   logLevel: LOG_LEVEL,
   bail: 0,
   baseUrl: 'http://localhost',
-  waitforTimeout: 60000,
-  connectionRetryTimeout: 120000,
+  waitforTimeout: 240000,
+  connectionRetryTimeout: 240000,
   connectionRetryCount: 3,
   services: ['chromedriver'],
   framework: 'mocha',
   reporters: ['spec'],
   mochaOpts: {
     ui: 'bdd',
-    timeout: 60000,
+    timeout: 240000,
   },
   before: () => {
     browser.setWindowSize(1280, 800);

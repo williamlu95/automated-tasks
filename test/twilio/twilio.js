@@ -7,10 +7,10 @@ const {
   PERSONAL_PHONE_NUMBER,
 } = process.env;
 
-const client = new Twilio(TWILIO_SID, TWILIO_AUTH_TOKEN);
+export const twilioClient = new Twilio(TWILIO_SID, TWILIO_AUTH_TOKEN);
 
 export const sendTextMessage = (messageText) => {
-  client.messages
+  twilioClient.messages
     .create({
       body: messageText,
       from: TWILIO_PHONE_NUMBER,

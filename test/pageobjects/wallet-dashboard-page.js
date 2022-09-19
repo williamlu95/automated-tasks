@@ -26,6 +26,14 @@ class WalletDashboardPage extends Page {
     return this.buttons.find(async (button) => (await button.getText()).includes('Record'));
   }
 
+  async getAllAccountBalances() {
+    await browser.waitUntil(async () => (await this.accountCards.length) > 0);
+    const accountList = await this.accountCards;
+    return Promise.all(
+      accountList.map((accountListItem) => accountListItem.getText()),
+    );
+  }
+
   async addRecord(template, amount) {
     const accountCardIndex = template === TEMPLATE_TYPE.CHASE_INCOME ? 0 : 3;
     await browser.waitUntil(() => this.buttons.length);
