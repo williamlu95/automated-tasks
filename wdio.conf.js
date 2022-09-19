@@ -32,15 +32,15 @@ exports.config = {
   logLevel: LOG_LEVEL,
   bail: 0,
   baseUrl: 'http://localhost',
-  waitforTimeout: 120000,
-  connectionRetryTimeout: 120000,
+  waitforTimeout: 240000,
+  connectionRetryTimeout: 240000,
   connectionRetryCount: 3,
   services: ['chromedriver'],
   framework: 'mocha',
   reporters: ['spec'],
   mochaOpts: {
     ui: 'bdd',
-    timeout: 120000,
+    timeout: 240000,
   },
   before: () => {
     browser.setWindowSize(1280, 800);
