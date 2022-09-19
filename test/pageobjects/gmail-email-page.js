@@ -52,19 +52,6 @@ class GmailEmailPage extends Page {
     return email.getText();
   }
 
-  async sendEmail(value) {
-    await browser.pause(2000);
-    await this.composeButton.click();
-    await browser.pause(2000);
-    await this.toInput.setValue('williamlu95@gmail.com');
-    await this.subjectInput.setValue('Daily Balance Verification');
-    await this.textBox.click();
-    await browser.pause(2000);
-    await this.textBox.setValue(value);
-    await this.sendButton.click();
-    await browser.pause(5000);
-  }
-
   open() {
     return super.open('https://mail.google.com/mail/u/0/#inbox');
   }
