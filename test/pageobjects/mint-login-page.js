@@ -48,12 +48,13 @@ class MintLoginPage extends Page {
       return;
     }
 
-    const isVerificationPage = await this.verificationInput.isExisting();
+    const isVerificationFlow = await this.emailCodeButton.isExisting();
 
-    if (!isVerificationPage) {
+    if (!isVerificationFlow) {
       return;
     }
 
+    await this.emailCodeButton.click();
     const verificationCode = await GmailLoginPage.getMintVerificationCode();
     await this.verificationInput.setValue(verificationCode);
     await this.verificationContinueButton.click();
