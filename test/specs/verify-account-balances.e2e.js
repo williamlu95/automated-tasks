@@ -11,6 +11,7 @@ const {
   WELLS_FARGO_CHECKING,
   WELLS_FARGO_PROPEL,
   WELLS_FARGO_PLATINUM,
+  WELLS_FARGO_AUTOGRAPH,
   CITI_DOUBLE_CASH,
   CITI_CUSTOM_CASH,
   AMAZOM_PRIME_REWARDS,
@@ -32,6 +33,7 @@ const ACCOUNTS = [
   { number: DISCOVER_IT, name: 'Discover It' },
   { number: AMEX_BLUE_CASH_PREFERRED, name: 'AMEX Blue Cash Preferred' },
   { number: AMEX_GOLD_CARD, name: 'AMEX Gold Card' },
+  { number: WELLS_FARGO_AUTOGRAPH, name: 'Wells Fargo Autograph' },
 ];
 
 describe('Verify balances in wallet', () => {
