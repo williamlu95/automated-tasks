@@ -12,7 +12,7 @@ const BANK_TEXT = {
   },
 };
 
-describe('Add income to wallet', () => {
+describe.skip('Add income to wallet', () => {
   const transactions = [];
 
   const runTransactionContext = () => context('when there are payroll transactions', () => {

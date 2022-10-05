@@ -130,7 +130,7 @@ const getAccount = (name) => {
   return null;
 };
 
-describe('Add credit card payments to wallet', () => {
+describe.skip('Add credit card payments to wallet', () => {
   const transactions = [];
 
   const runTransactionContext = () => context('when there are credit card transactions', () => {
