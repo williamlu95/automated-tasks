@@ -12,7 +12,7 @@ const BANK_TEXT = {
   },
 };
 
-describe.skip('Add income to wallet', () => {
+describe('Add income to wallet', () => {
   const transactions = [];
 
   const runTransactionContext = () => context('when there are payroll transactions', () => {
@@ -37,20 +37,13 @@ describe.skip('Add income to wallet', () => {
   });
 
   before(async () => {
-    const [wellsFargoTransactions, chaseTransactions] = await Promise.all([
+    const [wellsFargoTransactions] = await Promise.all([
       getPayrollTransactions(BANK_NAME.WELLS_FARGO),
-      getPayrollTransactions(BANK_NAME.CHASE),
     ]);
 
     wellsFargoTransactions.forEach(({ amount }) => {
       transactions.push({
         amount, type: BANK_NAME.WELLS_FARGO,
-      });
-    });
-
-    chaseTransactions.forEach(({ amount }) => {
-      transactions.push({
-        amount, type: BANK_NAME.CHASE,
       });
     });
 
