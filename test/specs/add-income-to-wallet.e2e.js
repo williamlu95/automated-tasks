@@ -1,7 +1,11 @@
 import LoginPage from '../pageobjects/wallet-login-page';
 import DashBoardPage from '../pageobjects/wallet-dashboard-page';
-import { TEMPLATE_TYPE } from '../pageobjects/add-record-modal';
-import { BANK_NAME, getPayrollTransactions } from '../plaid/plaid-api';
+import { WALLET_ACCOUNT, BANK_NAME, TEMPLATE_TYPE } from '../constants/account';
+
+const getPayrollTransactions = async (bank) => (
+  bank === BANK_NAME.WELLS_FARGO
+    ? [{ type: BANK_NAME.WELLS_FARGO, amount: 2.00 }]
+    : [{ type: BANK_NAME.CHASE, amount: 3.00 }]);
 
 const BANK_TEXT = {
   [BANK_NAME.CHASE]: {
@@ -23,10 +27,13 @@ describe('Add income to wallet', () => {
     transactions.forEach(({ amount, type }) => context(`when adding ${Math.abs(amount)} to ${type}`, () => {
       it(`should add the income to the ${type} balance`, async () => {
         const { template } = BANK_TEXT[type];
-        const accountCardIndex = template === TEMPLATE_TYPE.CHASE_INCOME ? 0 : 3;
-        const initalBalance = await DashBoardPage.accountCards[accountCardIndex].getText();
+        const accountCardName = template === TEMPLATE_TYPE.CHASE_INCOME
+          ? WALLET_ACCOUNT.CHASE_CHECKING
+          : WALLET_ACCOUNT.WELLS_FARGO_CHECKING;
+
+        const initalBalance = await DashBoardPage.getBalanceByName(accountCardName);
         await DashBoardPage.addRecord(template, Math.abs(amount));
-        const actualBalance = await DashBoardPage.accountCards[accountCardIndex].getText();
+        const actualBalance = await DashBoardPage.getBalanceByName(accountCardName);
         const expectedBalance = (parseInt(initalBalance.replace(/\D/g, ''), 10) / 100) + Math.abs(amount);
 
         expect(actualBalance).toContain(
@@ -37,13 +44,20 @@ describe('Add income to wallet', () => {
   });
 
   before(async () => {
-    const [wellsFargoTransactions] = await Promise.all([
+    const [wellsFargoTransactions, chaseTransactions] = await Promise.all([
       getPayrollTransactions(BANK_NAME.WELLS_FARGO),
+      getPayrollTransactions(BANK_NAME.CHASE),
     ]);
 
     wellsFargoTransactions.forEach(({ amount }) => {
       transactions.push({
         amount, type: BANK_NAME.WELLS_FARGO,
+      });
+    });
+
+    chaseTransactions.forEach(({ amount }) => {
+      transactions.push({
+        amount, type: BANK_NAME.CHASE,
       });
     });
 

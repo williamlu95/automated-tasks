@@ -1,5 +1,4 @@
 require('dotenv').config();
-const { sendTextMessage } = require('./test/twilio/twilio');
 
 const {
   LOG_LEVEL,
@@ -11,15 +10,6 @@ exports.config = {
   ],
   exclude: [
   ],
-  suites: {
-    morning: [
-      './test/specs/add-income-to-wallet.e2e.js',
-      './test/specs/verify-account-balances.e2e.js',
-    ],
-    night: [
-      './test/specs/add-credit-card-payments-to-wallet.e2e.js',
-    ],
-  },
   maxInstances: 1,
   capabilities: [{
     browserName: 'chrome',
@@ -44,10 +34,5 @@ exports.config = {
   },
   before: () => {
     browser.setWindowSize(1280, 800);
-  },
-  onComplete(_exitCode, _config, _capabilities, results) {
-    if (results.failed > 0) {
-      sendTextMessage(`${results.failed} automated script${results.failed > 1 ? 's' : ''} failed to complete.`);
-    }
   },
 };

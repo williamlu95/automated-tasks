@@ -1,8 +1,3 @@
-export const TEMPLATE_TYPE = Object.freeze({
-  CHASE_INCOME: 'Chase Income',
-  WELLS_FARGO_INCOME: 'Wells Fargo Income',
-});
-
 class AddRecordModal {
   get buttons() {
     return $$('button[type="button"]');
