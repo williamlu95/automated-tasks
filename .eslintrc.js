@@ -18,6 +18,8 @@ module.exports = {
     $$: true,
     browser: true,
     run: true,
+    downloadDir: true,
+    transactionCounts: true,
   },
   parserOptions: {
     ecmaVersion: 'latest',
@@ -26,5 +28,6 @@ module.exports = {
   rules: {
     'class-methods-use-this': 'off',
     'import/prefer-default-export': 'off',
+    'no-continue': 'off',
   },
 };
