@@ -20,6 +20,7 @@ module.exports = {
     run: true,
     downloadDir: true,
     transactionCounts: true,
+    emailSender: true,
   },
   parserOptions: {
     ecmaVersion: 'latest',

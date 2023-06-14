@@ -1,5 +1,5 @@
+import { errorNotification } from '../utils/notification';
 import Page from './page';
-import GmailLoginPage from './gmail-login-page';
 
 const {
   MINT_LOGIN,
@@ -54,10 +54,7 @@ class MintLoginPage extends Page {
       return;
     }
 
-    await this.emailCodeButton.click();
-    const verificationCode = await GmailLoginPage.getMintVerificationCode();
-    await this.verificationInput.setValue(verificationCode);
-    await this.verificationContinueButton.click();
+    await errorNotification('2FA has not been implemented yet');
   }
 
   async skipBiometricQuestion() {
