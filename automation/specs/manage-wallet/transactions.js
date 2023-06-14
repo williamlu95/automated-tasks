@@ -14,7 +14,7 @@ const ACCOUNT_NAME = Object.freeze({
 
 export class Transactions {
   constructor() {
-    this.transactions = [];
+    this.incomeTransactions = [];
   }
 
   async initializeTransactions() {
@@ -23,44 +23,31 @@ export class Transactions {
     const transactionsPath = await MintTransactionPage.downloadTransactions();
     const transactions = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionsPath);
 
-    this.transactions = transactions.filter((t) => {
+    const transactionsForCurrentMonth = transactions.filter((t) => {
       const transactionMonth = getMonth(new Date(t.date)) + 1;
-      const currentMonth = getMonth(new Date()) + 0;
-      return transactionMonth === currentMonth;
+      return transactionMonth === global.transactionCounts.month;
     });
+
+    transactionsForCurrentMonth.reverse();
+
+    this.incomeTransactions = transactionsForCurrentMonth
+      .filter((t) => t.description.includes(PAYROLL_NAME))
+      .map((t) => ({ amount: t.amount, type: ACCOUNT_NAME[t.account] }));
+  }
+
+  #getIncomeForBank(bankName, transactionCountKey) {
+    return this.incomeTransactions
+      .filter((t) => t.type === bankName)
+      .slice(global.transactionCounts[transactionCountKey]);
   }
 
   getIncomeTransactions() {
-    return this.transactions
-      .filter((t) => t.description.includes(PAYROLL_NAME))
-      .map((t) => ({ amount: t.amount, type: ACCOUNT_NAME[t.account], date: t.date }));
+    const chaseIncome = this.#getIncomeForBank(BANK_NAME.CHASE, 'chaseIncome');
+    const wellsFargoIncome = this.#getIncomeForBank(BANK_NAME.WELLS_FARGO, 'wellsFargoIncome');
+
+    global.transactionCounts.chaseIncome += chaseIncome.length;
+    global.transactionCounts.wellsFargoIncome += wellsFargoIncome.length;
+
+    return [...chaseIncome, ...wellsFargoIncome];
   }
 }
-
-const getPayrollTransactions = async (bank) => (
-  bank === BANK_NAME.WELLS_FARGO
-    ? [{ type: BANK_NAME.WELLS_FARGO, amount: 2.00 }]
-    : [{ type: BANK_NAME.CHASE, amount: 3.00 }]);
-
-export const getIncomeTransactions = async () => {
-  const transactions = [];
-
-  const [wellsFargoTransactions, chaseTransactions] = await Promise.all([
-    getPayrollTransactions(BANK_NAME.WELLS_FARGO),
-    getPayrollTransactions(BANK_NAME.CHASE),
-  ]);
-
-  wellsFargoTransactions.forEach(({ amount }) => {
-    transactions.push({
-      amount, type: BANK_NAME.WELLS_FARGO,
-    });
-  });
-
-  chaseTransactions.forEach(({ amount }) => {
-    transactions.push({
-      amount, type: BANK_NAME.CHASE,
-    });
-  });
-
-  return transactions;
-};

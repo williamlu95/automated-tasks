@@ -79,10 +79,18 @@ exports.config = {
       fs.writeFileSync(TRANSACTION_COUNT_FILE, JSON.stringify(transactionCounts, null, 4), 'utf8');
     }
   },
+
   onComplete() {
     rmdir(downloadDir);
   },
+
   before: () => {
     browser.setWindowSize(1280, 800);
+    const transactionCounts = JSON.parse(fs.readFileSync(TRANSACTION_COUNT_FILE));
+    global.transactionCounts = transactionCounts;
+  },
+
+  after: () => {
+    fs.writeFileSync(TRANSACTION_COUNT_FILE, JSON.stringify(global.transactionCounts, null, 4), 'utf8');
   },
 };
