@@ -1,14 +1,27 @@
+/* eslint-disable no-console */
 require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
 const getMonth = require('date-fns/getMonth');
-
-const TRANSACTION_COUNT_FILE = './counts.json';
-global.downloadDir = path.join(__dirname, 'tempDownload');
+const nodemailer = require('nodemailer');
 
 const {
   LOG_LEVEL,
+  GMAIL_LOGIN,
+  GMAIL_PASSWORD,
+  MAIL_TO,
 } = process.env;
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: GMAIL_LOGIN,
+    pass: GMAIL_PASSWORD,
+  },
+});
+
+const TRANSACTION_COUNT_FILE = './counts.json';
+global.downloadDir = path.join(__dirname, 'tempDownload');
 
 function rmdir(dir) {
   const list = fs.readdirSync(dir);
@@ -80,8 +93,19 @@ exports.config = {
     }
   },
 
-  onComplete() {
+  onComplete: async (_exitCode, _config, _capabilities, results) => {
     rmdir(downloadDir);
+
+    if (results.failed > 0) {
+      return transporter.sendMail({
+        from: GMAIL_LOGIN,
+        to: MAIL_TO,
+        subject: 'Automation Script Failed',
+        text: `${results.failed} automated script${results.failed === 1 ? 's' : ''} failed to complete.`,
+      });
+    }
+
+    return null;
   },
 
   before: () => {
