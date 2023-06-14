@@ -39,6 +39,10 @@ class AddRecordModal {
     return this.dropdowns.find(async (d) => (await d.getText()).includes('Select template'));
   }
 
+  get fromAccountDropdown() {
+    return $('div[name="fromAccountId"]');
+  }
+
   get toAccountDropdown() {
     return $('div[name="toAccountId"]');
   }
@@ -61,13 +65,20 @@ class AddRecordModal {
     await this.addRecordButton.click();
   }
 
-  async addTransferFromChase(toAccount, amount) {
+  async addTransfer(fromAccount, toAccount, amount) {
     await browser.waitUntil(() => this.content);
     await browser.waitUntil(
       () => this.transferItem && this.transferItem.isClickable(),
     );
 
     await this.transferItem.click();
+
+    await browser.waitUntil(
+      () => this.fromAccountDropdown && this.fromAccountDropdown.isClickable(),
+    );
+
+    await this.fromAccountDropdown.click();
+    await this.selectOption(fromAccount);
 
     await browser.waitUntil(
       () => this.toAccountDropdown && this.toAccountDropdown.isClickable(),

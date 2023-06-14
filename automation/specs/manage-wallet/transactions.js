@@ -1,20 +1,26 @@
+/* eslint-disable no-console */
 import csv from 'csvtojson';
 import { getMonth } from 'date-fns';
-import { BANK_NAME } from '../../constants/account';
+import { BANK_NAME, ACCOUNT_NAME } from '../../constants/account';
+import {
+  AUTO_PAY,
+  AUTO_PAY_NAMES,
+  AUTO_PAY_NAME,
+  PAYMENT_COUNT_KEY,
+} from '../../constants/credit-card';
+import {
+  INCOME_NAME,
+  INCOME_COUNT_KEY,
+} from '../../constants/income';
 import MintLoginPage from '../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../pageobjects/mint-transaction-page';
 
 const TRANSACTION_HEADERS = Object.freeze(['date', 'description', 'originalDescription', 'amount', 'type', 'category', 'account', 'labels', 'notes']);
-const PAYROLL_NAME = 'BETTERLESSON';
-
-const ACCOUNT_NAME = Object.freeze({
-  'TOTAL CHECKING': BANK_NAME.CHASE,
-  'Wells Fargo College Checking®': BANK_NAME.WELLS_FARGO,
-});
 
 export class Transactions {
   constructor() {
     this.incomeTransactions = [];
+    this.paymentTransactions = [];
   }
 
   async initializeTransactions() {
@@ -31,23 +37,65 @@ export class Transactions {
     transactionsForCurrentMonth.reverse();
 
     this.incomeTransactions = transactionsForCurrentMonth
-      .filter((t) => t.description.includes(PAYROLL_NAME))
+      .filter((t) => t.description.includes(INCOME_NAME))
       .map((t) => ({ amount: t.amount, type: ACCOUNT_NAME[t.account] }));
+
+    this.paymentTransactions = transactionsForCurrentMonth
+      .filter((t) => AUTO_PAY_NAMES.some((autoPayName) => t.description
+        .toLowerCase()
+        .includes(autoPayName.toLowerCase())));
   }
 
-  #getIncomeForBank(bankName, transactionCountKey) {
-    return this.incomeTransactions
+  #getIncomeForBank(bankName) {
+    const transactionCountKey = INCOME_COUNT_KEY[bankName];
+
+    if (!transactionCountKey) {
+      console.error(`No such transaction count with bank name ${bankName}`);
+      return [];
+    }
+
+    const incomes = this.incomeTransactions
       .filter((t) => t.type === bankName)
       .slice(global.transactionCounts[transactionCountKey]);
+
+    global.transactionCounts[transactionCountKey] += incomes.length;
+    return incomes;
   }
 
   getIncomeTransactions() {
-    const chaseIncome = this.#getIncomeForBank(BANK_NAME.CHASE, 'chaseIncome');
-    const wellsFargoIncome = this.#getIncomeForBank(BANK_NAME.WELLS_FARGO, 'wellsFargoIncome');
+    return Object.keys(BANK_NAME)
+      .flatMap((key) => this.#getIncomeForBank(key));
+  }
 
-    global.transactionCounts.chaseIncome += chaseIncome.length;
-    global.transactionCounts.wellsFargoIncome += wellsFargoIncome.length;
+  #getPaymentForBank(bankName) {
+    const autoPayName = AUTO_PAY_NAME[bankName];
+    const autoPays = AUTO_PAY[bankName];
+    const transactionCountKey = PAYMENT_COUNT_KEY[bankName];
 
-    return [...chaseIncome, ...wellsFargoIncome];
+    if (!autoPayName || !autoPays || !transactionCountKey) {
+      console.error(`No such auto pay with bank name ${bankName}`);
+      return [];
+    }
+
+    const allBankPayments = this.paymentTransactions
+      .filter((t) => t.description
+        .toLowerCase()
+        .includes(autoPayName.toLowerCase()))
+      .map((t, i) => (autoPays[i]
+        ? ({ fromAccount: autoPays[i].from, toAccount: autoPays[i].to, amount: t.amount })
+        : null
+      ));
+
+    const newBankPayments = allBankPayments
+      .filter((p) => p)
+      .slice(global.transactionCounts[transactionCountKey]);
+
+    global.transactionCounts[transactionCountKey] += newBankPayments.length;
+    return newBankPayments;
+  }
+
+  getPaymentTransactions() {
+    return Object.keys(AUTO_PAY_NAME)
+      .flatMap((key) => this.#getPaymentForBank(key));
   }
 }

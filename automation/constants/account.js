@@ -16,11 +16,16 @@ export const WALLET_ACCOUNT = Object.freeze({
 });
 
 export const BANK_NAME = Object.freeze({
-  CHASE: 'Chase',
-  WELLS_FARGO: 'Wells Fargo',
+  CHASE: 'CHASE',
+  WELLS_FARGO: 'WELLS_FARGO',
 });
 
 export const TEMPLATE_TYPE = Object.freeze({
   CHASE_INCOME: 'Chase Income',
   WELLS_FARGO_INCOME: 'Wells Fargo Income',
+});
+
+export const ACCOUNT_NAME = Object.freeze({
+  'TOTAL CHECKING': BANK_NAME.CHASE,
+  'Wells Fargo College Checking®': BANK_NAME.WELLS_FARGO,
 });

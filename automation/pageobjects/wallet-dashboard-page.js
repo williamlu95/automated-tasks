@@ -67,14 +67,14 @@ class WalletDashboardPage extends Page {
     });
   }
 
-  async addTransferFromChase(toAccount, amount) {
+  async addTransfer(fromAccount, toAccount, amount) {
     await browser.waitUntil(() => this.buttons.length);
-    await browser.waitUntil(() => this.accountCards.length);
-    const initalBalance = await this.accountCards[0].getText();
+    await browser.waitUntil(() => this.accountNames.length);
+    const initalBalance = await this.getAccountBalanceByName(fromAccount);
     await this.addRecordButton.click();
-    await AddRecordModal.addTransferFromChase(toAccount, amount);
+    await AddRecordModal.addTransfer(fromAccount, toAccount, amount);
     await browser.waitUntil(async () => {
-      const newBalance = await this.accountCards[0].getText();
+      const newBalance = await this.getAccountBalanceByName(fromAccount);
       return newBalance !== initalBalance;
     });
   }

@@ -1,5 +1,6 @@
 import LoginPage from '../../pageobjects/wallet-login-page';
 import { runAddIncomeToWallet } from './add-income-to-wallet';
+import { runAddPaymentsToWallet } from './add-payments-to-wallet';
 import { Transactions } from './transactions';
 
 describe('Manage finances in wallet app', () => {
@@ -7,11 +8,19 @@ describe('Manage finances in wallet app', () => {
     const transactions = new Transactions();
     await transactions.initializeTransactions();
     const incomeTransactions = transactions.getIncomeTransactions();
+    const paymentTransactions = transactions.getPaymentTransactions();
 
-    if (incomeTransactions.length) {
+    if (incomeTransactions.length || paymentTransactions.length) {
       await LoginPage.open();
       await LoginPage.login();
+    }
+
+    if (incomeTransactions.length) {
       runAddIncomeToWallet(incomeTransactions);
+    }
+
+    if (paymentTransactions.length) {
+      runAddPaymentsToWallet(paymentTransactions);
     }
   });
 
