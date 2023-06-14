@@ -28,7 +28,7 @@ class GmailLoginPage extends Page {
     const handles = await browser.getWindowHandles();
     await browser.switchToWindow(handles[1]);
     await this.login();
-    const emailText = await GmailEmailPage.getEmail('Your Mint Account');
+    const emailText = await GmailEmailPage.getEmail('Your Mint code');
     const { 1: verificationCode } = emailText.match(/Verification code: (\d+)/);
     await GmailEmailPage.deleteAllEmails();
     await browser.closeWindow();
