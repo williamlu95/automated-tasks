@@ -35,6 +35,7 @@ export class Transactions {
     });
 
     transactionsForCurrentMonth.reverse();
+    console.log(`Transactions: ${transactionsForCurrentMonth}`);
 
     this.incomeTransactions = transactionsForCurrentMonth
       .filter((t) => t.description.includes(INCOME_NAME))
