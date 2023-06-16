@@ -1,3 +1,4 @@
+import fs from 'fs';
 import { errorNotification } from '../utils/notification';
 import Page from './page';
 
@@ -53,7 +54,12 @@ class MintLoginPage extends Page {
     if (!isVerificationFlow) {
       return;
     }
+    await this.emailCodeButton.click();
 
+    await browser.debug();
+    const verificationCode = fs.readFileSync('./verification-code.txt');
+    await this.verificationInput.setValue(verificationCode);
+    await this.verificationContinueButton.click();
     await errorNotification('2FA has not been implemented yet');
   }
 
