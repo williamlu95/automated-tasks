@@ -1,4 +1,4 @@
-import fs from 'fs';
+import { errorNotification } from '../utils/notification';
 import Page from './page';
 
 const {
@@ -53,12 +53,18 @@ class MintLoginPage extends Page {
     if (!isVerificationFlow) {
       return;
     }
-    await this.emailCodeButton.click();
 
-    await browser.debug();
-    const verificationCode = fs.readFileSync('./verification-code.txt');
-    await this.verificationInput.setValue(verificationCode);
-    await this.verificationContinueButton.click();
+    await errorNotification('2FA has not been implemented yet');
+  }
+
+  async skipBiometricQuestion() {
+    await browser.pause(5000);
+
+    const url = await browser.getUrl();
+
+    if (!url.includes('https://mint.intuit.com/transactions')) {
+      await this.biometricSkipButton.click();
+    }
   }
 
   async login() {
@@ -70,6 +76,7 @@ class MintLoginPage extends Page {
     await this.passwordInput.setValue(MINT_PASSWORD);
     await this.submitPasswordButton.click();
     await this.completeVerification();
+    await this.skipBiometricQuestion();
     await browser.waitUntil(async () => {
       const url = await browser.getUrl();
       return url.includes('https://mint.intuit.com/transactions');
