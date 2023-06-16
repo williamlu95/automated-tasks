@@ -61,16 +61,6 @@ class MintLoginPage extends Page {
     await this.verificationContinueButton.click();
   }
 
-  async skipBiometricQuestion() {
-    await browser.pause(5000);
-
-    const url = await browser.getUrl();
-
-    if (!url.includes('https://mint.intuit.com/transactions')) {
-      await this.biometricSkipButton.click();
-    }
-  }
-
   async login() {
     await browser.waitUntil(() => this.usernameInput && this.usernameInput.isClickable());
     await browser.pause(5000);
@@ -80,7 +70,6 @@ class MintLoginPage extends Page {
     await this.passwordInput.setValue(MINT_PASSWORD);
     await this.submitPasswordButton.click();
     await this.completeVerification();
-    await this.skipBiometricQuestion();
     await browser.waitUntil(async () => {
       const url = await browser.getUrl();
       return url.includes('https://mint.intuit.com/transactions');
