@@ -21,6 +21,7 @@ export class Transactions {
   constructor() {
     this.incomeTransactions = [];
     this.paymentTransactions = [];
+    this.balances = {};
   }
 
   async initializeTransactions() {
@@ -31,7 +32,9 @@ export class Transactions {
 
     const transactionsForCurrentMonth = transactions.filter((t) => {
       const transactionMonth = getMonth(new Date(t.date)) + 1;
-      return transactionMonth === global.transactionCounts.month;
+      const isSameMonth = transactionMonth === global.transactionCounts.month;
+      const isFromCheckingAccount = !!ACCOUNT_NAME[t.account];
+      return isSameMonth && isFromCheckingAccount;
     });
 
     transactionsForCurrentMonth.reverse();
@@ -45,6 +48,8 @@ export class Transactions {
       .filter((t) => AUTO_PAY_NAMES.some((autoPayName) => t.description
         .toLowerCase()
         .includes(autoPayName.toLowerCase())));
+
+    this.balances = await MintTransactionPage.getAllAccountBalances();
   }
 
   #getIncomeForBank(bankName) {
@@ -98,5 +103,9 @@ export class Transactions {
   getPaymentTransactions() {
     return Object.keys(AUTO_PAY_NAME)
       .flatMap((key) => this.#getPaymentForBank(key));
+  }
+
+  getBalances() {
+    return this.balances;
   }
 }

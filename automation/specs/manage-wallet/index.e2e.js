@@ -2,6 +2,7 @@ import LoginPage from '../../pageobjects/wallet-login-page';
 import { runAddIncomeToWallet } from './add-income-to-wallet';
 import { runAddPaymentsToWallet } from './add-payments-to-wallet';
 import { Transactions } from './transactions';
+import { runVerifyAccountBalances } from './verify-account-balances';
 
 describe('Manage finances in wallet app', () => {
   before(async () => {
@@ -10,10 +11,8 @@ describe('Manage finances in wallet app', () => {
     const incomeTransactions = transactions.getIncomeTransactions();
     const paymentTransactions = transactions.getPaymentTransactions();
 
-    if (incomeTransactions.length || paymentTransactions.length) {
-      await LoginPage.open();
-      await LoginPage.login();
-    }
+    await LoginPage.open();
+    await LoginPage.login();
 
     if (incomeTransactions.length) {
       runAddIncomeToWallet(incomeTransactions);
@@ -22,6 +21,8 @@ describe('Manage finances in wallet app', () => {
     if (paymentTransactions.length) {
       runAddPaymentsToWallet(paymentTransactions);
     }
+
+    runVerifyAccountBalances(transactions.getBalances());
   });
 
   context('when the tests need to run', () => {

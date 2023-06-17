@@ -47,10 +47,19 @@ class WalletDashboardPage extends Page {
 
   async getAllAccountBalances() {
     await browser.waitUntil(async () => (await this.accountBalances.length) > 0);
-    const accountList = await this.accountBalances;
-    return Promise.all(
-      accountList.map((accountListItem) => accountListItem.getText()),
+    const accountBalances = await this.accountBalances;
+    const balances = await Promise.all(
+      accountBalances.map((b) => b.getText()),
     );
+
+    const accountNames = await this.accountNames;
+    const names = await Promise.all(
+      accountNames.map((n) => n.getText()),
+    );
+
+    console.log('accountNames :>> ', names);
+
+    return Object.fromEntries(names.map((name, i) => [name, balances[i]]));
   }
 
   async addRecord(template, amount) {
