@@ -22,18 +22,18 @@ const getDifferenceStyle = (difference) => {
 
 export const buildBalanceHTML = (accountBalance) => `
     <table style="font-family: arial, sans-serif; border-collapse: collapse; width: 100%;">
-    <tr>
-        ${buildCellHTML('Account Name')}
-        ${buildCellHTML('Expected Balance')}
-        ${buildCellHTML('Actual Balance')}
-        ${buildCellHTML('Difference')}
-    </tr>
-    ${accountBalance.map((a) => `
-    <tr>
-        ${buildCellHTML(a.accountName, 'td')}
-        ${buildCellHTML(a.expectedBalance, 'td')}
-        ${buildCellHTML(a.actualBalance, 'td')}
-        ${buildCellHTML(a.difference.replace('-', ''), 'td', getDifferenceStyle(a.difference))}
-    <tr>`).join('')}
+      <tr>
+          ${buildCellHTML('Account Name')}
+          ${buildCellHTML('Expected Balance')}
+          ${buildCellHTML('Actual Balance')}
+          ${buildCellHTML('Difference')}
+      </tr>
+      ${accountBalance.map((a) => `
+      <tr>
+          ${buildCellHTML(a.accountName, 'td')}
+          ${buildCellHTML(a.expectedBalance, 'td')}
+          ${buildCellHTML(a.actualBalance, 'td')}
+          ${buildCellHTML(a.difference.replace('-', ''), 'td', getDifferenceStyle(a.difference))}
+      <tr>`).join('')}
     </table>
   `;
