@@ -39,6 +39,7 @@ class MintTransactionPage extends Page {
   }
 
   async downloadTransactions() {
+    await browser.waitUntil(() => this.settingsButton && this.settingsButton.isClickable());
     await this.settingsButton.click();
     await this.exportAllTransactionsButton.click();
     const filePath = path.join(global.downloadDir, 'transactions.csv');

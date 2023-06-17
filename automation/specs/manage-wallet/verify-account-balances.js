@@ -1,5 +1,8 @@
+/* eslint-disable no-console */
 import { WALLET_ACCOUNT } from '../../constants/account';
 import WalletDashboardPage from '../../pageobjects/wallet-dashboard-page';
+import { buildBalanceHTML } from '../../utils/balance-html';
+import { sendEmail } from '../../utils/notification';
 
 const {
   CHASE_CHECKING,
@@ -35,6 +38,15 @@ const ACCOUNTS = {
   [WALLET_ACCOUNT.CITI_DOUBLE_CASH]: CITI_DOUBLE_CASH,
 };
 
+const balanceDifference = (expected, actual) => {
+  const expectedInPennies = (parseInt(expected.replace(/\D/g, ''), 10) / 100);
+  const actualInPennies = (parseInt(actual.replace(/\D/g, ''), 10) / 100);
+  const difference = actualInPennies - expectedInPennies;
+  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(difference);
+};
+
+const NOTIFICATION_HOURS = [12];
+
 export const runVerifyAccountBalances = (actualBalances) => context('when verifying accounts on mint', () => {
   afterEach(async () => {
     await browser.pause(5000);
@@ -47,9 +59,21 @@ export const runVerifyAccountBalances = (actualBalances) => context('when verify
       accountName: name,
       expectedBalance: expectedBalances[name],
       actualBalance: actualBalances[number],
+      difference: balanceDifference(
+        expectedBalances[name],
+        actualBalances[number],
+      ),
     }));
 
-    console.log('accountBalance :>> ', accountBalance);
+    if (NOTIFICATION_HOURS.includes(new Date().getHours())) {
+      await sendEmail({
+        subject: 'Balance Verification',
+        text: 'Balances',
+        html: buildBalanceHTML(accountBalance),
+      });
+    } else {
+      console.log('Balances: ', accountBalance);
+    }
   });
 
   it('should run the tests', () => expect(true).toEqual(true));

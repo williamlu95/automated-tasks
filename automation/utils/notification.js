@@ -25,9 +25,10 @@ export const errorNotification = async (errorMessage) => {
   throw Error(errorMessage);
 };
 
-export const sendEmail = async ({ subject, text }) => global.emailSender.sendMail({
+export const sendEmail = async ({ subject, text, html }) => global.emailSender.sendMail({
   from: GMAIL_LOGIN,
   to: MAIL_TO,
   subject,
   text,
+  html,
 });
