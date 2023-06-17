@@ -57,8 +57,6 @@ class WalletDashboardPage extends Page {
       accountNames.map((n) => n.getText()),
     );
 
-    console.log('accountNames :>> ', names);
-
     return Object.fromEntries(names.map((name, i) => [name, balances[i]]));
   }
 
