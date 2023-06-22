@@ -11,6 +11,7 @@ const {
 const TRANSACTION_COUNT_FILE = './counts.json';
 global.downloadDir = path.join(__dirname, 'tempDownload');
 global.emailSender = initializeEmailSender();
+global.verificationCodes = [];
 
 function rmdir(dir) {
   const list = fs.readdirSync(dir);

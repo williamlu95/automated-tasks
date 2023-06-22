@@ -1,4 +1,4 @@
-import { errorNotification } from '../utils/notification';
+import { readEmails } from '../utils/notification';
 import Page from './page';
 
 const {
@@ -54,7 +54,14 @@ class MintLoginPage extends Page {
       return;
     }
 
-    await errorNotification('2FA has not been implemented yet');
+    await this.emailCodeButton.click();
+    await browser.waitUntil(async () => {
+      await readEmails();
+      return !!global.verificationCode;
+    });
+
+    await this.verificationInput.setValue(global.verificationCode);
+    await this.verificationContinueButton.click();
   }
 
   async skipBiometricQuestion() {

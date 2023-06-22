@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import imaps from 'imap-simple';
 
 const {
   GMAIL_LOGIN,
@@ -31,4 +32,57 @@ export const sendEmail = async ({ subject, text, html }) => global.emailSender.s
   subject,
   text,
   html,
+});
+
+const config = {
+  imap: {
+    user: GMAIL_LOGIN,
+    password: GMAIL_PASSWORD,
+    host: 'imap.gmail.com',
+    port: 993,
+    tls: true,
+    authTimeout: 3000,
+    tlsOptions: { rejectUnauthorized: false },
+  },
+};
+
+export const readEmails = () => imaps.connect(config).then((connection) => {
+  connection.openBox('INBOX').then(() => {
+    const searchCriteria = ['ALL'];
+    const fetchOptions = { bodies: ['TEXT'], struct: true };
+    return connection.search(searchCriteria, fetchOptions);
+
+    // Loop over each message
+  }).then((messages) => {
+    const taskList = messages.map((message) => new Promise((res, rej) => {
+      const parts = imaps.getParts(message.attributes.struct);
+
+      parts.map((part) => connection.getPartData(message, part)
+        .then((partData) => {
+          if (part.disposition == null && part.encoding !== 'base64') {
+            const text = partData.replace(/<[^>]*>?/gm, '').replace(/\s/g, '');
+            const verificationCode = text.match(/Verificationcode:(\d+)/)?.[1];
+            global.verificationCode = verificationCode;
+          }
+
+          connection.addFlags(message.attributes.uid, 'Deleted', (err) => {
+            if (err) {
+              console.log('Problem marking message for deletion');
+              rej(err);
+            }
+
+            res();
+          });
+        }));
+    }));
+
+    return Promise.all(taskList).then(() => {
+      connection.imap.closeBox(true, (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+      connection.end();
+    });
+  });
 });
