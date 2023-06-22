@@ -44,22 +44,24 @@ class MintLoginPage extends Page {
 
     const url = await browser.getUrl();
 
-    // if (url.includes('https://mint.intuit.com/transactions')) {
-    //   return;
-    // }
+    if (url.includes('https://mint.intuit.com/transactions')) {
+      return;
+    }
 
-    // const isVerificationFlow = await this.emailCodeButton.isExisting();
+    const isVerificationFlow = await this.emailCodeButton.isExisting();
 
-    // if (!isVerificationFlow) {
-    //   return;
-    // }
+    if (!isVerificationFlow) {
+      return;
+    }
 
     await this.emailCodeButton.click();
-    await readEmails();
-    await browser.waitUntil(() => global.emailInbox.some((e) => e.subject.includes('Your Mint Account')));
-    // const verificationCode = '';
-    // await this.verificationInput.setValue(verificationCode);
-    // await this.verificationContinueButton.click();
+    await browser.waitUntil(async () => {
+      await readEmails();
+      return !!global.verificationCode;
+    });
+
+    await this.verificationInput.setValue(global.verificationCode);
+    await this.verificationContinueButton.click();
   }
 
   async skipBiometricQuestion() {

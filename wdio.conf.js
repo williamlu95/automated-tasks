@@ -1,9 +1,8 @@
 require('dotenv').config();
 const path = require('path');
 const fs = require('fs');
-const { simpleParser } = require('mailparser');
 const getMonth = require('date-fns/getMonth');
-const { initializeEmailSender, sendEmail, imap } = require('./automation/utils/notification');
+const { initializeEmailSender, sendEmail } = require('./automation/utils/notification');
 
 const {
   LOG_LEVEL,
@@ -12,7 +11,7 @@ const {
 const TRANSACTION_COUNT_FILE = './counts.json';
 global.downloadDir = path.join(__dirname, 'tempDownload');
 global.emailSender = initializeEmailSender();
-global.emailInbox = [];
+global.verificationCodes = [];
 
 function rmdir(dir) {
   const list = fs.readdirSync(dir);

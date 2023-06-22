@@ -1,5 +1,5 @@
 import nodemailer from 'nodemailer';
-import Imap from 'imap';
+import imaps from 'imap-simple';
 
 const {
   GMAIL_LOGIN,
@@ -34,57 +34,55 @@ export const sendEmail = async ({ subject, text, html }) => global.emailSender.s
   html,
 });
 
-export const imap = new Imap({
-  user: GMAIL_LOGIN,
-  password: GMAIL_PASSWORD,
-  host: 'imap.gmail.com',
-  port: 993,
-  tls: true,
-  tlsOptions: { rejectUnauthorized: false },
-});
+const config = {
+  imap: {
+    user: GMAIL_LOGIN,
+    password: GMAIL_PASSWORD,
+    host: 'imap.gmail.com',
+    port: 993,
+    tls: true,
+    authTimeout: 3000,
+    tlsOptions: { rejectUnauthorized: false },
+  },
+};
 
-export const readEmails = () => {
-  function openInbox(cb) {
-    imap.openBox('INBOX', true, cb);
-  }
+export const readEmails = () => imaps.connect(config).then((connection) => {
+  connection.openBox('INBOX').then(() => {
+    const searchCriteria = ['ALL'];
+    const fetchOptions = { bodies: ['TEXT'], struct: true };
+    return connection.search(searchCriteria, fetchOptions);
 
-  imap.once('ready', () => {
-    openInbox((err, box) => {
-      if (err) throw err;
-      const f = imap.seq.fetch('1:3', {
-        bodies: 'HEADER.FIELDS (FROM TO SUBJECT DATE)',
-        struct: true,
-      });
+    // Loop over each message
+  }).then((messages) => {
+    const taskList = messages.map((message) => new Promise((res, rej) => {
+      const parts = imaps.getParts(message.attributes.struct);
 
-      f.on('message', (msg, seqno) => {
-        console.log('Message #%d', seqno);
-        const prefix = `(#${seqno}) `;
-        msg.on('body', (stream, info) => {
-          let buffer = '';
-          stream.on('data', (chunk) => {
-            buffer += chunk.toString('utf8');
+      parts.map((part) => connection.getPartData(message, part)
+        .then((partData) => {
+          if (part.disposition == null && part.encoding !== 'base64') {
+            const text = partData.replace(/<[^>]*>?/gm, '').replace(/\s/g, '');
+            const verificationCode = text.match(/Verificationcode:(\d+)/)?.[1];
+            global.verificationCode = verificationCode;
+          }
+
+          connection.addFlags(message.attributes.uid, 'Deleted', (err) => {
+            if (err) {
+              console.log('Problem marking message for deletion');
+              rej(err);
+            }
+
+            res();
           });
-        });
-      });
+        }));
+    }));
 
-      f.once('error', (err) => {
-        console.log(`Fetch error: ${err}`);
+    return Promise.all(taskList).then(() => {
+      connection.imap.closeBox(true, (err) => {
+        if (err) {
+          console.log(err);
+        }
       });
-
-      f.once('end', () => {
-        console.log('Done fetching all messages!');
-        imap.end();
-      });
+      connection.end();
     });
   });
-
-  imap.once('error', (err) => {
-    console.log(err);
-  });
-
-  imap.once('end', () => {
-    console.log('Connection ended');
-  });
-
-  imap.connect();
-};
+});
