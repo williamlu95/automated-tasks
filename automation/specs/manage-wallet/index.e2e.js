@@ -14,13 +14,13 @@ describe('Manage finances in wallet app', () => {
     await LoginPage.open();
     await LoginPage.login();
 
-    // if (incomeTransactions.length) {
-    //   runAddIncomeToWallet(incomeTransactions);
-    // }
+    if (incomeTransactions.length) {
+      runAddIncomeToWallet(incomeTransactions);
+    }
 
-    // if (paymentTransactions.length) {
-    //   runAddPaymentsToWallet(paymentTransactions);
-    // }
+    if (paymentTransactions.length) {
+      runAddPaymentsToWallet(paymentTransactions);
+    }
 
     runVerifyAccountBalances(transactions.getBalances());
   });
