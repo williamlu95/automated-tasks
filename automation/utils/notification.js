@@ -51,8 +51,6 @@ export const readEmails = () => imaps.connect(config).then((connection) => {
     const searchCriteria = ['ALL'];
     const fetchOptions = { bodies: ['TEXT'], struct: true };
     return connection.search(searchCriteria, fetchOptions);
-
-    // Loop over each message
   }).then((messages) => {
     const taskList = messages.map((message) => new Promise((res, rej) => {
       const parts = imaps.getParts(message.attributes.struct);
