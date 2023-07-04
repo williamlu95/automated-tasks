@@ -1,6 +1,10 @@
 /* eslint-disable no-console */
 import csv from 'csvtojson';
-import { getMonth } from 'date-fns';
+import {
+  endOfMonth,
+  getMonth,
+  isSameDay,
+} from 'date-fns';
 import { BANK_NAME, ACCOUNT_NAME } from '../../constants/account';
 import {
   AUTO_PAY,
@@ -30,14 +34,7 @@ export class Transactions {
     const transactionsPath = await MintTransactionPage.downloadTransactions();
     const transactions = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionsPath);
 
-    const transactionsForCurrentMonth = transactions.filter((t) => {
-      const transactionMonth = getMonth(new Date(t.date)) + 1;
-      const isSameMonth = transactionMonth === global.transactionCounts.month;
-      const isFromCheckingAccount = !!ACCOUNT_NAME[t.account];
-      return isSameMonth && isFromCheckingAccount;
-    });
-
-    transactionsForCurrentMonth.reverse();
+    const transactionsForCurrentMonth = this.#getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(transactionsForCurrentMonth, null, 4)}`);
 
     this.incomeTransactions = transactionsForCurrentMonth
@@ -50,6 +47,32 @@ export class Transactions {
         .includes(autoPayName.toLowerCase())));
 
     this.balances = await MintTransactionPage.getAllAccountBalances();
+  }
+
+  #getTransactionsForCurrentMonth(transactions) {
+    const transactionsForCurrentMonth = transactions.filter((t) => {
+      const transactionDate = new Date(t.date);
+      const isSameMonth = getMonth(transactionDate) === global.transactionCounts.month;
+      const isFromCheckingAccount = !!ACCOUNT_NAME[t.account];
+
+      if (isSameMonth && isFromCheckingAccount) {
+        return true;
+      }
+
+      const lastMonth = new Date(new Date().getFullYear(), global.transactionCounts.month - 1);
+      const isLastDayOfLastMonth = isSameDay(transactionDate, endOfMonth(lastMonth));
+      const isWellsFargoCheckingAccount = t.account === 'Wells Fargo College Checking®';
+
+      if (isLastDayOfLastMonth && isWellsFargoCheckingAccount) {
+        return true;
+      }
+
+      return false;
+    });
+
+    transactionsForCurrentMonth.reverse();
+
+    return transactionsForCurrentMonth;
   }
 
   #getIncomeForBank(bankName) {

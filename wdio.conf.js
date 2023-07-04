@@ -70,7 +70,7 @@ exports.config = {
       fs.mkdirSync(downloadDir);
     }
 
-    const currentMonth = getMonth(new Date()) + 1;
+    const currentMonth = getMonth(new Date());
     const transactionCounts = JSON.parse(fs.readFileSync(TRANSACTION_COUNT_FILE));
 
     if (currentMonth !== transactionCounts.month) {
