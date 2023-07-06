@@ -42,9 +42,8 @@ export class Transactions {
       .map((t) => ({ amount: t.amount, type: ACCOUNT_NAME[t.account] }));
 
     this.paymentTransactions = transactionsForCurrentMonth
-      .filter((t) => AUTO_PAY_NAMES.some((autoPayName) => t.description
-        .toLowerCase()
-        .includes(autoPayName.toLowerCase())));
+      .filter((t) => AUTO_PAY_NAMES
+        .some((autoPayName) => this.#includesName(t.description, autoPayName)));
 
     this.balances = await MintTransactionPage.getAllAccountBalances();
   }
@@ -96,6 +95,12 @@ export class Transactions {
       .flatMap((key) => this.#getIncomeForBank(key));
   }
 
+  #includesName(description, name) {
+    const normalizedDescription = description.replace(/\s/g, '').toLowerCase();
+    const normalizedName = name.replace(/\s/g, '').toLowerCase();
+    return normalizedDescription.includes(normalizedName);
+  }
+
   #getPaymentForBank(bankName) {
     const autoPayName = AUTO_PAY_NAME[bankName];
     const autoPays = AUTO_PAY[bankName];
@@ -107,9 +112,7 @@ export class Transactions {
     }
 
     const allBankPayments = this.paymentTransactions
-      .filter((t) => t.description
-        .toLowerCase()
-        .includes(autoPayName.toLowerCase()))
+      .filter((t) => this.#includesName(t.description, autoPayName))
       .map((t, i) => (autoPays[i]
         ? ({ fromAccount: autoPays[i].from, toAccount: autoPays[i].to, amount: t.amount })
         : null
