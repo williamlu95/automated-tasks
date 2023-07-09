@@ -39,8 +39,8 @@ const ACCOUNTS = {
 };
 
 const balanceDifference = (expected, actual) => {
-  const expectedInPennies = (parseInt(expected.replace(/\D/g, ''), 10) / 100);
-  const actualInPennies = (parseInt(actual.replace(/\D/g, ''), 10) / 100);
+  const expectedInPennies = (parseInt((expected || '').replace(/\D/g, ''), 10) / 100);
+  const actualInPennies = (parseInt((actual || '').replace(/\D/g, ''), 10) / 100);
   const difference = expectedInPennies - actualInPennies;
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(difference);
 };
