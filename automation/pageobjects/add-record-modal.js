@@ -47,6 +47,10 @@ class AddRecordModal {
     return $('div[name="toAccountId"]');
   }
 
+  get noteInput() {
+    return $('textarea[name="note"]');
+  }
+
   async selectOption(optionText) {
     await browser.waitUntil(() => this.options.length);
     const option = await this.options.find(async (o) => (await o.getText()).includes(optionText));
@@ -87,6 +91,7 @@ class AddRecordModal {
     await this.toAccountDropdown.click();
     await this.selectOption(toAccount);
     await this.fromAmountInput.setValue(amount);
+    await this.noteInput.setValue('Added by automated script');
     await this.addRecordButton.click();
   }
 }
