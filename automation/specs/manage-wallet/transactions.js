@@ -48,7 +48,7 @@ export class Transactions {
       .map((t) => ({ amount: t.amount, type: ACCOUNT_NAME[t.account] }));
 
     this.creditTransactions = transactionsForCurrentMonth
-      .filter((t) => CREDIT_CARD_NAME.CITI_DOUBLE === t.account)
+      .filter((t) => CREDIT_CARD_NAME.CITI_DOUBLE === t.account && t.type === 'debit')
       .map((t) => ({ amount: t.amount, type: ACCOUNT_NAME[t.account] }));
 
     this.paymentTransactions = transactionsForCurrentMonth
