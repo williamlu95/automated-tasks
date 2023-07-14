@@ -18,6 +18,10 @@ export const AUTO_PAY_NAME = Object.freeze({
   WELLS_FARGO: 'WF CREDIT CARD AUTO PAY',
 });
 
+export const EXPENSE_COUNT_KEY = Object.freeze({
+  [WALLET_ACCOUNT.CITI_DOUBLE_CASH]: 'citiDoubleExpense',
+});
+
 export const AUTO_PAY_NAMES = Object.values(AUTO_PAY_NAME);
 
 export const AUTO_PAY = Object.freeze({

@@ -1,6 +1,5 @@
 import AddRecordModal from './add-record-modal';
 import Page from './page';
-import { WALLET_ACCOUNT, TEMPLATE_TYPE } from '../constants/account';
 
 class WalletDashboardPage extends Page {
   get buttons() {
@@ -60,11 +59,7 @@ class WalletDashboardPage extends Page {
     return Object.fromEntries(names.map((name, i) => [name, balances[i]]));
   }
 
-  async addRecord(template, amount) {
-    const accountCardName = template === TEMPLATE_TYPE.CHASE_INCOME
-      ? WALLET_ACCOUNT.CHASE_CHECKING
-      : WALLET_ACCOUNT.WELLS_FARGO_CHECKING;
-
+  async addRecord(template, accountCardName, amount) {
     const initalBalance = await this.getAccountBalanceByName(accountCardName);
     await this.addRecordButton.click();
     await AddRecordModal.addRecord(template, amount);

@@ -1,5 +1,5 @@
 import LoginPage from '../../pageobjects/wallet-login-page';
-import { runAddIncomeToWallet } from './add-income-to-wallet';
+import { runAddTransactionToWallet } from './add-transaction-to-wallet';
 import { runAddPaymentsToWallet } from './add-payments-to-wallet';
 import { Transactions } from './transactions';
 import { runVerifyAccountBalances } from './verify-account-balances';
@@ -8,14 +8,14 @@ describe('Manage finances in wallet app', () => {
   before(async () => {
     const transactions = new Transactions();
     await transactions.initializeTransactions();
-    const incomeTransactions = transactions.getIncomeTransactions();
+    const walletTransactions = transactions.getWalletTransactions();
     const paymentTransactions = transactions.getPaymentTransactions();
 
     await LoginPage.open();
     await LoginPage.login();
 
-    if (incomeTransactions.length) {
-      runAddIncomeToWallet(incomeTransactions);
+    if (walletTransactions.length) {
+      runAddTransactionToWallet(walletTransactions);
     }
 
     if (paymentTransactions.length) {

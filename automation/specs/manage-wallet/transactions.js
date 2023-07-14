@@ -5,26 +5,32 @@ import {
   getMonth,
   isSameDay,
 } from 'date-fns';
-import { BANK_NAME, ACCOUNT_NAME } from '../../constants/account';
+import {
+  ACCOUNT_NAME, WALLET_ACCOUNT, CREDIT_CARD_NAME,
+} from '../../constants/account';
 import {
   AUTO_PAY,
   AUTO_PAY_NAMES,
   AUTO_PAY_NAME,
   PAYMENT_COUNT_KEY,
 } from '../../constants/credit-card';
-import {
-  INCOME_NAME,
-  INCOME_COUNT_KEY,
-} from '../../constants/income';
+import { INCOME_NAME } from '../../constants/income';
 import MintLoginPage from '../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../pageobjects/mint-transaction-page';
 
 const TRANSACTION_HEADERS = Object.freeze(['date', 'description', 'originalDescription', 'amount', 'type', 'category', 'account', 'labels', 'notes']);
 
+export const TRANSACTION_COUNT_KEY = Object.freeze({
+  [WALLET_ACCOUNT.CHASE_CHECKING]: 'chaseIncome',
+  [WALLET_ACCOUNT.WELLS_FARGO_CHECKING]: 'wellsFargoIncome',
+  [WALLET_ACCOUNT.CITI_DOUBLE_CASH]: 'citiDoubleExpense',
+});
+
 export class Transactions {
   constructor() {
     this.incomeTransactions = [];
     this.paymentTransactions = [];
+    this.creditTransactions = [];
     this.balances = {};
   }
 
@@ -41,6 +47,10 @@ export class Transactions {
       .filter((t) => t.description.includes(INCOME_NAME))
       .map((t) => ({ amount: t.amount, type: ACCOUNT_NAME[t.account] }));
 
+    this.creditTransactions = transactionsForCurrentMonth
+      .filter((t) => CREDIT_CARD_NAME.CITI_DOUBLE === t.account)
+      .map((t) => ({ amount: t.amount, type: ACCOUNT_NAME[t.account] }));
+
     this.paymentTransactions = transactionsForCurrentMonth
       .filter((t) => AUTO_PAY_NAMES
         .some((autoPayName) => this.#includesName(t.description, autoPayName)));
@@ -52,9 +62,9 @@ export class Transactions {
     const transactionsForCurrentMonth = transactions.filter((t) => {
       const transactionDate = new Date(t.date);
       const isSameMonth = getMonth(transactionDate) === global.transactionCounts.month;
-      const isFromCheckingAccount = !!ACCOUNT_NAME[t.account];
+      const isFromTransactionAccount = !!ACCOUNT_NAME[t.account];
 
-      if (isSameMonth && isFromCheckingAccount) {
+      if (isSameMonth && isFromTransactionAccount) {
         return true;
       }
 
@@ -70,29 +80,28 @@ export class Transactions {
     });
 
     transactionsForCurrentMonth.reverse();
-
     return transactionsForCurrentMonth;
   }
 
-  #getIncomeForBank(bankName) {
-    const transactionCountKey = INCOME_COUNT_KEY[bankName];
+  #getTransactionsForBank(bankName) {
+    const transactionCountKey = TRANSACTION_COUNT_KEY[bankName];
 
     if (!transactionCountKey) {
       console.error(`No such transaction count with bank name ${bankName}`);
       return [];
     }
 
-    const incomes = this.incomeTransactions
+    const transactions = this.incomeTransactions.concat(this.creditTransactions)
       .filter((t) => t.type === bankName)
       .slice(global.transactionCounts[transactionCountKey]);
 
-    global.transactionCounts[transactionCountKey] += incomes.length;
-    return incomes;
+    global.transactionCounts[transactionCountKey] += transactions.length;
+    return transactions;
   }
 
-  getIncomeTransactions() {
-    return Object.keys(BANK_NAME)
-      .flatMap((key) => this.#getIncomeForBank(key));
+  getWalletTransactions() {
+    return Object.keys(TRANSACTION_COUNT_KEY)
+      .flatMap((key) => this.#getTransactionsForBank(key));
   }
 
   #includesName(description, name) {
