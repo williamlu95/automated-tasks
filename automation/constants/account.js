@@ -17,22 +17,10 @@ export const WALLET_ACCOUNT = Object.freeze({
   CITI_DOUBLE_CASH: 'Citi Double Cash',
 });
 
-export const INCOME_TEMPLATE_TYPE = Object.freeze({
-  CHASE_INCOME: 'Chase Income',
-  WELLS_FARGO_INCOME: 'Wells Fargo Income',
-});
-
-export const EXPENSE_TEMPLATE_TYPE = Object.freeze({
-  CITI_DOUBLE_EXPENSE: 'Citi Double Expense',
-});
-
-export const CREDIT_CARD_NAME = Object.freeze({
-  CITI_DOUBLE: 'Citi Double Cash® Card',
-});
-
-export const CHECKING_NAME = Object.freeze({
+export const ACCOUNT_NAME = Object.freeze({
   CHASE: 'TOTAL CHECKING',
   WELLS_FARGO: 'Wells Fargo College Checking®',
+  CITI_DOUBLE: 'Citi Double Cash® Card',
 });
 
 export const TRANSACTION_TYPE = Object.freeze({
@@ -41,23 +29,23 @@ export const TRANSACTION_TYPE = Object.freeze({
 });
 
 export const WALLET_TRANSACTION = Object.freeze({
-  [CHECKING_NAME.CHASE]: {
+  [ACCOUNT_NAME.CHASE]: {
     name: WALLET_ACCOUNT.CHASE_CHECKING,
-    template: INCOME_TEMPLATE_TYPE.CHASE_INCOME,
+    template: 'Chase Income',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'chaseIncome',
     isTransactionIncluded: (t) => t.description.includes(INCOME_NAME),
   },
-  [CHECKING_NAME.WELLS_FARGO]: {
+  [ACCOUNT_NAME.WELLS_FARGO]: {
     name: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
-    template: INCOME_TEMPLATE_TYPE.WELLS_FARGO_INCOME,
+    template: 'Wells Fargo Income',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'wellsFargoIncome',
     isTransactionIncluded: (t) => t.description.includes(INCOME_NAME),
   },
-  [CREDIT_CARD_NAME.CITI_DOUBLE]: {
+  [ACCOUNT_NAME.CITI_DOUBLE]: {
     name: WALLET_ACCOUNT.CITI_DOUBLE_CASH,
-    template: EXPENSE_TEMPLATE_TYPE.CITI_DOUBLE_EXPENSE,
+    template: 'Citi Double Expense',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'citiDoubleExpense',
     isTransactionIncluded: (t) => t.type === TRANSACTION_TYPE.DEBIT,

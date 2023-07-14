@@ -1,19 +1,8 @@
 /* eslint-disable no-console */
 import csv from 'csvtojson';
-import {
-  endOfMonth,
-  getMonth,
-  isSameDay,
-} from 'date-fns';
-import {
-  WALLET_TRANSACTION, CHECKING_NAME,
-} from '../../constants/account';
-import {
-  AUTO_PAY,
-  AUTO_PAY_NAMES,
-  AUTO_PAY_NAME,
-  PAYMENT_COUNT_KEY,
-} from '../../constants/credit-card';
+import { endOfMonth, getMonth, isSameDay } from 'date-fns';
+import { WALLET_TRANSACTION, ACCOUNT_NAME } from '../../constants/account';
+import { AUTO_PAY, AUTO_PAY_NAMES } from '../../constants/credit-card';
 import MintLoginPage from '../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../pageobjects/mint-transaction-page';
 
@@ -58,7 +47,7 @@ export class Transactions {
 
       const lastMonth = new Date(new Date().getFullYear(), global.transactionCounts.month - 1);
       const isLastDayOfLastMonth = isSameDay(transactionDate, endOfMonth(lastMonth));
-      const isWellsFargoCheckingAccount = t.account === CHECKING_NAME.WELLS_FARGO;
+      const isWellsFargoCheckingAccount = t.account === ACCOUNT_NAME.WELLS_FARGO;
 
       if (isLastDayOfLastMonth && isWellsFargoCheckingAccount) {
         return true;
@@ -91,34 +80,25 @@ export class Transactions {
     return normalizedDescription.includes(normalizedName);
   }
 
-  #getPaymentForBank(bankName) {
-    const autoPayName = AUTO_PAY_NAME[bankName];
-    const autoPays = AUTO_PAY[bankName];
-    const transactionCountKey = PAYMENT_COUNT_KEY[bankName];
-
-    if (!autoPayName || !autoPays || !transactionCountKey) {
-      console.error(`No such auto pay with bank name ${bankName}`);
-      return [];
-    }
-
+  #getPaymentForBank({ name, transfers, paymentCountKey }) {
     const allBankPayments = this.paymentTransactions
-      .filter((t) => this.#includesName(t.description, autoPayName))
-      .map((t, i) => (autoPays[i]
-        ? ({ fromAccount: autoPays[i].from, toAccount: autoPays[i].to, amount: t.amount })
+      .filter((t) => this.#includesName(t.description, name))
+      .map((t, i) => (transfers[i]
+        ? ({ fromAccount: transfers[i].from, toAccount: transfers[i].to, amount: t.amount })
         : null
       ));
 
     const newBankPayments = allBankPayments
       .filter((p) => p)
-      .slice(global.transactionCounts[transactionCountKey]);
+      .slice(global.transactionCounts[paymentCountKey]);
 
-    global.transactionCounts[transactionCountKey] += newBankPayments.length;
+    global.transactionCounts[paymentCountKey] += newBankPayments.length;
     return newBankPayments;
   }
 
   getPaymentTransactions() {
-    return Object.keys(AUTO_PAY_NAME)
-      .flatMap((key) => this.#getPaymentForBank(key));
+    return Object.values(AUTO_PAY)
+      .flatMap((p) => this.#getPaymentForBank(p));
   }
 
   getBalances() {
