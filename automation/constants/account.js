@@ -1,3 +1,5 @@
+import { INCOME_NAME } from './income';
+
 export const WALLET_ACCOUNT = Object.freeze({
   CHASE_CHECKING: 'Chase Checking',
   AMEX_GOLD: 'AMEX Gold',
@@ -28,8 +30,36 @@ export const CREDIT_CARD_NAME = Object.freeze({
   CITI_DOUBLE: 'Citi Double Cash® Card',
 });
 
-export const ACCOUNT_NAME = Object.freeze({
-  'TOTAL CHECKING': WALLET_ACCOUNT.CHASE_CHECKING,
-  'Wells Fargo College Checking®': WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
-  [CREDIT_CARD_NAME.CITI_DOUBLE]: WALLET_ACCOUNT.CITI_DOUBLE_CASH,
+export const CHECKING_NAME = Object.freeze({
+  CHASE: 'TOTAL CHECKING',
+  WELLS_FARGO: 'Wells Fargo College Checking®',
+});
+
+export const TRANSACTION_TYPE = Object.freeze({
+  DEBIT: 'debit',
+  CREDIT: 'credit',
+});
+
+export const WALLET_TRANSACTION = Object.freeze({
+  [CHECKING_NAME.CHASE]: {
+    name: WALLET_ACCOUNT.CHASE_CHECKING,
+    template: INCOME_TEMPLATE_TYPE.CHASE_INCOME,
+    type: TRANSACTION_TYPE.CREDIT,
+    transactionCountKey: 'chaseIncome',
+    isTransactionIncluded: (t) => t.description.includes(INCOME_NAME),
+  },
+  [CHECKING_NAME.WELLS_FARGO]: {
+    name: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
+    template: INCOME_TEMPLATE_TYPE.WELLS_FARGO_INCOME,
+    type: TRANSACTION_TYPE.CREDIT,
+    transactionCountKey: 'wellsFargoIncome',
+    isTransactionIncluded: (t) => t.description.includes(INCOME_NAME),
+  },
+  [CREDIT_CARD_NAME.CITI_DOUBLE]: {
+    name: WALLET_ACCOUNT.CITI_DOUBLE_CASH,
+    template: EXPENSE_TEMPLATE_TYPE.CITI_DOUBLE_EXPENSE,
+    type: TRANSACTION_TYPE.CREDIT,
+    transactionCountKey: 'citiDoubleExpense',
+    isTransactionIncluded: (t) => t.type === TRANSACTION_TYPE.DEBIT,
+  },
 });

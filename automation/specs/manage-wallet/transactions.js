@@ -6,7 +6,7 @@ import {
   isSameDay,
 } from 'date-fns';
 import {
-  ACCOUNT_NAME, WALLET_ACCOUNT, CREDIT_CARD_NAME,
+  WALLET_TRANSACTION, CHECKING_NAME,
 } from '../../constants/account';
 import {
   AUTO_PAY,
@@ -14,23 +14,15 @@ import {
   AUTO_PAY_NAME,
   PAYMENT_COUNT_KEY,
 } from '../../constants/credit-card';
-import { INCOME_NAME } from '../../constants/income';
 import MintLoginPage from '../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../pageobjects/mint-transaction-page';
 
 const TRANSACTION_HEADERS = Object.freeze(['date', 'description', 'originalDescription', 'amount', 'type', 'category', 'account', 'labels', 'notes']);
 
-export const TRANSACTION_COUNT_KEY = Object.freeze({
-  [WALLET_ACCOUNT.CHASE_CHECKING]: 'chaseIncome',
-  [WALLET_ACCOUNT.WELLS_FARGO_CHECKING]: 'wellsFargoIncome',
-  [WALLET_ACCOUNT.CITI_DOUBLE_CASH]: 'citiDoubleExpense',
-});
-
 export class Transactions {
   constructor() {
-    this.incomeTransactions = [];
+    this.walletTransactions = [];
     this.paymentTransactions = [];
-    this.creditTransactions = [];
     this.balances = {};
   }
 
@@ -43,13 +35,9 @@ export class Transactions {
     const transactionsForCurrentMonth = this.#getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(transactionsForCurrentMonth, null, 4)}`);
 
-    this.incomeTransactions = transactionsForCurrentMonth
-      .filter((t) => t.description.includes(INCOME_NAME))
-      .map((t) => ({ amount: t.amount, type: ACCOUNT_NAME[t.account] }));
-
-    this.creditTransactions = transactionsForCurrentMonth
-      .filter((t) => CREDIT_CARD_NAME.CITI_DOUBLE === t.account && t.type === 'debit')
-      .map((t) => ({ amount: t.amount, type: ACCOUNT_NAME[t.account] }));
+    this.walletTransactions = transactionsForCurrentMonth
+      .filter((t) => WALLET_TRANSACTION[t.account]?.isTransactionIncluded(t))
+      .map((t) => ({ ...WALLET_TRANSACTION[t.account], amount: t.amount }));
 
     this.paymentTransactions = transactionsForCurrentMonth
       .filter((t) => AUTO_PAY_NAMES
@@ -62,7 +50,7 @@ export class Transactions {
     const transactionsForCurrentMonth = transactions.filter((t) => {
       const transactionDate = new Date(t.date);
       const isSameMonth = getMonth(transactionDate) === global.transactionCounts.month;
-      const isFromTransactionAccount = !!ACCOUNT_NAME[t.account];
+      const isFromTransactionAccount = !!WALLET_TRANSACTION[t.account];
 
       if (isSameMonth && isFromTransactionAccount) {
         return true;
@@ -70,7 +58,7 @@ export class Transactions {
 
       const lastMonth = new Date(new Date().getFullYear(), global.transactionCounts.month - 1);
       const isLastDayOfLastMonth = isSameDay(transactionDate, endOfMonth(lastMonth));
-      const isWellsFargoCheckingAccount = t.account === 'Wells Fargo College Checking®';
+      const isWellsFargoCheckingAccount = t.account === CHECKING_NAME.WELLS_FARGO;
 
       if (isLastDayOfLastMonth && isWellsFargoCheckingAccount) {
         return true;
@@ -83,16 +71,9 @@ export class Transactions {
     return transactionsForCurrentMonth;
   }
 
-  #getTransactionsForBank(bankName) {
-    const transactionCountKey = TRANSACTION_COUNT_KEY[bankName];
-
-    if (!transactionCountKey) {
-      console.error(`No such transaction count with bank name ${bankName}`);
-      return [];
-    }
-
-    const transactions = this.incomeTransactions.concat(this.creditTransactions)
-      .filter((t) => t.type === bankName)
+  #getTransactionsForBank({ name, transactionCountKey }) {
+    const transactions = this.walletTransactions
+      .filter((t) => t.name === name)
       .slice(global.transactionCounts[transactionCountKey]);
 
     global.transactionCounts[transactionCountKey] += transactions.length;
@@ -100,8 +81,8 @@ export class Transactions {
   }
 
   getWalletTransactions() {
-    return Object.keys(TRANSACTION_COUNT_KEY)
-      .flatMap((key) => this.#getTransactionsForBank(key));
+    return Object.values(WALLET_TRANSACTION)
+      .flatMap((t) => this.#getTransactionsForBank(t));
   }
 
   #includesName(description, name) {
