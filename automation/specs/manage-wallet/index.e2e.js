@@ -8,14 +8,14 @@ describe('Manage finances in wallet app', () => {
   before(async () => {
     const transactions = new Transactions();
     await transactions.initializeTransactions();
-    const walletTransactions = transactions.getWalletTransactions();
+    const templateTransactions = transactions.getTemplateTransactions();
     const paymentTransactions = transactions.getPaymentTransactions();
 
     await LoginPage.open();
     await LoginPage.login();
 
-    if (walletTransactions.length) {
-      runAddTransactionToWallet(walletTransactions);
+    if (templateTransactions.length) {
+      runAddTransactionToWallet(templateTransactions);
     }
 
     if (paymentTransactions.length) {

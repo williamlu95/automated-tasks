@@ -28,34 +28,62 @@ export const TRANSACTION_TYPE = Object.freeze({
 
 export const INCOME_NAME = 'BETTERLESSON';
 
-export const WALLET_TRANSACTION = Object.freeze({
-  [ACCOUNT_NAME.CHASE]: {
-    name: WALLET_ACCOUNT.CHASE_CHECKING,
+const includesName = (description, name) => {
+  const normalizedDescription = description.replace(/\s/g, '').toLowerCase();
+  const normalizedName = name.replace(/\s/g, '').toLowerCase();
+  return normalizedDescription.includes(normalizedName);
+};
+
+export const TEMPLATE_TRANSACTION = Object.freeze({
+  CHASE_INCOME: {
+    walletAccountName: WALLET_ACCOUNT.CHASE_CHECKING,
     template: 'Chase Income',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'chaseIncome',
-    isTransactionIncluded: (t) => t.description.includes(INCOME_NAME),
+    isTransactionIncluded: (t) => t.description.includes(INCOME_NAME)
+    && t.account === ACCOUNT_NAME.CHASE,
   },
-  [ACCOUNT_NAME.WELLS_FARGO]: {
+  WELLS_FARGO_INCOME: {
     walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
     template: 'Wells Fargo Income',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'wellsFargoIncome',
-    isTransactionIncluded: (t) => t.description.includes(INCOME_NAME),
+    isTransactionIncluded: (t) => t.description.includes(INCOME_NAME)
+    && t.account === ACCOUNT_NAME.WELLS_FARGO,
   },
-  [ACCOUNT_NAME.CITI_DOUBLE]: {
+  CITI_DOUBLE_EXPENSE: {
     walletAccountName: WALLET_ACCOUNT.CITI_DOUBLE_CASH,
     template: 'Citi Double Expense',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'citiDoubleExpense',
-    isTransactionIncluded: (t) => t.type === TRANSACTION_TYPE.DEBIT,
+    isTransactionIncluded: (t) => t.type === TRANSACTION_TYPE.DEBIT
+    && t.account === ACCOUNT_NAME.CITI_DOUBLE,
+  },
+  GEICO: {
+    walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_ACTIVE_CASH,
+    template: 'Geico',
+    type: TRANSACTION_TYPE.CREDIT,
+    transactionCountKey: 'geicoPayments',
+    isTransactionIncluded: (t) => includesName(t.description, 'GEICO')
+    && t.account !== ACCOUNT_NAME.CITI_DOUBLE,
+  },
+  TMOBILE: {
+    walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
+    template: 'T-Mobile',
+    type: TRANSACTION_TYPE.DEBIT,
+    transactionCountKey: 'tmobilePayments',
+    isTransactionIncluded: (t) => includesName(t.description, 'TMOBILE*AUTO')
+    && t.account === ACCOUNT_NAME.WELLS_FARGO,
   },
 });
 
+const isAutoPayTransaction = (autoPayName) => (t) => includesName(t.description, autoPayName)
+&& [ACCOUNT_NAME.CHASE, ACCOUNT_NAME.WELLS_FARGO].includes(t.account);
+
 export const AUTO_PAY = Object.freeze({
   CHASE: {
-    name: 'CHASE CREDIT CRD',
     paymentCountKey: 'chasePayments',
+    isTransactionIncluded: isAutoPayTransaction('CHASE CREDIT CRD'),
     transfers: [
       {
         from: WALLET_ACCOUNT.CHASE_CHECKING,
@@ -72,8 +100,8 @@ export const AUTO_PAY = Object.freeze({
     ],
   },
   AMEX: {
-    name: 'AMERICAN EXPRESS ACH PMT',
     paymentCountKey: 'amexPayments',
+    isTransactionIncluded: isAutoPayTransaction('AMERICAN EXPRESS ACH PMT'),
     transfers: [
       {
         from: WALLET_ACCOUNT.CHASE_CHECKING,
@@ -86,32 +114,32 @@ export const AUTO_PAY = Object.freeze({
     ],
   },
   CAPITAL_ONE: {
-    name: 'CAPITAL ONE',
     paymentCountKey: 'capitalOnePayments',
+    isTransactionIncluded: isAutoPayTransaction('CAPITAL ONE'),
     transfers: [{
       from: WALLET_ACCOUNT.CHASE_CHECKING,
       to: WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X,
     }],
   },
   CITI: {
-    name: 'CITI AUTOPAY',
     paymentCountKey: 'citiPayments',
+    isTransactionIncluded: isAutoPayTransaction('CITI AUTOPAY'),
     transfers: [{
       from: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
       to: WALLET_ACCOUNT.CITI_CUSTOM_CASH,
     }],
   },
   DISCOVER: {
-    name: 'DISCOVER E-PAYMENT',
     paymentCountKey: 'discoverPayments',
+    isTransactionIncluded: isAutoPayTransaction('DISCOVER E-PAYMENT'),
     transfers: [{
       from: WALLET_ACCOUNT.CHASE_CHECKING,
       to: WALLET_ACCOUNT.DISCOVER_IT,
     }],
   },
   WELLS_FARGO: {
-    name: 'WF CREDIT CARD AUTO PAY',
     paymentCountKey: 'wellsFargoPayments',
+    isTransactionIncluded: isAutoPayTransaction('WF CREDIT CARD AUTO PAY'),
     transfers: [
       {
         from: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
@@ -126,24 +154,5 @@ export const AUTO_PAY = Object.freeze({
         to: WALLET_ACCOUNT.WELLS_FARGO_PLATINUM,
       },
     ],
-  },
-});
-
-export const AUTO_PAY_NAMES = Object.values(AUTO_PAY).map(({ name }) => name);
-
-export const BILL = Object.freeze({
-  GEICO: {
-    walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_ACTIVE_CASH,
-    name: 'GEICO',
-    template: 'Geico',
-    type: TRANSACTION_TYPE.CREDIT,
-    transactionCountKey: 'geicoPayments',
-  },
-  TMOBILE: {
-    walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
-    name: 'TMOBILE*AUTO',
-    template: 'T-Mobile',
-    type: TRANSACTION_TYPE.DEBIT,
-    transactionCountKey: 'tmobilePayments',
   },
 });
