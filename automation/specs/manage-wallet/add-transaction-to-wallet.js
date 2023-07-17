@@ -1,4 +1,4 @@
-import { TRANSACTION_TYPE } from '../../constants/account';
+import { TRANSACTION_TYPE } from '../../constants/transaction';
 import DashBoardPage from '../../pageobjects/wallet-dashboard-page';
 
 export const runAddTransactionToWallet = (transactions = []) => context('when there are transactions to add', () => {
@@ -8,14 +8,14 @@ export const runAddTransactionToWallet = (transactions = []) => context('when th
 
   transactions.forEach(({
     amount,
-    name,
+    walletAccountName,
     template,
     type,
-  }) => context(`when adding ${Math.abs(amount)} to ${name}`, () => {
-    it(`should add the transaction to the ${name} balance`, async () => {
-      const initalBalance = await DashBoardPage.getBalanceByName(name);
-      await DashBoardPage.addRecord(template, name, Math.abs(amount));
-      const actualBalance = await DashBoardPage.getBalanceByName(name);
+  }) => context(`when adding ${Math.abs(amount)} to ${walletAccountName}`, () => {
+    it(`should add the transaction to the ${walletAccountName} balance`, async () => {
+      const initalBalance = await DashBoardPage.getBalanceByName(walletAccountName);
+      await DashBoardPage.addRecord(template, walletAccountName, Math.abs(amount));
+      const actualBalance = await DashBoardPage.getBalanceByName(walletAccountName);
 
       const expectedBalance = TRANSACTION_TYPE.CREDIT === type
         ? (parseInt(initalBalance.replace(/\D/g, ''), 10) / 100) + Math.abs(amount)

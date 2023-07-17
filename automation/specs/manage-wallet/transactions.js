@@ -1,8 +1,13 @@
 /* eslint-disable no-console */
 import csv from 'csvtojson';
 import { endOfMonth, getMonth, isSameDay } from 'date-fns';
-import { WALLET_TRANSACTION, ACCOUNT_NAME } from '../../constants/account';
-import { AUTO_PAY, AUTO_PAY_NAMES } from '../../constants/credit-card';
+import {
+  WALLET_TRANSACTION,
+  ACCOUNT_NAME,
+  BILL,
+  AUTO_PAY,
+  AUTO_PAY_NAMES,
+} from '../../constants/transaction';
 import MintLoginPage from '../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../pageobjects/mint-transaction-page';
 
@@ -10,8 +15,9 @@ const TRANSACTION_HEADERS = Object.freeze(['date', 'description', 'originalDescr
 
 export class Transactions {
   constructor() {
-    this.walletTransactions = [];
-    this.paymentTransactions = [];
+    this.generalTransactions = [];
+    this.billTransactions = [];
+    this.autoPayTransactions = [];
     this.balances = {};
   }
 
@@ -24,11 +30,26 @@ export class Transactions {
     const transactionsForCurrentMonth = this.#getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(transactionsForCurrentMonth, null, 4)}`);
 
-    this.walletTransactions = transactionsForCurrentMonth
+    this.generalTransactions = transactionsForCurrentMonth
       .filter((t) => WALLET_TRANSACTION[t.account]?.isTransactionIncluded(t))
       .map((t) => ({ ...WALLET_TRANSACTION[t.account], amount: t.amount }));
 
-    this.paymentTransactions = transactionsForCurrentMonth
+    this.billTransactions = transactionsForCurrentMonth
+      .reduce((billTransactions, t) => {
+        const bill = Object.values(BILL).find((b) => this.#includesName(t.description, b.name));
+
+        if (bill) {
+          billTransactions.push({
+            ...bill,
+            amount: t.amount,
+            description: t.description,
+          });
+        }
+
+        return billTransactions;
+      }, []);
+
+    this.autoPayTransactions = transactionsForCurrentMonth
       .filter((t) => AUTO_PAY_NAMES
         .some((autoPayName) => this.#includesName(t.description, autoPayName)));
 
@@ -40,8 +61,9 @@ export class Transactions {
       const transactionDate = new Date(t.date);
       const isSameMonth = getMonth(transactionDate) === global.transactionCounts.month;
       const isFromTransactionAccount = !!WALLET_TRANSACTION[t.account];
+      const isTmobilePayment = this.#includesName(t.description, BILL.TMOBILE.name);
 
-      if (isSameMonth && isFromTransactionAccount) {
+      if (isSameMonth && (isFromTransactionAccount || isTmobilePayment)) {
         return true;
       }
 
@@ -60,18 +82,39 @@ export class Transactions {
     return transactionsForCurrentMonth;
   }
 
-  #getTransactionsForBank({ name, transactionCountKey }) {
-    const transactions = this.walletTransactions
-      .filter((t) => t.name === name)
+  getWalletTransactions() {
+    return [
+      ...this.getGeneralTransactions(),
+      ...this.getBillTransactions(),
+    ];
+  }
+
+  #getTransactionsForBank({ walletAccountName, transactionCountKey }) {
+    const transactions = this.generalTransactions
+      .filter((t) => t.walletAccountName === walletAccountName)
       .slice(global.transactionCounts[transactionCountKey]);
 
     global.transactionCounts[transactionCountKey] += transactions.length;
     return transactions;
   }
 
-  getWalletTransactions() {
+  getGeneralTransactions() {
     return Object.values(WALLET_TRANSACTION)
       .flatMap((t) => this.#getTransactionsForBank(t));
+  }
+
+  #getTransactionsForBill({ name, transactionCountKey }) {
+    const transactions = this.billTransactions
+      .filter((t) => this.#includesName(t.description, name))
+      .slice(global.transactionCounts[transactionCountKey]);
+
+    global.transactionCounts[transactionCountKey] += transactions.length;
+    return transactions;
+  }
+
+  getBillTransactions() {
+    return Object.values(BILL)
+      .flatMap((t) => this.#getTransactionsForBill(t));
   }
 
   #includesName(description, name) {
@@ -81,7 +124,7 @@ export class Transactions {
   }
 
   #getPaymentForBank({ name, transfers, paymentCountKey }) {
-    const allBankPayments = this.paymentTransactions
+    const allBankPayments = this.autoPayTransactions
       .filter((t) => this.#includesName(t.description, name))
       .map((t, i) => (transfers[i]
         ? ({ fromAccount: transfers[i].from, toAccount: transfers[i].to, amount: t.amount })

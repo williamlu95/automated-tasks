@@ -8,5 +8,7 @@
     "chasePayments": 0,
     "citiPayments": 0,
     "discoverPayments": 0,
-    "wellsFargoPayments": 0
+    "wellsFargoPayments": 0,
+    "geicoPayments": 0,
+    "tmobilePayments": 0
 }

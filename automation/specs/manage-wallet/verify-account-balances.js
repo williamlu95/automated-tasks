@@ -1,5 +1,5 @@
 /* eslint-disable no-console */
-import { WALLET_ACCOUNT } from '../../constants/account';
+import { WALLET_ACCOUNT } from '../../constants/transaction';
 import WalletDashboardPage from '../../pageobjects/wallet-dashboard-page';
 import { buildBalanceHTML } from '../../utils/balance-html';
 import { sendEmail } from '../../utils/notification';
