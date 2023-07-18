@@ -125,7 +125,7 @@ export const AUTO_PAY = Object.freeze({
     paymentCountKey: 'citiPayments',
     isTransactionIncluded: isAutoPayTransaction('CITI AUTOPAY'),
     transfers: [{
-      from: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
+      from: WALLET_ACCOUNT.CHASE_CHECKING,
       to: WALLET_ACCOUNT.CITI_CUSTOM_CASH,
     }],
   },
