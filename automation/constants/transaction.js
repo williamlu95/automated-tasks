@@ -17,7 +17,7 @@ export const WALLET_ACCOUNT = Object.freeze({
 
 export const ACCOUNT_NAME = Object.freeze({
   CHASE: 'TOTAL CHECKING',
-  WELLS_FARGO: 'Wells Fargo College Checking®',
+  WELLS_FARGO: 'Wells Fargo Everyday Checking',
   CITI_DOUBLE: 'Citi Double Cash® Card',
 });
 
@@ -31,6 +31,7 @@ export const INCOME_NAME = 'BETTERLESSON';
 const includesName = (description, name) => {
   const normalizedDescription = description.replace(/\s/g, '').toLowerCase();
   const normalizedName = name.replace(/\s/g, '').toLowerCase();
+
   return normalizedDescription.includes(normalizedName);
 };
 
