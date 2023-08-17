@@ -143,7 +143,7 @@ export const AUTO_PAY = Object.freeze({
     isTransactionIncluded: isAutoPayTransaction('WF CREDIT CARD AUTO PAY'),
     transfers: [
       {
-        from: WALLET_ACCOUNT.CHASE_CHECKING,
+        from: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
         to: WALLET_ACCOUNT.WELLS_FARGO_AUTOGRAPH,
       },
       {
