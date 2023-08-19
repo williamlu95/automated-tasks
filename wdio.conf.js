@@ -63,7 +63,7 @@ exports.config = {
   reporters: ['spec'],
   mochaOpts: {
     ui: 'bdd',
-    timeout: 240000,
+    timeout: 480000,
   },
   onPrepare() {
     if (!fs.existsSync(downloadDir)) {

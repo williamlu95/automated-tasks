@@ -14,7 +14,9 @@ describe('Manage finances in wallet app', () => {
     const transactions = new Transactions();
     await transactions.initializeTransactions();
     templateTransactions.push(...transactions.getTemplateTransactions());
+    console.log(`Template Transactions: ${JSON.stringify(this.templateTransactions, null, 4)}`);
     const paymentTransactions = transactions.getPaymentTransactions();
+    console.log(`Payment Transactions: ${JSON.stringify(this.paymentTransactions, null, 4)}`);
 
     await LoginPage.open();
     await LoginPage.login();
