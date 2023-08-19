@@ -69,12 +69,11 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     && t.account !== ACCOUNT_NAME.CITI_DOUBLE,
   },
   TMOBILE: {
-    walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
+    walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_AUTOGRAPH,
     template: 'T-Mobile',
     type: TRANSACTION_TYPE.DEBIT,
     transactionCountKey: 'tmobilePayments',
-    isTransactionIncluded: (t) => includesName(t.description, 'TMOBILE*AUTO')
-    && t.account === ACCOUNT_NAME.WELLS_FARGO,
+    isTransactionIncluded: () => false,
   },
 });
 

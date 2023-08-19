@@ -46,7 +46,9 @@ const config = {
   },
 };
 
-export const readEmails = () => imaps.connect(config).then((connection) => {
+export const readEmails = (
+  setVerificationCodes = true,
+) => imaps.connect(config).then((connection) => {
   connection.openBox('INBOX').then(() => {
     const searchCriteria = ['ALL'];
     const fetchOptions = { bodies: ['TEXT'], struct: true };
@@ -57,10 +59,13 @@ export const readEmails = () => imaps.connect(config).then((connection) => {
 
       parts.map((part) => connection.getPartData(message, part)
         .then((partData) => {
-          if (part.disposition == null && part.encoding !== 'base64') {
+          if (part.disposition == null && part.encoding !== 'base64' && setVerificationCodes) {
             const text = partData.replace(/<[^>]*>?/gm, '').replace(/\s/g, '');
-            const verificationCode = text.match(/Verificationcode:(\d+)/)?.[1];
-            global.verificationCode = verificationCode;
+            const mintVerificationCode = text.match(/Verificationcode:(\d+)/)?.[1];
+            global.mintVerificationCode = mintVerificationCode;
+
+            const tmobileVerificationCode = text.match(/YourT-MobileIDverificationcodeis(\d+)/)?.[1];
+            global.tmobileVerificationCode = tmobileVerificationCode;
           }
 
           connection.addFlags(message.attributes.uid, 'Deleted', (err) => {

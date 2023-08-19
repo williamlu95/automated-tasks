@@ -57,10 +57,10 @@ class MintLoginPage extends Page {
     await this.emailCodeButton.click();
     await browser.waitUntil(async () => {
       await readEmails();
-      return !!global.verificationCode;
+      return !!global.mintVerificationCode;
     });
 
-    await this.verificationInput.setValue(global.verificationCode);
+    await this.verificationInput.setValue(global.mintVerificationCode);
     await this.verificationContinueButton.click();
   }
 
