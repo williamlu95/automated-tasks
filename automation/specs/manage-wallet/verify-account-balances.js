@@ -45,7 +45,7 @@ const balanceDifference = (expected, actual) => {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(difference);
 };
 
-const NOTIFICATION_HOURS = [4];
+const NOTIFICATION_HOURS = [20];
 
 export const runVerifyAccountBalances = (actualBalances) => context('when verifying accounts on mint', () => {
   afterEach(async () => {
