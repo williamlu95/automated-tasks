@@ -116,10 +116,16 @@ export const AUTO_PAY = Object.freeze({
   CITI: {
     paymentCountKey: 'citiPayments',
     isTransactionIncluded: isAutoPayTransaction('CITI AUTOPAY'),
-    transfers: [{
-      from: WALLET_ACCOUNT.CHASE_CHECKING,
-      to: WALLET_ACCOUNT.CITI_CUSTOM_CASH,
-    }],
+    transfers: [
+      {
+        from: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
+        to: WALLET_ACCOUNT.CITI_DOUBLE_CASH,
+      },
+      {
+        from: WALLET_ACCOUNT.CHASE_CHECKING,
+        to: WALLET_ACCOUNT.CITI_CUSTOM_CASH,
+      },
+    ],
   },
   DISCOVER: {
     paymentCountKey: 'discoverPayments',
