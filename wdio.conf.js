@@ -43,7 +43,7 @@ exports.config = {
     browserName: 'chrome',
     acceptInsecureCerts: true,
     'goog:chromeOptions': {
-      args: process.env.HEADLESS === 'false' ? [] : ['--headless', '--no-sandbox', 'user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36'],
+      args: process.env.HEADLESS === 'false' ? [] : ['--headless', '--no-sandbox'],
       prefs: {
         directory_upgrade: true,
         prompt_for_download: false,
