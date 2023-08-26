@@ -43,7 +43,7 @@ exports.config = {
     browserName: 'chrome',
     acceptInsecureCerts: true,
     'goog:chromeOptions': {
-      args: process.env.HEADLESS === 'false' ? [] : ['--headless', '--no-sandbox', '--disable-dev-shm-usage'],
+      args: process.env.HEADLESS === 'false' ? [] : ['--headless', '--no-sandbox'],
       prefs: {
         directory_upgrade: true,
         prompt_for_download: false,
