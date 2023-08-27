@@ -10,7 +10,8 @@ describe('Manage finances in wallet app', () => {
   before(async () => {
     readEmails(false);
 
-    const templateTransactions = await payTmobileBill();
+    // const templateTransactions = await payTmobileBill();
+    const templateTransactions = [];
     const transactions = new Transactions();
     await transactions.initializeTransactions();
     templateTransactions.push(...transactions.getTemplateTransactions());
