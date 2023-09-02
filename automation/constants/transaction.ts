@@ -1,4 +1,4 @@
-import { Transaction } from "../types/transaction";
+import { Transaction } from '../types/transaction';
 
 export const WALLET_ACCOUNT = Object.freeze({
   CHASE_CHECKING: 'Chase Checking',
@@ -79,7 +79,11 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
   },
 });
 
-const isAutoPayTransaction = (autoPayName: string) => (t: Transaction): boolean => includesName(t.description, autoPayName)
+const isAutoPayTransaction = (
+  autoPayName: string,
+) => (
+  t: Transaction,
+): boolean => includesName(t.description, autoPayName)
 && ([ACCOUNT_NAME.CHASE, ACCOUNT_NAME.WELLS_FARGO] as string[]).includes(t.account);
 
 export const AUTO_PAY = Object.freeze({

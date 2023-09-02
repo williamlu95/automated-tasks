@@ -10,8 +10,8 @@ import {
 
 const TRANSACTION_HEADERS = ['date', 'description', 'originalDescription', 'amount', 'type', 'category', 'account', 'labels', 'notes'];
 
-type Template = Omit<Omit<TemplateTransaction, 'isTransactionIncluded'>, 'transactionCountKey'> & { amount: string }
-type AutoPay = { fromAccount: string; toAccount: string; amount : string }
+export type Template = Omit<Omit<TemplateTransaction, 'isTransactionIncluded'>, 'transactionCountKey'> & { amount: string }
+export type AutoPay = { fromAccount: string; toAccount: string; amount: string }
 
 export class Transactions {
   private transactionsForCurrentMonth: Transaction[];
@@ -57,7 +57,10 @@ export class Transactions {
       .slice(TransactionCounts.getTransactionCount(transactionCountKey));
 
     TransactionCounts.addToTransactionCount(transactions.length, transactionCountKey);
-    return transactions.map((t) => ({ ...restOfTemplate, amount: t.amount }));
+    return transactions.map((t) => ({
+      ...restOfTemplate,
+      amount: t.amount,
+    }));
   }
 
   #getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
@@ -93,7 +96,11 @@ export class Transactions {
     const allBankPayments = this.transactionsForCurrentMonth
       .filter((t) => isTransactionIncluded(t))
       .map((t, i) => (transfers[i]
-        ? ({ fromAccount: transfers[i].from, toAccount: transfers[i].to, amount: t.amount })
+        ? ({
+          fromAccount: transfers[i].from,
+          toAccount: transfers[i].to,
+          amount: t.amount,
+        })
         : null
       ));
 

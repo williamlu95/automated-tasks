@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import { WALLET_ACCOUNT } from '../../constants/transaction';
 import WalletDashboardPage from '../../pageobjects/wallet-dashboard-page';
 import { buildBalanceHTML } from '../../utils/balance-html';
@@ -38,7 +37,7 @@ const ACCOUNTS = {
   [WALLET_ACCOUNT.CITI_DOUBLE_CASH]: CITI_DOUBLE_CASH,
 };
 
-const balanceDifference = (expected, actual) => {
+const balanceDifference = (expected: string, actual: string): string => {
   const expectedInPennies = (parseInt((expected || '').replace(/\D/g, ''), 10) / 100);
   const actualInPennies = (parseInt((actual || '').replace(/\D/g, ''), 10) / 100);
   const difference = expectedInPennies - actualInPennies;
@@ -47,10 +46,12 @@ const balanceDifference = (expected, actual) => {
 
 const NOTIFICATION_HOURS = [16];
 
-export const verifyAccountBalance = async (actualBalances) => {
+export const verifyAccountBalance = async (
+  actualBalances: Record<string, string>,
+): Promise<void> => {
   const expectedBalances = await WalletDashboardPage.getAllAccountBalances();
 
-  const accountBalance = Object.entries(ACCOUNTS).map(([name, number]) => ({
+  const accountBalance = Object.entries(ACCOUNTS).map(([name, number = '']) => ({
     accountName: name,
     expectedBalance: expectedBalances[name],
     actualBalance: actualBalances[number],

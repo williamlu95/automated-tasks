@@ -2,8 +2,9 @@ import { TEMPLATE_TRANSACTION } from '../../constants/transaction';
 import TmobileDashboardPage from '../../pageobjects/tmobile-dashboard-page';
 import TmobileLoginPage from '../../pageobjects/tmobile-login-page';
 import { TransactionCounts } from '../../utils/transaction-counts';
+import { Template } from './transactions';
 
-const hasNoBalance = (transactionCountKey) => {
+const hasNoBalance = (transactionCountKey: string): boolean => {
   const isAlreadyPaid = TransactionCounts.getTransactionCount(transactionCountKey) > 0;
 
   if (isAlreadyPaid) {
@@ -19,7 +20,7 @@ const hasNoBalance = (transactionCountKey) => {
   return false;
 };
 
-export const payTmobileBill = async () => {
+export const payTmobileBill = async (): Promise<Template[]> => {
   const { transactionCountKey, ...restOfTemplate } = TEMPLATE_TRANSACTION.TMOBILE;
 
   if (hasNoBalance(transactionCountKey)) {
@@ -38,7 +39,9 @@ export const payTmobileBill = async () => {
   console.log(`Successfully paid ${paidAmount} to T-Mobile`);
   TransactionCounts.addToTransactionCount(1, transactionCountKey);
   return [{
-    ...restOfTemplate,
+    walletAccountName: restOfTemplate.walletAccountName,
+    template: restOfTemplate.template,
+    type: restOfTemplate.type,
     amount: paidAmount,
   }];
 };

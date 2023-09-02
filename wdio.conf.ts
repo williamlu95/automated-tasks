@@ -13,7 +13,7 @@ type WebdriverLogTypes = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'silent
 
 export const config: WebdriverIO.Config = {
   specs: [
-    './automation/specs/**/*.e2e.js',
+    './automation/specs/**/*.e2e.ts',
   ],
   exclude: [
   ],
