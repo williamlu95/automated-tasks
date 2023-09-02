@@ -1,10 +1,12 @@
+import { Balance } from '../types/transaction';
+
 const BASE_CELL_STYLE = {
   border: '1px solid #dddddd',
   'text-align': 'left',
   padding: '8px',
 };
 
-const buildCellHTML = (value, tag = 'th', styleOverrides = {}) => {
+const buildCellHTML = (value: string, tag = 'th', styleOverrides = {}): string => {
   const style = Object.entries({ ...BASE_CELL_STYLE, ...styleOverrides })
     .map(([k, v]) => `${k}: ${v}`)
     .join('; ');
@@ -12,7 +14,7 @@ const buildCellHTML = (value, tag = 'th', styleOverrides = {}) => {
   return `<${tag} style="${style};">${value}</${tag}>`;
 };
 
-const getDifferenceStyle = (difference) => {
+const getDifferenceStyle = (difference: string): { color?: string } => {
   if (difference === '$0.00') {
     return {};
   }
@@ -20,7 +22,7 @@ const getDifferenceStyle = (difference) => {
   return { color: difference.startsWith('-') ? '#ED2936' : '#3BCA6D' };
 };
 
-export const buildBalanceHTML = (accountBalance) => `
+export const buildBalanceHTML = (accountBalance: Balance[]): string => `
     <table style="font-family: arial, sans-serif; border-collapse: collapse; width: 100%;">
       <tr>
           ${buildCellHTML('Account Name')}

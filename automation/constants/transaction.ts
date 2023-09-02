@@ -1,3 +1,5 @@
+import { Transaction } from "../types/transaction";
+
 export const WALLET_ACCOUNT = Object.freeze({
   CHASE_CHECKING: 'Chase Checking',
   AMEX_GOLD: 'AMEX Gold',
@@ -28,7 +30,7 @@ export const TRANSACTION_TYPE = Object.freeze({
 
 export const INCOME_NAME = 'BETTERLESSON';
 
-const includesName = (description, name) => {
+const includesName = (description: string, name: string): boolean => {
   const normalizedDescription = description.replace(/\s/g, '').toLowerCase();
   const normalizedName = name.replace(/\s/g, '').toLowerCase();
 
@@ -41,7 +43,7 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     template: 'Chase Income',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'chaseIncome',
-    isTransactionIncluded: (t) => t.description.includes(INCOME_NAME)
+    isTransactionIncluded: (t: Transaction) => t.description.includes(INCOME_NAME)
     && t.account === ACCOUNT_NAME.CHASE,
   },
   WELLS_FARGO_INCOME: {
@@ -49,7 +51,7 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     template: 'Wells Fargo Income',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'wellsFargoIncome',
-    isTransactionIncluded: (t) => t.description.includes(INCOME_NAME)
+    isTransactionIncluded: (t: Transaction) => t.description.includes(INCOME_NAME)
     && t.account === ACCOUNT_NAME.WELLS_FARGO,
   },
   CITI_DOUBLE_EXPENSE: {
@@ -57,7 +59,7 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     template: 'Citi Double Expense',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'citiDoubleExpense',
-    isTransactionIncluded: (t) => t.type === TRANSACTION_TYPE.DEBIT
+    isTransactionIncluded: (t: Transaction) => t.type === TRANSACTION_TYPE.DEBIT
     && t.account === ACCOUNT_NAME.CITI_DOUBLE,
   },
   GEICO: {
@@ -65,7 +67,7 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     template: 'Geico',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'geicoPayments',
-    isTransactionIncluded: (t) => includesName(t.description, 'GEICO')
+    isTransactionIncluded: (t: Transaction) => includesName(t.description, 'GEICO')
     && t.account !== ACCOUNT_NAME.CITI_DOUBLE,
   },
   TMOBILE: {
@@ -77,8 +79,8 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
   },
 });
 
-const isAutoPayTransaction = (autoPayName) => (t) => includesName(t.description, autoPayName)
-&& [ACCOUNT_NAME.CHASE, ACCOUNT_NAME.WELLS_FARGO].includes(t.account);
+const isAutoPayTransaction = (autoPayName: string) => (t: Transaction): boolean => includesName(t.description, autoPayName)
+&& ([ACCOUNT_NAME.CHASE, ACCOUNT_NAME.WELLS_FARGO] as string[]).includes(t.account);
 
 export const AUTO_PAY = Object.freeze({
   CHASE: {

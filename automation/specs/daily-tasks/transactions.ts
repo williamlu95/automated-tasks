@@ -4,10 +4,24 @@ import { TEMPLATE_TRANSACTION, ACCOUNT_NAME, AUTO_PAY } from '../../constants/tr
 import MintLoginPage from '../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../pageobjects/mint-transaction-page';
 import { TransactionCounts } from '../../utils/transaction-counts';
+import {
+  AutoPayTransaction, TemplateTransaction, Transaction,
+} from '../../types/transaction';
 
-const TRANSACTION_HEADERS = Object.freeze(['date', 'description', 'originalDescription', 'amount', 'type', 'category', 'account', 'labels', 'notes']);
+const TRANSACTION_HEADERS = ['date', 'description', 'originalDescription', 'amount', 'type', 'category', 'account', 'labels', 'notes'];
+
+type Template = Omit<Omit<TemplateTransaction, 'isTransactionIncluded'>, 'transactionCountKey'> & { amount: string }
+type AutoPay = { fromAccount: string; toAccount: string; amount : string }
 
 export class Transactions {
+  private transactionsForCurrentMonth: Transaction[];
+
+  private templateTransactions: Template[];
+
+  private autoPayTransactions: AutoPay[];
+
+  private balances: Record<string, string>;
+
   constructor() {
     this.transactionsForCurrentMonth = [];
     this.templateTransactions = [];
@@ -33,16 +47,20 @@ export class Transactions {
     this.balances = await MintTransactionPage.getAllAccountBalances();
   }
 
-  #getTransactionsForTemplate({ isTransactionIncluded, transactionCountKey, ...restOfTemplate }) {
+  #getTransactionsForTemplate({
+    isTransactionIncluded,
+    transactionCountKey,
+    ...restOfTemplate
+  }: TemplateTransaction): Template[] {
     const transactions = this.transactionsForCurrentMonth
       .filter((t) => isTransactionIncluded(t))
       .slice(TransactionCounts.getTransactionCount(transactionCountKey));
 
-    TransactionCounts.addToTransactionCount(transactions.lengthm, transactionCountKey);
+    TransactionCounts.addToTransactionCount(transactions.length, transactionCountKey);
     return transactions.map((t) => ({ ...restOfTemplate, amount: t.amount }));
   }
 
-  #getTransactionsForCurrentMonth(transactions) {
+  #getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
     const transactionsForCurrentMonth = transactions.filter((t) => {
       const transactionDate = new Date(t.date);
       const currentMonth = TransactionCounts.getTransactionMonth();
@@ -67,7 +85,11 @@ export class Transactions {
     return transactionsForCurrentMonth;
   }
 
-  #getTransactionsForAutoPay({ isTransactionIncluded, transfers, paymentCountKey }) {
+  #getTransactionsForAutoPay({
+    isTransactionIncluded,
+    transfers,
+    paymentCountKey,
+  }: AutoPayTransaction): AutoPay[] {
     const allBankPayments = this.transactionsForCurrentMonth
       .filter((t) => isTransactionIncluded(t))
       .map((t, i) => (transfers[i]
@@ -75,8 +97,8 @@ export class Transactions {
         : null
       ));
 
-    const newBankPayments = allBankPayments
-      .filter((p) => p)
+    const newBankPayments: AutoPay[] = allBankPayments
+      .filter((p): p is AutoPay => p !== null)
       .slice(TransactionCounts.getTransactionCount(paymentCountKey));
 
     TransactionCounts.addToTransactionCount(newBankPayments.length, paymentCountKey);
