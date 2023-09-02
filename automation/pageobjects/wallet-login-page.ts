@@ -1,7 +1,8 @@
 import Page from './page';
 
 const {
-  WALLET_LOGIN, WALLET_PASSWORD,
+  WALLET_LOGIN = '',
+  WALLET_PASSWORD = '',
 } = process.env;
 
 class WalletLoginPage extends Page {

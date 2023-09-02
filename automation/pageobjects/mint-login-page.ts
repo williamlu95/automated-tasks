@@ -2,8 +2,8 @@ import { readEmails, verificationCodes } from '../utils/notification';
 import Page from './page';
 
 const {
-  MINT_LOGIN,
-  MINT_PASSWORD,
+  MINT_LOGIN = '',
+  MINT_PASSWORD = '',
 } = process.env;
 
 class MintLoginPage extends Page {

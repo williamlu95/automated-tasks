@@ -2,7 +2,8 @@ import Page from './page';
 import { readEmails, verificationCodes } from '../utils/notification';
 
 const {
-  TMOBILE_LOGIN, TMOBILE_PASSWORD,
+  TMOBILE_LOGIN = '',
+  TMOBILE_PASSWORD = '',
 } = process.env;
 
 class TmobileLoginPage extends Page {

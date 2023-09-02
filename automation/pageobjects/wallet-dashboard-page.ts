@@ -18,7 +18,7 @@ class WalletDashboardPage extends Page {
     return $$('div.SyMiivK1mSUOBri3EYnVo');
   }
 
-  async getAccountBalanceByName(name) {
+  async getAccountBalanceByName(name: string) {
     await browser.waitUntil(async () => (await this.accountNames.length) > 0);
     const cardIndex = await this.accountNames
       .findIndex(async (c) => (await c.getText()).includes(name));
@@ -27,7 +27,7 @@ class WalletDashboardPage extends Page {
     return balances[cardIndex];
   }
 
-  async getBalanceByName(accountName) {
+  async getBalanceByName(accountName: string) {
     const accountBalance = await this.getAccountBalanceByName(accountName);
     return accountBalance.getText();
   }
@@ -40,8 +40,10 @@ class WalletDashboardPage extends Page {
     return $('div.oqwtuxHo2EIxsIRwczWqR');
   }
 
-  get addRecordButton() {
-    return this.buttons.find(async (button) => (await button.getText()).includes('Record'));
+  async getAddRecordButton() {
+    await browser.waitUntil(async () => (await this.buttons.length) > 0);
+    const buttons = await this.buttons;
+    return this.getElementFromList(buttons, 'Record');
   }
 
   async getAllAccountBalances() {
@@ -59,9 +61,10 @@ class WalletDashboardPage extends Page {
     return Object.fromEntries(names.map((name, i) => [name, balances[i]]));
   }
 
-  async addRecord(template, accountCardName, amount) {
+  async addRecord(template: string, accountCardName: string, amount: string) {
     const initalBalance = await this.getAccountBalanceByName(accountCardName);
-    await this.addRecordButton.click();
+    const addRecordButton = await this.getAddRecordButton();
+    await this.waitAndClick(addRecordButton);
     await AddRecordModal.addRecord(template, amount);
     await browser.waitUntil(async () => {
       const newBalance = await this.getAccountBalanceByName(accountCardName);
@@ -69,11 +72,12 @@ class WalletDashboardPage extends Page {
     });
   }
 
-  async addTransfer(fromAccount, toAccount, amount) {
-    await browser.waitUntil(() => this.buttons.length);
-    await browser.waitUntil(() => this.accountNames.length);
+  async addTransfer(fromAccount: string, toAccount: string, amount: string) {
+    await browser.waitUntil(async () => (await this.buttons.length) > 0);
+    await browser.waitUntil(async () => (await this.accountNames.length) > 0);
     const initalBalance = await this.getAccountBalanceByName(fromAccount);
-    await this.addRecordButton.click();
+    const addRecordButton = await this.getAddRecordButton();
+    await this.waitAndClick(addRecordButton);
     await AddRecordModal.addTransfer(fromAccount, toAccount, amount);
     await browser.waitUntil(async () => {
       const newBalance = await this.getAccountBalanceByName(fromAccount);

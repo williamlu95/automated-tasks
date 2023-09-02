@@ -16,8 +16,8 @@ const emailer = nodemailer.createTransport({
 });
 
 export const verificationCodes = {
-  mint: null,
-  tmobile: null,
+  mint: '',
+  tmobile: '',
 };
 
 export const errorNotification = async (errorMessage: string) => {

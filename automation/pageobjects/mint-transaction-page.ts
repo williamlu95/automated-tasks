@@ -24,7 +24,7 @@ class MintTransactionPage extends Page {
     return $('li[data-automation-id="EXPORT_ALL_TRANSACTIONS"]');
   }
 
-  async getAllAccountBalances() {
+  async getAllAccountBalances(): Promise<Record<string, string>> {
     await browser.waitUntil(async () => (await this.accountListItems.length) > 0);
 
     const accountList = await this.accountListItems;
@@ -36,10 +36,11 @@ class MintTransactionPage extends Page {
       const { 1: accountNumber, 2: balance } = html.replace(/<[^>]*>/g, '').split(/\(\.\.\.(.+)\)/);
       return [accountNumber, balance];
     });
+
     return Object.fromEntries(accountBalanceEntries);
   }
 
-  async downloadTransactions() {
+  async downloadTransactions(): Promise<string> {
     await browser.waitUntil(() => this.settingsButton && this.settingsButton.isClickable());
     await this.settingsButton.click();
     await this.exportAllTransactionsButton.click();
