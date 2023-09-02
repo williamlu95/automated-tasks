@@ -1,9 +1,9 @@
-/* eslint-disable no-console */
-import csv from 'csvtojson';
+import * as csv from 'csvtojson';
 import { endOfMonth, getMonth, isSameDay } from 'date-fns';
 import { TEMPLATE_TRANSACTION, ACCOUNT_NAME, AUTO_PAY } from '../../constants/transaction';
 import MintLoginPage from '../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../pageobjects/mint-transaction-page';
+import { TransactionCounts } from '../../utils/transaction-counts';
 
 const TRANSACTION_HEADERS = Object.freeze(['date', 'description', 'originalDescription', 'amount', 'type', 'category', 'account', 'labels', 'notes']);
 
@@ -36,22 +36,23 @@ export class Transactions {
   #getTransactionsForTemplate({ isTransactionIncluded, transactionCountKey, ...restOfTemplate }) {
     const transactions = this.transactionsForCurrentMonth
       .filter((t) => isTransactionIncluded(t))
-      .slice(global.transactionCounts[transactionCountKey]);
+      .slice(TransactionCounts.getTransactionCount(transactionCountKey));
 
-    global.transactionCounts[transactionCountKey] += transactions.length;
+    TransactionCounts.addToTransactionCount(transactions.lengthm, transactionCountKey);
     return transactions.map((t) => ({ ...restOfTemplate, amount: t.amount }));
   }
 
   #getTransactionsForCurrentMonth(transactions) {
     const transactionsForCurrentMonth = transactions.filter((t) => {
       const transactionDate = new Date(t.date);
-      const isSameMonth = getMonth(transactionDate) === global.transactionCounts.month;
+      const currentMonth = TransactionCounts.getTransactionMonth();
+      const isSameMonth = getMonth(transactionDate) === currentMonth;
 
       if (isSameMonth) {
         return true;
       }
 
-      const lastMonth = new Date(new Date().getFullYear(), global.transactionCounts.month - 1);
+      const lastMonth = new Date(new Date().getFullYear(), currentMonth - 1);
       const isLastDayOfLastMonth = isSameDay(transactionDate, endOfMonth(lastMonth));
       const isWellsFargoCheckingAccount = t.account === ACCOUNT_NAME.WELLS_FARGO;
 
@@ -76,9 +77,9 @@ export class Transactions {
 
     const newBankPayments = allBankPayments
       .filter((p) => p)
-      .slice(global.transactionCounts[paymentCountKey]);
+      .slice(TransactionCounts.getTransactionCount(paymentCountKey));
 
-    global.transactionCounts[paymentCountKey] += newBankPayments.length;
+    TransactionCounts.addToTransactionCount(newBankPayments.length, paymentCountKey);
     return newBankPayments;
   }
 

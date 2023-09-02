@@ -3,8 +3,23 @@ module.exports = {
     browser: true,
     es2021: true,
   },
+  settings: {
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
+        moduleDirectory: ['src', 'node_modules'],
+      },
+    },
+  },
+  root: true,
+  parser: '@typescript-eslint/parser',
+  plugins: [
+    '@typescript-eslint',
+  ],
   extends: [
     'airbnb-base',
+    'plugin:@typescript-eslint/eslint-recommended',
+    'plugin:@typescript-eslint/recommended',
   ],
   globals: {
     describe: true,
@@ -18,9 +33,6 @@ module.exports = {
     $$: true,
     browser: true,
     run: true,
-    downloadDir: true,
-    transactionCounts: true,
-    emailSender: true,
   },
   parserOptions: {
     ecmaVersion: 'latest',
@@ -33,5 +45,6 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'no-await-in-loop': 'off',
     'no-console': 'off',
+    'import/extensions': 'off',
   },
 };

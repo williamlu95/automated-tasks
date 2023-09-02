@@ -1,5 +1,5 @@
-import nodemailer from 'nodemailer';
-import imaps from 'imap-simple';
+import * as nodemailer from 'nodemailer';
+import * as imaps from 'imap-simple';
 
 const {
   GMAIL_LOGIN,
@@ -7,7 +7,7 @@ const {
   MAIL_TO,
 } = process.env;
 
-export const initializeEmailSender = () => nodemailer.createTransport({
+const emailer = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: GMAIL_LOGIN,
@@ -15,8 +15,13 @@ export const initializeEmailSender = () => nodemailer.createTransport({
   },
 });
 
-export const errorNotification = async (errorMessage) => {
-  await global.emailSender.sendMail({
+export const verificationCodes = {
+  mint: null,
+  tmobile: null,
+};
+
+export const errorNotification = async (errorMessage: string) => {
+  await emailer.sendMail({
     from: GMAIL_LOGIN,
     to: MAIL_TO,
     subject: 'Home Server - ERROR',
@@ -26,7 +31,10 @@ export const errorNotification = async (errorMessage) => {
   throw Error(errorMessage);
 };
 
-export const sendEmail = async ({ subject, text, html }) => global.emailSender.sendMail({
+export const sendEmail = async (
+  { subject, text, html }:
+   {subject: string, text: string, html?: string},
+) => emailer.sendMail({
   from: GMAIL_LOGIN,
   to: MAIL_TO,
   subject,
@@ -36,8 +44,8 @@ export const sendEmail = async ({ subject, text, html }) => global.emailSender.s
 
 const config = {
   imap: {
-    user: GMAIL_LOGIN,
-    password: GMAIL_PASSWORD,
+    user: GMAIL_LOGIN || '',
+    password: GMAIL_PASSWORD || '',
     host: 'imap.gmail.com',
     port: 993,
     tls: true,
@@ -54,18 +62,18 @@ export const readEmails = (
     const fetchOptions = { bodies: ['TEXT'], struct: true };
     return connection.search(searchCriteria, fetchOptions);
   }).then((messages) => {
-    const taskList = messages.map((message) => new Promise((res, rej) => {
-      const parts = imaps.getParts(message.attributes.struct);
+    const taskList = messages.map((message) => new Promise<void>((res, rej) => {
+      const parts = imaps.getParts(message.attributes.struct || []);
 
       parts.map((part) => connection.getPartData(message, part)
         .then((partData) => {
           if (part.disposition == null && part.encoding !== 'base64' && setVerificationCodes) {
             const text = partData.replace(/<[^>]*>?/gm, '').replace(/\s/g, '');
             const mintVerificationCode = text.match(/Verificationcode:(\d+)/)?.[1];
-            global.mintVerificationCode = mintVerificationCode;
+            verificationCodes.mint = mintVerificationCode;
 
             const tmobileVerificationCode = text.match(/YourT-MobileIDverificationcodeis(\d+)/)?.[1];
-            global.tmobileVerificationCode = tmobileVerificationCode;
+            verificationCodes.tmobile = tmobileVerificationCode;
           }
 
           connection.addFlags(message.attributes.uid, 'Deleted', (err) => {

@@ -3,21 +3,24 @@
     "version": "0.1.0",
     "private": true,
     "devDependencies": {
-        "@babel/core": "^7.17.5",
-        "@babel/preset-env": "^7.16.11",
-        "@babel/register": "^7.17.0",
+        "@types/imap-simple": "^4.2.6",
+        "@types/nodemailer": "^6.4.9",
+        "@typescript-eslint/eslint-plugin": "^6.5.0",
+        "@typescript-eslint/parser": "^6.5.0",
         "@wdio/cli": "^7.16.15",
         "@wdio/local-runner": "^7.16.15",
         "@wdio/mocha-framework": "^7.16.15",
         "@wdio/spec-reporter": "^7.16.14",
-        "eslint": "^8.9.0",
+        "eslint": "^8.48.0",
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-plugin-import": "^2.25.4",
         "eslint-plugin-mocha": "^10.0.3",
+        "ts-node": "^10.9.1",
+        "typescript": "^5.2.2",
         "wdio-chromedriver-service": "^7.2.8"
     },
     "scripts": {
-        "wdio": "wdio run wdio.conf.js"
+        "wdio": "wdio run wdio.conf.ts"
     },
     "dependencies": {
         "chromedriver": "^116.0.0",

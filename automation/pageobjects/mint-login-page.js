@@ -1,4 +1,4 @@
-import { readEmails } from '../utils/notification';
+import { readEmails, verificationCodes } from '../utils/notification';
 import Page from './page';
 
 const {
@@ -57,10 +57,10 @@ class MintLoginPage extends Page {
     await this.emailCodeButton.click();
     await browser.waitUntil(async () => {
       await readEmails();
-      return !!global.mintVerificationCode;
+      return !!verificationCodes.mint;
     });
 
-    await this.verificationInput.setValue(global.mintVerificationCode);
+    await this.verificationInput.setValue(verificationCodes.mint);
     await this.verificationContinueButton.click();
   }
 

@@ -1,6 +1,7 @@
-import fs from 'fs';
-import path from 'path';
+import * as fs from 'fs';
+import * as path from 'path';
 import Page from './page';
+import { downloadDir } from '../utils/file';
 
 class MintTransactionPage extends Page {
   get bankAccountTab() {
@@ -42,7 +43,7 @@ class MintTransactionPage extends Page {
     await browser.waitUntil(() => this.settingsButton && this.settingsButton.isClickable());
     await this.settingsButton.click();
     await this.exportAllTransactionsButton.click();
-    const filePath = path.join(global.downloadDir, 'transactions.csv');
+    const filePath = path.join(downloadDir, 'transactions.csv');
     await browser.waitUntil(() => fs.existsSync(filePath));
     return filePath;
   }

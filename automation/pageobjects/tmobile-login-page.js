@@ -1,5 +1,5 @@
 import Page from './page';
-import { readEmails } from '../utils/notification';
+import { readEmails, verificationCodes } from '../utils/notification';
 
 const {
   TMOBILE_LOGIN, TMOBILE_PASSWORD,
@@ -49,11 +49,11 @@ class TmobileLoginPage extends Page {
     await this.continueButton.click();
     await browser.waitUntil(async () => {
       await readEmails();
-      return !!global.tmobileVerificationCode;
+      return !!verificationCodes.tmobile;
     });
 
     await browser.waitUntil(() => this.codeInput && this.codeInput.isClickable());
-    await this.codeInput.setValue(global.tmobileVerificationCode);
+    await this.codeInput.setValue(verificationCodes.tmobile);
     await browser.waitUntil(() => this.continueButton && this.continueButton.isClickable());
     await this.continueButton.click();
   }
