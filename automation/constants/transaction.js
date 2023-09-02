@@ -52,6 +52,14 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     isTransactionIncluded: (t) => t.description.includes(INCOME_NAME)
     && t.account === ACCOUNT_NAME.WELLS_FARGO,
   },
+  CITI_DOUBLE_EXPENSE: {
+    walletAccountName: WALLET_ACCOUNT.CITI_DOUBLE_CASH,
+    template: 'Citi Double Expense',
+    type: TRANSACTION_TYPE.CREDIT,
+    transactionCountKey: 'citiDoubleExpense',
+    isTransactionIncluded: (t) => t.type === TRANSACTION_TYPE.DEBIT
+    && t.account === ACCOUNT_NAME.CITI_DOUBLE,
+  },
   GEICO: {
     walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_ACTIVE_CASH,
     template: 'Geico',
