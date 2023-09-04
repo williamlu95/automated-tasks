@@ -1,6 +1,8 @@
 import * as csv from 'csvtojson';
 import { endOfMonth, getMonth, isSameDay } from 'date-fns';
-import { TEMPLATE_TRANSACTION, ACCOUNT_NAME, AUTO_PAY } from '../../constants/transaction';
+import {
+  TEMPLATE_TRANSACTION, ACCOUNT_NAME, AUTO_PAY, FROM_ACCOUNT,
+} from '../../constants/transaction';
 import MintLoginPage from '../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../pageobjects/mint-transaction-page';
 import { TransactionCounts } from '../../utils/transaction-counts';
@@ -95,14 +97,17 @@ export class Transactions {
   }: AutoPayTransaction): AutoPay[] {
     const allBankPayments = this.transactionsForCurrentMonth
       .filter((t) => isTransactionIncluded(t))
-      .map((t, i) => (transfers[i]
-        ? ({
-          fromAccount: transfers[i].from,
-          toAccount: transfers[i].to,
+      .map((t, i) => {
+        const fromAccount = FROM_ACCOUNT[t.account];
+
+        if (!transfers[i] || !fromAccount) return null;
+
+        return {
+          fromAccount,
+          toAccount: transfers[i],
           amount: t.amount,
-        })
-        : null
-      ));
+        };
+      });
 
     const newBankPayments: AutoPay[] = allBankPayments
       .filter((p): p is AutoPay => p !== null)

@@ -18,15 +18,10 @@ export type TemplateTransaction = {
     isTransactionIncluded: (t: Transaction) => boolean,
 }
 
-export type Transfer = {
-    from: string;
-    to: string;
-}
-
 export type AutoPayTransaction = {
     paymentCountKey: string;
     isTransactionIncluded: (t: Transaction) => boolean;
-    transfers: Transfer[]
+    transfers: string[]
 }
 
 export type Balance = {

@@ -23,6 +23,11 @@ export const ACCOUNT_NAME = Object.freeze({
   CITI_DOUBLE: 'Citi Double Cash® Card',
 });
 
+export const FROM_ACCOUNT: Record<string, string> = Object.freeze({
+  [ACCOUNT_NAME.CHASE]: WALLET_ACCOUNT.CHASE_CHECKING,
+  [ACCOUNT_NAME.WELLS_FARGO]: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
+});
+
 export const TRANSACTION_TYPE = Object.freeze({
   DEBIT: 'debit',
   CREDIT: 'credit',
@@ -91,80 +96,41 @@ export const AUTO_PAY = Object.freeze({
     paymentCountKey: 'chasePayments',
     isTransactionIncluded: isAutoPayTransaction('CHASE CREDIT CRD'),
     transfers: [
-      {
-        from: WALLET_ACCOUNT.CHASE_CHECKING,
-        to: WALLET_ACCOUNT.CHASE_AMAZON,
-      },
-      {
-        from: WALLET_ACCOUNT.CHASE_CHECKING,
-        to: WALLET_ACCOUNT.CHASE_FREEDOM_FLEX,
-      },
-      {
-        from: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
-        to: WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED,
-      },
+      WALLET_ACCOUNT.CHASE_AMAZON,
+      WALLET_ACCOUNT.CHASE_FREEDOM_FLEX,
+      WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED,
     ],
   },
   AMEX: {
     paymentCountKey: 'amexPayments',
     isTransactionIncluded: isAutoPayTransaction('AMERICAN EXPRESS ACH PMT'),
     transfers: [
-      {
-        from: WALLET_ACCOUNT.CHASE_CHECKING,
-        to: WALLET_ACCOUNT.AMEX_GOLD,
-      },
-      {
-        from: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
-        to: WALLET_ACCOUNT.AMEX_BLUE,
-      },
+      WALLET_ACCOUNT.AMEX_GOLD,
+      WALLET_ACCOUNT.AMEX_BLUE,
     ],
   },
   CAPITAL_ONE: {
     paymentCountKey: 'capitalOnePayments',
     isTransactionIncluded: isAutoPayTransaction('CAPITAL ONE'),
-    transfers: [{
-      from: WALLET_ACCOUNT.CHASE_CHECKING,
-      to: WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X,
-    }],
+    transfers: [WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X],
   },
   CITI: {
     paymentCountKey: 'citiPayments',
     isTransactionIncluded: isAutoPayTransaction('CITI AUTOPAY'),
-    transfers: [
-      {
-        from: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
-        to: WALLET_ACCOUNT.CITI_DOUBLE_CASH,
-      },
-      {
-        from: WALLET_ACCOUNT.CHASE_CHECKING,
-        to: WALLET_ACCOUNT.CITI_CUSTOM_CASH,
-      },
-    ],
+    transfers: [WALLET_ACCOUNT.CITI_DOUBLE_CASH, WALLET_ACCOUNT.CITI_CUSTOM_CASH],
   },
   DISCOVER: {
     paymentCountKey: 'discoverPayments',
     isTransactionIncluded: isAutoPayTransaction('DISCOVER E-PAYMENT'),
-    transfers: [{
-      from: WALLET_ACCOUNT.CHASE_CHECKING,
-      to: WALLET_ACCOUNT.DISCOVER_IT,
-    }],
+    transfers: [WALLET_ACCOUNT.DISCOVER_IT],
   },
   WELLS_FARGO: {
     paymentCountKey: 'wellsFargoPayments',
     isTransactionIncluded: isAutoPayTransaction('WF CREDIT CARD AUTO PAY'),
     transfers: [
-      {
-        from: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
-        to: WALLET_ACCOUNT.WELLS_FARGO_AUTOGRAPH,
-      },
-      {
-        from: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
-        to: WALLET_ACCOUNT.WELLS_FARGO_ACTIVE_CASH,
-      },
-      {
-        from: WALLET_ACCOUNT.CHASE_CHECKING,
-        to: WALLET_ACCOUNT.WELLS_FARGO_PLATINUM,
-      },
+      WALLET_ACCOUNT.WELLS_FARGO_AUTOGRAPH,
+      WALLET_ACCOUNT.WELLS_FARGO_ACTIVE_CASH,
+      WALLET_ACCOUNT.WELLS_FARGO_PLATINUM,
     ],
   },
 });
