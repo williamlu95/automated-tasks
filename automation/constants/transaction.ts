@@ -100,7 +100,7 @@ export const AUTO_PAY = Object.freeze({
         to: WALLET_ACCOUNT.CHASE_FREEDOM_FLEX,
       },
       {
-        from: WALLET_ACCOUNT.CHASE_CHECKING,
+        from: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
         to: WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED,
       },
     ],
