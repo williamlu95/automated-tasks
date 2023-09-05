@@ -1,5 +1,9 @@
+import * as dotenv from 'dotenv';
 import * as nodemailer from 'nodemailer';
 import * as imaps from 'imap-simple';
+import Mail from 'nodemailer/lib/mailer';
+
+dotenv.config();
 
 const {
   GMAIL_LOGIN,
@@ -31,15 +35,10 @@ export const errorNotification = async (errorMessage: string) => {
   throw Error(errorMessage);
 };
 
-export const sendEmail = async (
-  { subject, text, html }:
-   {subject: string, text: string, html?: string},
-) => emailer.sendMail({
+export const sendEmail = async (options: Mail.Options) => emailer.sendMail({
+  ...options,
   from: GMAIL_LOGIN,
   to: MAIL_TO,
-  subject,
-  text,
-  html,
 });
 
 const config = {

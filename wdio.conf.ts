@@ -71,4 +71,10 @@ export const config: WebdriverIO.Config = {
   after: () => {
     TransactionCounts.updateCountsFile();
   },
+
+  afterTest: async (_test, _context, result) => {
+    if (result.error) {
+      await browser.saveScreenshot(`../logs/error-${new Date().getHours()}.png`);
+    }
+  },
 };
