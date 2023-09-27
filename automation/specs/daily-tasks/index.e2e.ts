@@ -3,17 +3,15 @@ import { addTransactionToWallet } from './add-transaction-to-wallet';
 import { addPaymentsToWallet } from './add-payments-to-wallet';
 import { Transactions } from './transactions';
 import { verifyAccountBalance } from './verify-account-balances';
-import { payTmobileBill } from './pay-tmobile-bill';
 import { readEmails } from '../../utils/notification';
 
 describe('Daily tasks', () => {
   before(async () => {
     readEmails(false);
 
-    const templateTransactions = await payTmobileBill();
     const transactions = new Transactions();
     await transactions.initializeTransactions();
-    templateTransactions.push(...transactions.getTemplateTransactions());
+    const templateTransactions = transactions.getTemplateTransactions();
     console.log(`Template Transactions: ${JSON.stringify(templateTransactions, null, 4)}`);
     const paymentTransactions = transactions.getPaymentTransactions();
     console.log(`Payment Transactions: ${JSON.stringify(paymentTransactions, null, 4)}`);
