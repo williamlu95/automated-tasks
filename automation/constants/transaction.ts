@@ -1,4 +1,7 @@
 import { Transaction } from '../types/transaction';
+import { includesName } from '../utils/includes-name';
+
+export const TRANSACTION_HEADERS = ['date', 'description', 'originalDescription', 'amount', 'type', 'category', 'account', 'labels', 'notes'];
 
 export const WALLET_ACCOUNT = Object.freeze({
   CHASE_CHECKING: 'Chase Checking',
@@ -34,13 +37,6 @@ export const TRANSACTION_TYPE = Object.freeze({
 });
 
 export const INCOME_NAME = 'BETTERLESSON';
-
-const includesName = (description: string, name: string): boolean => {
-  const normalizedDescription = description.replace(/\s/g, '').toLowerCase();
-  const normalizedName = name.replace(/\s/g, '').toLowerCase();
-
-  return normalizedDescription.includes(normalizedName);
-};
 
 export const TEMPLATE_TRANSACTION = Object.freeze({
   CHASE_INCOME: {

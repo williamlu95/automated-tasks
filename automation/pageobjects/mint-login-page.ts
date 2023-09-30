@@ -1,9 +1,13 @@
-import { readEmails, verificationCodes } from '../utils/notification';
+import {
+  readPersonalEmails, verificationCodes, readMothersEmails,
+} from '../utils/notification';
 import Page from './page';
 
 const {
   MINT_LOGIN = '',
   MINT_PASSWORD = '',
+  MOTHER_MINT_LOGIN = '',
+  MOTHER_MINT_PASSWORD = '',
 } = process.env;
 
 class MintLoginPage extends Page {
@@ -39,7 +43,7 @@ class MintLoginPage extends Page {
     return $('button[data-testid="VerifyOtpSubmitButton"]');
   }
 
-  async completeVerification() {
+  async completeVerification(readEmails: () => Promise<void>) {
     await browser.pause(5000);
 
     const url = await browser.getUrl();
@@ -74,20 +78,28 @@ class MintLoginPage extends Page {
     }
   }
 
-  async login() {
+  private async login(username: string, password: string, readEmails: () => Promise<void>) {
     await browser.waitUntil(() => this.usernameInput && this.usernameInput.isClickable());
     await browser.pause(5000);
-    await this.usernameInput.setValue(MINT_LOGIN);
+    await this.usernameInput.setValue(username);
     await this.submitUsernameButton.click();
     await browser.waitUntil(() => this.passwordInput.isClickable());
-    await this.passwordInput.setValue(MINT_PASSWORD);
+    await this.passwordInput.setValue(password);
     await this.submitPasswordButton.click();
-    await this.completeVerification();
+    await this.completeVerification(readEmails);
     await this.skipBiometricQuestion();
     await browser.waitUntil(async () => {
       const url = await browser.getUrl();
       return url.includes('https://mint.intuit.com/transactions');
     });
+  }
+
+  async loginToPersonal() {
+    await this.login(MINT_LOGIN, MINT_PASSWORD, readPersonalEmails);
+  }
+
+  async loginToMothers() {
+    await this.login(MOTHER_MINT_LOGIN, MOTHER_MINT_PASSWORD, readMothersEmails);
   }
 
   open() {

@@ -46,5 +46,6 @@ module.exports = {
     'no-await-in-loop': 'off',
     'no-console': 'off',
     'import/extensions': 'off',
+    'no-case-declarations': 'off',
   },
 };

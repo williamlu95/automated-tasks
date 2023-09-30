@@ -1,7 +1,7 @@
 import * as csv from 'csvtojson';
 import { endOfMonth, getMonth, isSameDay } from 'date-fns';
 import {
-  TEMPLATE_TRANSACTION, ACCOUNT_NAME, AUTO_PAY, FROM_ACCOUNT,
+  TEMPLATE_TRANSACTION, ACCOUNT_NAME, AUTO_PAY, FROM_ACCOUNT, TRANSACTION_HEADERS,
 } from '../../constants/transaction';
 import MintLoginPage from '../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../pageobjects/mint-transaction-page';
@@ -9,8 +9,6 @@ import { TransactionCounts } from '../../utils/transaction-counts';
 import {
   AutoPayTransaction, TemplateTransaction, Transaction,
 } from '../../types/transaction';
-
-const TRANSACTION_HEADERS = ['date', 'description', 'originalDescription', 'amount', 'type', 'category', 'account', 'labels', 'notes'];
 
 export type Template = Omit<Omit<TemplateTransaction, 'isTransactionIncluded'>, 'transactionCountKey'> & { amount: string }
 export type AutoPay = { fromAccount: string; toAccount: string; amount: string }
@@ -33,7 +31,7 @@ export class Transactions {
 
   async initializeTransactions() {
     await MintLoginPage.open();
-    await MintLoginPage.login();
+    await MintLoginPage.loginToPersonal();
     const transactionsPath = await MintTransactionPage.downloadTransactions();
     const transactions = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionsPath);
 

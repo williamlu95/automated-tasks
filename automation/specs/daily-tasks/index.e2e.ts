@@ -3,11 +3,11 @@ import { addTransactionToWallet } from './add-transaction-to-wallet';
 import { addPaymentsToWallet } from './add-payments-to-wallet';
 import { Transactions } from './transactions';
 import { verifyAccountBalance } from './verify-account-balances';
-import { readEmails } from '../../utils/notification';
+import { readPersonalEmails } from '../../utils/notification';
 
 describe('Daily tasks', () => {
   before(async () => {
-    readEmails(false);
+    readPersonalEmails(false);
 
     const transactions = new Transactions();
     await transactions.initializeTransactions();

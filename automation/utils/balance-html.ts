@@ -1,3 +1,4 @@
+import { BalanceSheet } from '../constants/mothers-transactions';
 import { Balance } from '../types/transaction';
 
 const BASE_CELL_STYLE = {
@@ -39,3 +40,21 @@ export const buildBalanceHTML = (accountBalance: Balance[]): string => `
       <tr>`).join('')}
     </table>
   `;
+
+export const buildBalanceSheetHTML = (accountBalance: BalanceSheet[]): string => `
+  <table style="font-family: arial, sans-serif; border-collapse: collapse; width: 100%;">
+    <tr>
+        ${buildCellHTML('Name')}
+        ${buildCellHTML('Date')}
+        ${buildCellHTML('Amount')}
+        ${buildCellHTML('Balance')}
+    </tr>
+    ${accountBalance.map((a) => `
+    <tr>
+        ${buildCellHTML(a.name, 'td')}
+        ${buildCellHTML(a.date, 'td')}
+        ${buildCellHTML(a.amount.replace('-', ''), 'td', getDifferenceStyle(a.amount))}
+        ${buildCellHTML(a.overall.replace('-', ''), 'td', getDifferenceStyle(a.overall))}
+    <tr>`).join('')}
+  </table>
+`;

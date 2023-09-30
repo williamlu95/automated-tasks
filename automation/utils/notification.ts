@@ -8,6 +8,8 @@ dotenv.config();
 const {
   GMAIL_LOGIN,
   GMAIL_PASSWORD,
+  MOTHER_GMAIL_LOGIN,
+  MOTHER_GMAIL_PASSWORD,
   MAIL_TO,
 } = process.env;
 
@@ -41,7 +43,7 @@ export const sendEmail = async (options: Mail.Options) => emailer.sendMail({
   to: MAIL_TO,
 });
 
-const config = {
+const personalConfig = {
   imap: {
     user: GMAIL_LOGIN || '',
     password: GMAIL_PASSWORD || '',
@@ -53,7 +55,19 @@ const config = {
   },
 };
 
-export const readEmails = (
+const motherConfig = {
+  imap: {
+    user: MOTHER_GMAIL_LOGIN || '',
+    password: MOTHER_GMAIL_PASSWORD || '',
+    host: 'imap.gmail.com',
+    port: 993,
+    tls: true,
+    authTimeout: 3000,
+    tlsOptions: { rejectUnauthorized: false },
+  },
+};
+
+const readEmails = (config: imaps.ImapSimpleOptions) => (
   setVerificationCodes = true,
 ) => imaps.connect(config).then((connection) => {
   connection.openBox('INBOX').then(() => {
@@ -96,3 +110,7 @@ export const readEmails = (
     });
   });
 });
+
+export const readPersonalEmails = readEmails(personalConfig);
+
+export const readMothersEmails = readEmails(motherConfig);
