@@ -16,7 +16,7 @@ const buildCellHTML = (value: string, tag = 'th', styleOverrides = {}): string =
 };
 
 const getDifferenceStyle = (difference: string): { color?: string } => {
-  if (difference === '$0.00') {
+  if (['-$0.00', '$0.00'].includes(difference)) {
     return {};
   }
 

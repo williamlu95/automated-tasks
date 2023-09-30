@@ -145,6 +145,13 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     day: 27,
     type: TRANSACTION_TYPE.EXPENSE,
   },
+  SAVINGS: {
+    identifier: 'Savings',
+    name: 'AMERICANEXPRESS TRANSFER',
+    amount: 0.00,
+    day: 28,
+    type: TRANSACTION_TYPE.EXPENSE,
+  },
 });
 
 export type BalanceSheet = {
