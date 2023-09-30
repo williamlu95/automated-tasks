@@ -87,7 +87,7 @@ class AddRecordModal extends Page {
     await this.waitAndClick(addRecordButton);
   }
 
-  async addTransfer(fromAccount: string, toAccount: string, amount: string) {
+  async addTransfer(fromAccount: string, toAccount: string, amount: number) {
     const transferItem = await this.getTransferItem();
     await this.waitAndClick(transferItem);
 

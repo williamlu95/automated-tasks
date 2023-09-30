@@ -72,7 +72,7 @@ class WalletDashboardPage extends Page {
     });
   }
 
-  async addTransfer(fromAccount: string, toAccount: string, amount: string) {
+  async addTransfer(fromAccount: string, toAccount: string, amount: number) {
     await browser.waitUntil(async () => (await this.buttons.length) > 0);
     await browser.waitUntil(async () => (await this.accountNames.length) > 0);
     const initalBalance = await this.getAccountBalanceByName(fromAccount);
