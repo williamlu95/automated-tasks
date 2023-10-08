@@ -56,7 +56,7 @@ export class MothersTransactions {
   async getBalanceSheet() {
     const checkingBalance = formatFromDollars(this.balances[MOTHERS_WF]);
     const creditCardBalance = formatFromDollars(this.balances[MOTHERS_CITI]);
-    let currentBalance = checkingBalance - creditCardBalance;
+    let currentBalance = checkingBalance + creditCardBalance;
     const today = new Date();
 
     const balanceSheet: BalanceSheet[] = [{
@@ -68,7 +68,7 @@ export class MothersTransactions {
     {
       name: 'Credit Card Balance',
       date: format(today, 'P'),
-      amount: formatToDollars(-creditCardBalance),
+      amount: formatToDollars(creditCardBalance),
       overall: formatToDollars(currentBalance),
     }];
 

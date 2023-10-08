@@ -70,7 +70,7 @@ export const INCOME: Record<string, ExpectedTransaction> = Object.freeze({
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   UTILITIES: {
     identifier: 'Utilities',
-    name: 'NORTH LAS VEGAS DIRECT-DR',
+    name: 'CNLV UTILITIES',
     amount: 121.00,
     day: 2,
     type: TRANSACTION_TYPE.EXPENSE,
