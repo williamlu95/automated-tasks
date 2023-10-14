@@ -4,6 +4,7 @@ import { addPaymentsToWallet } from './add-payments-to-wallet';
 import { Transactions } from './transactions';
 import { verifyAccountBalance } from './verify-account-balances';
 import { readPersonalEmails } from '../../utils/notification';
+import { checkIfShirtIsAvailable } from './check-if-shirt-is-available';
 
 describe('Daily tasks', () => {
   before(async () => {
@@ -28,6 +29,7 @@ describe('Daily tasks', () => {
     }
 
     await verifyAccountBalance(transactions.getBalances());
+    await checkIfShirtIsAvailable();
   });
 
   it('tasks have successfully ran', () => expect(true).toEqual(true));
