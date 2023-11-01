@@ -55,14 +55,6 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     isTransactionIncluded: (t: Transaction) => t.description.includes(INCOME_NAME)
     && t.account === ACCOUNT_NAME.WELLS_FARGO,
   },
-  GEICO: {
-    walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_ACTIVE_CASH,
-    template: 'Geico',
-    type: TRANSACTION_TYPE.CREDIT,
-    transactionCountKey: 'geicoPayments',
-    isTransactionIncluded: (t: Transaction) => includesName(t.description, 'GEICO')
-    && t.account !== ACCOUNT_NAME.CITI_DOUBLE,
-  },
   TMOBILE: {
     walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_AUTOGRAPH,
     template: 'T-Mobile',
