@@ -55,14 +55,6 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     isTransactionIncluded: (t: Transaction) => t.description.includes(INCOME_NAME)
     && t.account === ACCOUNT_NAME.WELLS_FARGO,
   },
-  CITI_DOUBLE_EXPENSE: {
-    walletAccountName: WALLET_ACCOUNT.CITI_DOUBLE_CASH,
-    template: 'Citi Double Expense',
-    type: TRANSACTION_TYPE.CREDIT,
-    transactionCountKey: 'citiDoubleExpense',
-    isTransactionIncluded: (t: Transaction) => t.type === TRANSACTION_TYPE.DEBIT
-    && t.account === ACCOUNT_NAME.CITI_DOUBLE,
-  },
   GEICO: {
     walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_ACTIVE_CASH,
     template: 'Geico',
@@ -109,11 +101,6 @@ export const AUTO_PAY = Object.freeze({
     paymentCountKey: 'capitalOnePayments',
     isTransactionIncluded: isAutoPayTransaction('CAPITAL ONE'),
     transfers: [WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X],
-  },
-  CITI: {
-    paymentCountKey: 'citiPayments',
-    isTransactionIncluded: isAutoPayTransaction('CITI AUTOPAY'),
-    transfers: [WALLET_ACCOUNT.CITI_DOUBLE_CASH, WALLET_ACCOUNT.CITI_CUSTOM_CASH],
   },
   DISCOVER: {
     paymentCountKey: 'discoverPayments',
