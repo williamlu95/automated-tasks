@@ -7,7 +7,6 @@ export const WALLET_ACCOUNT = Object.freeze({
   CHASE_CHECKING: 'Chase Checking',
   AMEX_GOLD: 'AMEX Gold',
   CAPITAL_ONE_VENTURE_X: 'Capital One Venture X',
-  CITI_CUSTOM_CASH: 'Citi Custom Cash',
   CHASE_FREEDOM_FLEX: 'Chase Freedom Flex',
   DISCOVER_IT: 'Discover It',
   CHASE_AMAZON: 'Chase Amazon',
@@ -17,13 +16,11 @@ export const WALLET_ACCOUNT = Object.freeze({
   WELLS_FARGO_ACTIVE_CASH: 'Wells Fargo Active Cash',
   AMEX_BLUE: 'AMEX Blue',
   WELLS_FARGO_AUTOGRAPH: 'Wells Fargo Autograph',
-  CITI_DOUBLE_CASH: 'Citi Double Cash',
 });
 
 export const ACCOUNT_NAME = Object.freeze({
   CHASE: 'TOTAL CHECKING',
   WELLS_FARGO: 'Wells Fargo Everyday Checking',
-  CITI_DOUBLE: 'Citi Double Cash® Card',
 });
 
 export const FROM_ACCOUNT: Record<string, string> = Object.freeze({
