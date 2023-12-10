@@ -43,6 +43,7 @@ class MintTransactionPage extends Page {
   async downloadTransactions(): Promise<string> {
     await browser.waitUntil(() => this.settingsButton && this.settingsButton.isClickable());
     await this.settingsButton.click();
+    await browser.waitUntil(() => this.exportAllTransactionsButton?.isClickable());
     await this.exportAllTransactionsButton.click();
     const filePath = path.join(downloadDir, 'transactions.csv');
     await browser.waitUntil(() => fs.existsSync(filePath));
