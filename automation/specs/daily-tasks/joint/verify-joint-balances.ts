@@ -1,8 +1,8 @@
-import { buildBalanceSheetHTML } from '../../utils/balance-html';
-import { readJointEmails, sendEmail } from '../../utils/notification';
+import GoogleBalanceSheetPage from '../../../pageobjects/google-balance-sheet-page';
+import { readJointEmails } from '../../../utils/notification';
 import { JointTransactions } from './joint-transactions';
 
-const RUN_AT_HOUR = 16;
+const RUN_AT_HOUR = 20;
 
 export const verifyJointBalances = async () => {
   if (RUN_AT_HOUR !== new Date().getHours()) {
@@ -15,9 +15,6 @@ export const verifyJointBalances = async () => {
   await transactions.initializeTransactions();
   const balanceSheet = await transactions.getBalanceSheet();
 
-  await sendEmail({
-    subject: 'Joint Balance',
-    text: 'Balances',
-    html: buildBalanceSheetHTML(balanceSheet),
-  });
+  await GoogleBalanceSheetPage.openJointBalanceSheet();
+  await GoogleBalanceSheetPage.setBalances(balanceSheet);
 };

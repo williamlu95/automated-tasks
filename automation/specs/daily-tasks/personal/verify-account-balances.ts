@@ -1,7 +1,7 @@
-import { WALLET_ACCOUNT } from '../../constants/transaction';
-import WalletDashboardPage from '../../pageobjects/wallet-dashboard-page';
-import { buildBalanceHTML } from '../../utils/balance-html';
-import { sendEmail } from '../../utils/notification';
+import { WALLET_ACCOUNT } from '../../../constants/transaction';
+import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
+import { buildBalanceHTML } from '../../../utils/balance-html';
+import { sendEmail } from '../../../utils/notification';
 
 const {
   CHASE_CHECKING,
@@ -34,8 +34,8 @@ const ACCOUNTS = {
 };
 
 const balanceDifference = (expected: string, actual: string): string => {
-  const expectedInPennies = (parseInt((expected || '').replace(/\D/g, ''), 10) / 100);
-  const actualInPennies = (parseInt((actual || '').replace(/\D/g, ''), 10) / 100);
+  const expectedInPennies = parseInt((expected || '').replace(/\D/g, ''), 10) / 100;
+  const actualInPennies = parseInt((actual || '').replace(/\D/g, ''), 10) / 100;
   const difference = expectedInPennies - actualInPennies;
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(difference);
 };
@@ -43,7 +43,7 @@ const balanceDifference = (expected: string, actual: string): string => {
 const NOTIFICATION_HOURS = [16];
 
 export const verifyAccountBalance = async (
-  actualBalances: Record<string, string>,
+  actualBalances: Record<string, string>
 ): Promise<void> => {
   const expectedBalances = await WalletDashboardPage.getAllAccountBalances();
 
@@ -51,10 +51,7 @@ export const verifyAccountBalance = async (
     accountName: name,
     expectedBalance: expectedBalances[name],
     actualBalance: actualBalances[number],
-    difference: balanceDifference(
-      expectedBalances[name],
-      actualBalances[number],
-    ),
+    difference: balanceDifference(expectedBalances[name], actualBalances[number]),
   }));
 
   if (NOTIFICATION_HOURS.includes(new Date().getHours())) {

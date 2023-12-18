@@ -1,16 +1,10 @@
 import * as csv from 'csvtojson';
-import {
-  format,
-  getMonth,
-} from 'date-fns';
-import {
-  TRANSACTION_HEADERS,
-} from '../../constants/transaction';
-import MintLoginPage from '../../pageobjects/mint-login-page';
-import MintTransactionPage from '../../pageobjects/mint-transaction-page';
-import { Transaction } from '../../types/transaction';
-import { BalanceSheet } from '../../constants/mothers-transactions';
-import { formatFromDollars, formatToDollars } from '../../utils/currency-formatter';
+import { format, getMonth } from 'date-fns';
+import { TRANSACTION_HEADERS } from '../../../constants/transaction';
+import MintLoginPage from '../../../pageobjects/mint-login-page';
+import MintTransactionPage from '../../../pageobjects/mint-transaction-page';
+import { BalanceSheet, Transaction } from '../../../types/transaction';
+import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 
 const { JOINT_SOFI = '', JOINT_BILL = '', JOINT_FOOD = '' } = process.env;
 
@@ -48,12 +42,14 @@ export class JointTransactions {
     const foodBalance = formatFromDollars(this.balances[JOINT_FOOD]);
     const today = new Date();
 
-    const balanceSheet: BalanceSheet[] = [{
-      name: 'Joint Account Balance',
-      date: format(today, 'P'),
-      amount: formatToDollars(checkingBalance),
-      overall: formatToDollars(checkingBalance),
-    }];
+    const balanceSheet: BalanceSheet[] = [
+      {
+        name: 'Joint Account Balance',
+        date: format(today, 'P'),
+        amount: formatToDollars(checkingBalance),
+        overall: formatToDollars(checkingBalance),
+      },
+    ];
 
     let currentBalance = checkingBalance + creditCardBalance;
     balanceSheet.push({

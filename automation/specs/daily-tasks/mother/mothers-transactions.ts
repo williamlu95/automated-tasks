@@ -1,20 +1,17 @@
 import * as csv from 'csvtojson';
+import { format, getMonth } from 'date-fns';
+import { TRANSACTION_HEADERS } from '../../../constants/transaction';
+import MintLoginPage from '../../../pageobjects/mint-login-page';
+import MintTransactionPage from '../../../pageobjects/mint-transaction-page';
+import { BalanceSheet, Transaction } from '../../../types/transaction';
 import {
-  format,
-  getMonth,
-} from 'date-fns';
-import {
-  TRANSACTION_HEADERS,
-} from '../../constants/transaction';
-import MintLoginPage from '../../pageobjects/mint-login-page';
-import MintTransactionPage from '../../pageobjects/mint-transaction-page';
-import { Transaction } from '../../types/transaction';
-import {
-  BalanceSheet,
-  EXPENSE, ExpectedTransaction, INCOME, TRANSACTION_TYPE,
-} from '../../constants/mothers-transactions';
-import { includesName } from '../../utils/includes-name';
-import { formatFromDollars, formatToDollars } from '../../utils/currency-formatter';
+  EXPENSE,
+  ExpectedTransaction,
+  INCOME,
+  TRANSACTION_TYPE,
+} from '../../../constants/mothers-transactions';
+import { includesName } from '../../../utils/includes-name';
+import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 
 const { MOTHERS_WF = '', MOTHERS_CITI = '' } = process.env;
 
@@ -59,27 +56,27 @@ export class MothersTransactions {
     let currentBalance = checkingBalance + creditCardBalance;
     const today = new Date();
 
-    const balanceSheet: BalanceSheet[] = [{
-      name: 'Checking Account Balance',
-      date: format(today, 'P'),
-      amount: formatToDollars(checkingBalance),
-      overall: formatToDollars(checkingBalance),
-    },
-    {
-      name: 'Credit Card Balance',
-      date: format(today, 'P'),
-      amount: formatToDollars(creditCardBalance),
-      overall: formatToDollars(currentBalance),
-    }];
+    const balanceSheet: BalanceSheet[] = [
+      {
+        name: 'Checking Account Balance',
+        date: format(today, 'P'),
+        amount: formatToDollars(checkingBalance),
+        overall: formatToDollars(checkingBalance),
+      },
+      {
+        name: 'Credit Card Balance',
+        date: format(today, 'P'),
+        amount: formatToDollars(creditCardBalance),
+        overall: formatToDollars(currentBalance),
+      },
+    ];
 
     const allTransactions = this.outstandingExpenses
       .concat(this.outstandingIncome)
       .sort((a, b) => a.day - b.day);
 
     allTransactions.forEach((t) => {
-      const amount = t.type === TRANSACTION_TYPE.INCOME
-        ? t.amount
-        : -t.amount;
+      const amount = t.type === TRANSACTION_TYPE.INCOME ? t.amount : -t.amount;
 
       currentBalance += amount;
 
@@ -112,18 +109,22 @@ export class MothersTransactions {
     Object.entries(INCOME).forEach(([key, value]) => {
       switch (key) {
         case 'MOTHER_SALARY':
-          const paidSalary = this.transactionsForCurrentMonth
-            .filter((t) => includesName(t.description, value.name));
+          const paidSalary = this.transactionsForCurrentMonth.filter((t) =>
+            includesName(t.description, value.name)
+          );
 
-          const unpaidSalary = (value.days?.slice(paidSalary.length) || [])
-            .map((day) => ({ ...value, day }));
+          const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map((day) => ({
+            ...value,
+            day,
+          }));
 
           income.push(...unpaidSalary);
           break;
 
         default:
-          if (this.transactionsForCurrentMonth
-            .every((t) => !includesName(t.description, value.name))) {
+          if (
+            this.transactionsForCurrentMonth.every((t) => !includesName(t.description, value.name))
+          ) {
             income.push(value);
           }
       }

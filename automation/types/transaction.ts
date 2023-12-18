@@ -1,32 +1,39 @@
 export type Transaction = {
-    date: string,
-    description: string,
-    originalDescription: string,
-    amount: string,
-    type: string,
-    category: string,
-    account: string,
-    labels: string,
-    notes: string,
-}
+  date: string;
+  description: string;
+  originalDescription: string;
+  amount: string;
+  type: string;
+  category: string;
+  account: string;
+  labels: string;
+  notes: string;
+};
 
 export type TemplateTransaction = {
-    walletAccountName: string;
-    template:string;
-    type: string;
-    transactionCountKey: string;
-    isTransactionIncluded: (t: Transaction) => boolean,
-}
+  walletAccountName: string;
+  template: string;
+  type: string;
+  transactionCountKey: string;
+  isTransactionIncluded: (t: Transaction) => boolean;
+};
 
 export type AutoPayTransaction = {
-    paymentCountKey: string;
-    isTransactionIncluded: (t: Transaction) => boolean;
-    transfers: string[]
-}
+  paymentCountKey: string;
+  isTransactionIncluded: (t: Transaction) => boolean;
+  transfers: string[];
+};
 
 export type Balance = {
-    accountName: string;
-    expectedBalance: string;
-    actualBalance: string;
-    difference: string;
-}
+  accountName: string;
+  expectedBalance: string;
+  actualBalance: string;
+  difference: string;
+};
+
+export type BalanceSheet = {
+  name: string;
+  date: string;
+  amount: string;
+  overall: string;
+};

@@ -5,21 +5,16 @@ import { TransactionCounts } from './automation/utils/transaction-counts';
 
 dotenv.config();
 
-const {
-  LOG_LEVEL,
-} = process.env;
+const { LOG_LEVEL } = process.env;
 
-type WebdriverLogTypes = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'silent'
+type WebdriverLogTypes = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'silent';
 
 export const config: WebdriverIO.Config = {
-  specs: [
-    './automation/specs/**/*.e2e.ts',
-  ],
+  specs: ['./automation/specs/**/*.e2e.ts'],
   suites: {
-    daily: ['./automation/specs/daily-tasks/*.e2e.ts'],
+    daily: ['./automation/specs/daily-tasks/**/*.e2e.ts'],
   },
-  exclude: [
-  ],
+  exclude: [],
   autoCompileOpts: {
     autoCompile: true,
     tsNodeOpts: {
@@ -28,18 +23,20 @@ export const config: WebdriverIO.Config = {
     },
   },
   maxInstances: 1,
-  capabilities: [{
-    browserName: 'chrome',
-    acceptInsecureCerts: true,
-    'goog:chromeOptions': {
-      args: process.env.HEADLESS === 'false' ? [] : ['--headless', '--no-sandbox'],
-      prefs: {
-        directory_upgrade: true,
-        prompt_for_download: false,
-        'download.default_directory': downloadDir,
+  capabilities: [
+    {
+      browserName: 'chrome',
+      acceptInsecureCerts: true,
+      'goog:chromeOptions': {
+        args: process.env.HEADLESS === 'false' ? [] : ['--headless', '--no-sandbox'],
+        prefs: {
+          directory_upgrade: true,
+          prompt_for_download: false,
+          'download.default_directory': downloadDir,
+        },
       },
     },
-  }],
+  ],
   logLevel: LOG_LEVEL as WebdriverLogTypes,
   bail: 0,
   baseUrl: 'http://localhost',
@@ -60,7 +57,9 @@ export const config: WebdriverIO.Config = {
     if (results.failed > 0) {
       return sendEmail({
         subject: 'Automation Script Failed',
-        text: `${results.failed} automated script${results.failed === 1 ? 's' : ''} failed to complete.`,
+        text: `${results.failed} automated script${
+          results.failed === 1 ? 's' : ''
+        } failed to complete.`,
       });
     }
 

@@ -1,9 +1,9 @@
-import LoginPage from '../../pageobjects/wallet-login-page';
+import LoginPage from '../../../pageobjects/wallet-login-page';
 import { addTransactionToWallet } from './add-transaction-to-wallet';
 import { addPaymentsToWallet } from './add-payments-to-wallet';
 import { Transactions } from './transactions';
 import { verifyAccountBalance } from './verify-account-balances';
-import { readPersonalEmails } from '../../utils/notification';
+import { readPersonalEmails } from '../../../utils/notification';
 
 describe('Personal daily tasks', () => {
   before(async () => {

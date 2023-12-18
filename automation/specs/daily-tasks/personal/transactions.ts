@@ -1,17 +1,22 @@
 import * as csv from 'csvtojson';
 import { endOfMonth, getMonth, isSameDay } from 'date-fns';
 import {
-  TEMPLATE_TRANSACTION, ACCOUNT_NAME, AUTO_PAY, FROM_ACCOUNT, TRANSACTION_HEADERS,
-} from '../../constants/transaction';
-import MintLoginPage from '../../pageobjects/mint-login-page';
-import MintTransactionPage from '../../pageobjects/mint-transaction-page';
-import { TransactionCounts } from '../../utils/transaction-counts';
-import {
-  AutoPayTransaction, TemplateTransaction, Transaction,
-} from '../../types/transaction';
+  TEMPLATE_TRANSACTION,
+  ACCOUNT_NAME,
+  AUTO_PAY,
+  FROM_ACCOUNT,
+  TRANSACTION_HEADERS,
+} from '../../../constants/transaction';
+import MintLoginPage from '../../../pageobjects/mint-login-page';
+import MintTransactionPage from '../../../pageobjects/mint-transaction-page';
+import { TransactionCounts } from '../../../utils/transaction-counts';
+import { AutoPayTransaction, TemplateTransaction, Transaction } from '../../../types/transaction';
 
-export type Template = Omit<Omit<TemplateTransaction, 'isTransactionIncluded'>, 'transactionCountKey'> & { amount: string }
-export type AutoPay = { fromAccount: string; toAccount: string; amount: string }
+export type Template = Omit<
+  Omit<TemplateTransaction, 'isTransactionIncluded'>,
+  'transactionCountKey'
+> & { amount: string };
+export type AutoPay = { fromAccount: string; toAccount: string; amount: string };
 
 export class Transactions {
   private transactionsForCurrentMonth: Transaction[];
@@ -38,11 +43,13 @@ export class Transactions {
     this.transactionsForCurrentMonth = this.#getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);
 
-    this.templateTransactions = Object.values(TEMPLATE_TRANSACTION)
-      .flatMap((t) => this.#getTransactionsForTemplate(t));
+    this.templateTransactions = Object.values(TEMPLATE_TRANSACTION).flatMap((t) =>
+      this.#getTransactionsForTemplate(t)
+    );
 
-    this.autoPayTransactions = Object.values(AUTO_PAY)
-      .flatMap((p) => this.#getTransactionsForAutoPay(p));
+    this.autoPayTransactions = Object.values(AUTO_PAY).flatMap((p) =>
+      this.#getTransactionsForAutoPay(p)
+    );
 
     this.balances = await MintTransactionPage.getAllAccountBalances();
   }
