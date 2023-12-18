@@ -15,6 +15,9 @@ export const config: WebdriverIO.Config = {
   specs: [
     './automation/specs/**/*.e2e.ts',
   ],
+  suites: {
+    daily: ['./automation/specs/daily-tasks/*.e2e.ts'],
+  },
   exclude: [
   ],
   autoCompileOpts: {

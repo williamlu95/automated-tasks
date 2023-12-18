@@ -1,5 +1,5 @@
 import {
-  readPersonalEmails, verificationCodes, readMothersEmails,
+  readPersonalEmails, verificationCodes, readMothersEmails, readJointEmails,
 } from '../utils/notification';
 import Page from './page';
 
@@ -8,6 +8,8 @@ const {
   MINT_PASSWORD = '',
   MOTHER_MINT_LOGIN = '',
   MOTHER_MINT_PASSWORD = '',
+  JOINT_MINT_LOGIN = '',
+  JOINT_MINT_PASSWORD = ''
 } = process.env;
 
 class MintLoginPage extends Page {
@@ -100,6 +102,10 @@ class MintLoginPage extends Page {
 
   async loginToMothers() {
     await this.login(MOTHER_MINT_LOGIN, MOTHER_MINT_PASSWORD, readMothersEmails);
+  }
+
+  async loginToJoint() {
+    await this.login(JOINT_MINT_LOGIN, JOINT_MINT_PASSWORD, readJointEmails);
   }
 
   open() {

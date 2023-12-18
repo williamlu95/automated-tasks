@@ -10,6 +10,8 @@ const {
   GMAIL_PASSWORD,
   MOTHER_GMAIL_LOGIN,
   MOTHER_GMAIL_PASSWORD,
+  JOINT_GMAIL_LOGIN,
+  JOINT_GMAIL_PASSWORD,
   MAIL_TO,
 } = process.env;
 
@@ -67,6 +69,18 @@ const motherConfig = {
   },
 };
 
+const jointConfig = {
+  imap: {
+    user: JOINT_GMAIL_LOGIN || '',
+    password: JOINT_GMAIL_PASSWORD || '',
+    host: 'imap.gmail.com',
+    port: 993,
+    tls: true,
+    authTimeout: 3000,
+    tlsOptions: { rejectUnauthorized: false },
+  },
+};
+
 const readEmails = (config: imaps.ImapSimpleOptions) => (
   setVerificationCodes = true,
 ) => imaps.connect(config).then((connection) => {
@@ -114,3 +128,5 @@ const readEmails = (config: imaps.ImapSimpleOptions) => (
 export const readPersonalEmails = readEmails(personalConfig);
 
 export const readMothersEmails = readEmails(motherConfig);
+
+export const readJointEmails = readEmails(jointConfig);

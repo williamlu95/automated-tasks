@@ -22,7 +22,7 @@
     },
     "scripts": {
         "wdio": "wdio run wdio.conf.ts",
-        "wdio:daily": "wdio run wdio.conf.ts --spec ./specs/daily-tasks/index.e2e.ts",
+        "wdio:daily": "wdio run wdio.conf.ts --suite daily",
         "wdio:weekly": "wdio run wdio.conf.ts --spec ./specs/weekly-tasks/index.e2e.ts"
     },
     "dependencies": {

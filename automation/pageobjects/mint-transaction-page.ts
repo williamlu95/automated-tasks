@@ -4,6 +4,9 @@ import Page from './page';
 import { downloadDir } from '../utils/file';
 
 class MintTransactionPage extends Page {
+  private filePath = path.join(downloadDir, 'transactions.csv');
+
+
   get bankAccountTab() {
     return $('button[aria-controls="react-collapsed-toggle-5"]');
   }
@@ -41,13 +44,19 @@ class MintTransactionPage extends Page {
   }
 
   async downloadTransactions(): Promise<string> {
+    this.cleanOldTransactions();
     await browser.waitUntil(() => this.settingsButton && this.settingsButton.isClickable());
     await this.settingsButton.click();
     await browser.waitUntil(() => this.exportAllTransactionsButton?.isClickable());
     await this.exportAllTransactionsButton.click();
-    const filePath = path.join(downloadDir, 'transactions.csv');
-    await browser.waitUntil(() => fs.existsSync(filePath));
-    return filePath;
+    await browser.waitUntil(() => fs.existsSync(this.filePath));
+    return this.filePath;
+  }
+
+  private cleanOldTransactions() {
+    if (fs.existsSync(this.filePath)) {
+      fs.rmSync(this.filePath);
+    }
   }
 
   open() {
