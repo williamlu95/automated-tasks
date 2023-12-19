@@ -37,3 +37,13 @@ export type BalanceSheet = {
   amount: string;
   overall: string;
 };
+
+export type ExpectedTransaction = {
+  identifier: string;
+  name: string;
+  amount: number;
+  day: number;
+  days?: number[];
+  type: string;
+  validateTransaction?: (t: Transaction) => boolean;
+};

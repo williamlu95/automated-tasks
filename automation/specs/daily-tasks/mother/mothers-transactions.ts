@@ -3,13 +3,8 @@ import { format, getMonth } from 'date-fns';
 import { TRANSACTION_HEADERS } from '../../../constants/transaction';
 import MintLoginPage from '../../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../../pageobjects/mint-transaction-page';
-import { BalanceSheet, Transaction } from '../../../types/transaction';
-import {
-  EXPENSE,
-  ExpectedTransaction,
-  INCOME,
-  TRANSACTION_TYPE,
-} from '../../../constants/mothers-transactions';
+import { BalanceSheet, ExpectedTransaction, Transaction } from '../../../types/transaction';
+import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/mothers-transactions';
 import { includesName } from '../../../utils/includes-name';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 

@@ -3,23 +3,28 @@ import { format, getMonth } from 'date-fns';
 import { TRANSACTION_HEADERS } from '../../../constants/transaction';
 import MintLoginPage from '../../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../../pageobjects/mint-transaction-page';
-import { BalanceSheet, Transaction } from '../../../types/transaction';
+import { BalanceSheet, ExpectedTransaction, Transaction } from '../../../types/transaction';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
+import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/joint-transactions';
+import { includesName } from '../../../utils/includes-name';
 
 const { JOINT_SOFI = '', JOINT_BILL = '', JOINT_FOOD = '' } = process.env;
 
-// TODO: include pending income
-// TODO: include pending bills
-// TODO: update pending bills to come from google sheet
 export class JointTransactions {
   private FOOD_BUDGET = 600;
 
   private transactionsForCurrentMonth: Transaction[];
 
+  private outstandingExpenses: ExpectedTransaction[];
+
+  private outstandingIncome: ExpectedTransaction[];
+
   private balances: Record<string, string>;
 
   constructor() {
     this.transactionsForCurrentMonth = [];
+    this.outstandingExpenses = [];
+    this.outstandingIncome = [];
     this.balances = {};
   }
 
@@ -32,8 +37,53 @@ export class JointTransactions {
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);
 
+    this.outstandingExpenses = this.calculateOutstandingExpenses();
+    console.log(`Outstanding Expenses: ${JSON.stringify(this.outstandingExpenses, null, 4)}`);
+
+    this.outstandingIncome = this.calculateOutstandingIncome();
+    console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
+
     this.balances = await MintTransactionPage.getAllAccountBalances();
     console.log(`Balances: ${JSON.stringify(this.balances, null, 4)}`);
+  }
+
+  private calculateOutstandingIncome(): ExpectedTransaction[] {
+    const income: ExpectedTransaction[] = [];
+
+    Object.values(INCOME).forEach((value) => {
+      const paidSalary = this.transactionsForCurrentMonth.filter((t) =>
+        includesName(t.description, value.name)
+      );
+
+      const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map((day) => ({
+        ...value,
+        day,
+      }));
+
+      income.push(...unpaidSalary);
+    });
+
+    return income.sort((a, b) => a.day - b.day);
+  }
+
+  private calculateOutstandingExpenses(): ExpectedTransaction[] {
+    const expenses: ExpectedTransaction[] = [];
+
+    Object.values(EXPENSE).forEach((e) => {
+      if (
+        this.transactionsForCurrentMonth.some(
+          (t) =>
+            includesName(t.description, e.name) &&
+            (!e.validateTransaction || e.validateTransaction(t))
+        )
+      ) {
+        return;
+      }
+
+      expenses.push(e);
+    });
+
+    return expenses.sort((a, b) => a.day - b.day);
   }
 
   async getBalanceSheet() {
@@ -77,6 +127,23 @@ export class JointTransactions {
         overall: formatToDollars(currentBalance),
       });
     }
+
+    const allTransactions = this.outstandingExpenses
+      .concat(this.outstandingIncome)
+      .sort((a, b) => a.day - b.day);
+
+    allTransactions.forEach((t) => {
+      const amount = t.type === TRANSACTION_TYPE.INCOME ? t.amount : -t.amount;
+
+      currentBalance += amount;
+
+      balanceSheet.push({
+        name: t.identifier,
+        date: format(today.setDate(t.day), 'P'),
+        amount: formatToDollars(amount),
+        overall: formatToDollars(currentBalance),
+      });
+    });
 
     return balanceSheet;
   }
