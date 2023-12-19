@@ -1,7 +1,6 @@
 import { WALLET_ACCOUNT } from '../../../constants/transaction';
+import GoogleBalanceSheetPage from '../../../pageobjects/google-balance-sheet-page';
 import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
-import { buildBalanceHTML } from '../../../utils/balance-html';
-import { sendEmail } from '../../../utils/notification';
 
 const {
   CHASE_CHECKING,
@@ -40,8 +39,6 @@ const balanceDifference = (expected: string, actual: string): string => {
   return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(difference);
 };
 
-const NOTIFICATION_HOURS = [16];
-
 export const verifyAccountBalance = async (
   actualBalances: Record<string, string>
 ): Promise<void> => {
@@ -54,15 +51,7 @@ export const verifyAccountBalance = async (
     difference: balanceDifference(expectedBalances[name], actualBalances[number]),
   }));
 
-  if (NOTIFICATION_HOURS.includes(new Date().getHours())) {
-    await sendEmail({
-      subject: 'Balance Verification',
-      text: 'Balances',
-      html: buildBalanceHTML(accountBalance),
-    });
-  } else {
-    console.log('Balances: ', accountBalance);
-  }
-
+  await GoogleBalanceSheetPage.openPersonalBalanceSheet();
+  await GoogleBalanceSheetPage.setCreditBalances(accountBalance);
   await browser.pause(5000);
 };

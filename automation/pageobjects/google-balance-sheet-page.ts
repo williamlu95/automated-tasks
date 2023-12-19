@@ -1,7 +1,7 @@
-import { BalanceSheet } from '../types/transaction';
+import { Balance, BalanceSheet } from '../types/transaction';
 import Page from './page';
 
-const { MOTHERS_GOOGLE_SHEET = '', JOINT_GOOGLE_SHEET = '' } = process.env;
+const { MOTHERS_GOOGLE_SHEET = '', JOINT_GOOGLE_SHEET = '', GOOGLE_SHEET = '' } = process.env;
 
 const KEY = {
   BACKSPACE: '\uE003',
@@ -12,6 +12,7 @@ const KEY = {
 
 const KEY_PRESS_TIMEOUT = 300;
 const BALANCE_HEADERS = ['Name', 'Date', 'Amount', 'Overall'];
+const CC_BALANCE_HEADERS = ['Name', 'Expected Balance', 'Actual Balance', 'Difference'];
 
 class GoogleBalanceSheetPage extends Page {
   async typeInCell(amount: string) {
@@ -31,22 +32,17 @@ class GoogleBalanceSheetPage extends Page {
     await browser.keys(KEY.BACKSPACE);
   }
 
-  async setHeaders() {
-    await browser.keys(['Meta', 'b']);
-
-    for (let i = 0; i < BALANCE_HEADERS.length; i++) {
-      await this.typeInCell(BALANCE_HEADERS[i]);
+  async setHeaders(headers: string[]) {
+    for (let i = 0; i < headers.length; i++) {
+      await this.typeInCell(headers[i]);
     }
-
-    await browser.keys(['Meta', 'b']);
-    await browser.pause(KEY_PRESS_TIMEOUT);
   }
 
-  async resetToNextRow() {
+  async resetToNextRow(headers: string[]) {
     await browser.keys(KEY.ARROW_DOWN);
     await browser.pause(KEY_PRESS_TIMEOUT);
 
-    for (let i = 0; i < BALANCE_HEADERS.length; i++) {
+    for (let i = 0; i < headers.length; i++) {
       await browser.keys(KEY.ARROW_LEFT);
       await browser.pause(KEY_PRESS_TIMEOUT);
     }
@@ -55,8 +51,8 @@ class GoogleBalanceSheetPage extends Page {
   async setBalances(balances: BalanceSheet[]) {
     await browser.pause(5000);
     await this.clearSheet();
-    await this.setHeaders();
-    await this.resetToNextRow();
+    await this.setHeaders(BALANCE_HEADERS);
+    await this.resetToNextRow(BALANCE_HEADERS);
 
     for (let i = 0; i < balances.length; i += 1) {
       const balance = balances[i];
@@ -64,7 +60,23 @@ class GoogleBalanceSheetPage extends Page {
       await this.typeInCell(balance.date);
       await this.typeInCell(balance.amount);
       await this.typeInCell(balance.overall);
-      await this.resetToNextRow();
+      await this.resetToNextRow(BALANCE_HEADERS);
+    }
+  }
+
+  async setCreditBalances(balances: Balance[]) {
+    await browser.pause(5000);
+    await this.clearSheet();
+    await this.setHeaders(CC_BALANCE_HEADERS);
+    await this.resetToNextRow(CC_BALANCE_HEADERS);
+
+    for (let i = 0; i < balances.length; i += 1) {
+      const balance = balances[i];
+      await this.typeInCell(balance.accountName);
+      await this.typeInCell(balance.expectedBalance);
+      await this.typeInCell(balance.actualBalance);
+      await this.typeInCell(balance.difference);
+      await this.resetToNextRow(CC_BALANCE_HEADERS);
     }
   }
 
@@ -74,6 +86,10 @@ class GoogleBalanceSheetPage extends Page {
 
   openJointBalanceSheet() {
     return super.open(JOINT_GOOGLE_SHEET);
+  }
+
+  openPersonalBalanceSheet() {
+    return super.open(GOOGLE_SHEET);
   }
 }
 
