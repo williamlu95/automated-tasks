@@ -1,27 +1,29 @@
-import { endOfMonth } from 'date-fns';
-import { ExpectedTransaction } from '../types/transaction';
-import { getPayDaysForMonth } from '../utils/date-formatters';
+import { ExpectedJointTransaction, ExpectedTransaction } from '../types/transaction';
+import {
+  getBiweeklyPayDaysForMonths,
+  getSemiMonthylPayDaysForMonths,
+} from '../utils/date-formatters';
 
 export const TRANSACTION_TYPE = {
   INCOME: 'income',
   EXPENSE: 'expense',
 };
 
-export const INCOME: Record<string, ExpectedTransaction> = Object.freeze({
+export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
   MOTHER_SALARY: {
     identifier: "Lisa's Salary",
     name: 'Sunrise Hospital',
     amount: 950.0,
-    day: 0,
-    days: getPayDaysForMonth(new Date('12/15/23')),
+    day: '0',
+    days: getBiweeklyPayDaysForMonths(new Date('11/15/23')),
     type: TRANSACTION_TYPE.INCOME,
   },
   FATHER_SSDI: {
     identifier: "William's Salary",
     name: 'BETTERLESSON',
     amount: 1845.0,
-    day: 0,
-    days: [15, endOfMonth(new Date()).getDate()],
+    day: '0',
+    days: getSemiMonthylPayDaysForMonths(),
     type: TRANSACTION_TYPE.INCOME,
   },
 });

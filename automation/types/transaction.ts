@@ -47,3 +47,13 @@ export type ExpectedTransaction = {
   type: string;
   validateTransaction?: (t: Transaction) => boolean;
 };
+
+export type ExpectedJointTransaction = {
+  identifier: string;
+  name: string;
+  amount: number;
+  day: string;
+  days?: string[];
+  type: string;
+  validateTransaction?: (t: Transaction) => boolean;
+};

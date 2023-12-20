@@ -1,12 +1,13 @@
 import * as csv from 'csvtojson';
-import { format, getMonth } from 'date-fns';
+import { addMonths, format, getMonth } from 'date-fns';
 import { TRANSACTION_HEADERS } from '../../../constants/transaction';
 import MintLoginPage from '../../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../../pageobjects/mint-transaction-page';
-import { BalanceSheet, ExpectedTransaction, Transaction } from '../../../types/transaction';
+import { BalanceSheet, ExpectedJointTransaction, Transaction } from '../../../types/transaction';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/joint-transactions';
 import { includesName } from '../../../utils/includes-name';
+import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
 
 const { JOINT_SOFI = '', JOINT_BILL = '', JOINT_FOOD = '' } = process.env;
 
@@ -15,9 +16,9 @@ export class JointTransactions {
 
   private transactionsForCurrentMonth: Transaction[];
 
-  private outstandingExpenses: ExpectedTransaction[];
+  private outstandingExpenses: ExpectedJointTransaction[];
 
-  private outstandingIncome: ExpectedTransaction[];
+  private outstandingIncome: ExpectedJointTransaction[];
 
   private balances: Record<string, string>;
 
@@ -47,8 +48,8 @@ export class JointTransactions {
     console.log(`Balances: ${JSON.stringify(this.balances, null, 4)}`);
   }
 
-  private calculateOutstandingIncome(): ExpectedTransaction[] {
-    const income: ExpectedTransaction[] = [];
+  private calculateOutstandingIncome(): ExpectedJointTransaction[] {
+    const income: ExpectedJointTransaction[] = [];
 
     Object.values(INCOME).forEach((value) => {
       const paidSalary = this.transactionsForCurrentMonth.filter((t) =>
@@ -63,11 +64,11 @@ export class JointTransactions {
       income.push(...unpaidSalary);
     });
 
-    return income.sort((a, b) => a.day - b.day);
+    return income.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
   }
 
-  private calculateOutstandingExpenses(): ExpectedTransaction[] {
-    const expenses: ExpectedTransaction[] = [];
+  private calculateOutstandingExpenses(): ExpectedJointTransaction[] {
+    const expenses: ExpectedJointTransaction[] = [];
 
     Object.values(EXPENSE).forEach((e) => {
       if (
@@ -80,10 +81,36 @@ export class JointTransactions {
         return;
       }
 
-      expenses.push(e);
+      expenses.push({ ...e, day: format(new Date().setDate(e.day), 'P'), days: undefined });
     });
+    expenses.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
+    const futureExpenses = this.calculateFutureExpenses();
 
-    return expenses.sort((a, b) => a.day - b.day);
+    return expenses.concat(futureExpenses);
+  }
+
+  private calculateFutureExpenses(): ExpectedJointTransaction[] {
+    const futureDates = Array(ADDITIONAL_MONTHS)
+      .fill(new Date())
+      .map((date, index) => addMonths(date, index + 1));
+
+    return futureDates.flatMap((futureDate) =>
+      [
+        {
+          identifier: 'Food Budget',
+          name: '',
+          amount: this.FOOD_BUDGET,
+          day: format(new Date(futureDate).setDate(1), 'P'),
+          type: TRANSACTION_TYPE.EXPENSE,
+        },
+      ].concat(
+        Object.values(EXPENSE).map((e) => ({
+          ...e,
+          day: format(new Date(futureDate).setDate(e.day), 'P'),
+          days: undefined,
+        }))
+      )
+    );
   }
 
   async getBalanceSheet() {
@@ -130,7 +157,7 @@ export class JointTransactions {
 
     const allTransactions = this.outstandingExpenses
       .concat(this.outstandingIncome)
-      .sort((a, b) => a.day - b.day);
+      .sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
 
     allTransactions.forEach((t) => {
       const amount = t.type === TRANSACTION_TYPE.INCOME ? t.amount : -t.amount;
@@ -139,7 +166,7 @@ export class JointTransactions {
 
       balanceSheet.push({
         name: t.identifier,
-        date: format(today.setDate(t.day), 'P'),
+        date: t.day,
         amount: formatToDollars(amount),
         overall: formatToDollars(currentBalance),
       });

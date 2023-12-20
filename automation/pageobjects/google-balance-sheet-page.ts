@@ -21,6 +21,7 @@ class GoogleBalanceSheetPage extends Page {
 
     for (let i = 0; i < amount.length; i += 1) {
       await browser.keys(amount[i]);
+      await browser.pause(KEY_PRESS_TIMEOUT);
     }
 
     await browser.keys(KEY.ARROW_RIGHT);
