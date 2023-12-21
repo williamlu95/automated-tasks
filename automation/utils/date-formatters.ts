@@ -12,7 +12,7 @@ import {
 } from 'date-fns';
 
 const WEEK_IN_DAYS = 7;
-export const ADDITIONAL_MONTHS = 3;
+export const ADDITIONAL_MONTHS = 2;
 
 const FIRST_PAY_DAY = new Date();
 FIRST_PAY_DAY.setDate(15);
