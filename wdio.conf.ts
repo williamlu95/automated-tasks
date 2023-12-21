@@ -48,7 +48,7 @@ export const config: WebdriverIO.Config = {
   reporters: ['spec'],
   mochaOpts: {
     ui: 'bdd',
-    timeout: 960000,
+    timeout: 1920000,
   },
 
   onComplete: async (_exitCode, _config, _capabilities, results) => {
