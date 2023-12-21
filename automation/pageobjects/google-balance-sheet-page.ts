@@ -29,7 +29,12 @@ class GoogleBalanceSheetPage extends Page {
   }
 
   async clearSheet() {
-    await browser.keys(['Meta', 'a']);
+    if (process.env.OPERATING_SYSTEM === 'MAC') {
+      await browser.keys(['Meta', 'a']);
+    } else {
+      await browser.keys(['Ctrl', 'a']);
+    }
+
     await browser.keys(KEY.BACKSPACE);
   }
 
