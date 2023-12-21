@@ -32,7 +32,7 @@ class GoogleBalanceSheetPage extends Page {
     if (process.env.OPERATING_SYSTEM === 'MAC') {
       await browser.keys(['Meta', 'a']);
     } else {
-      await browser.keys(['Ctrl', 'a']);
+      await browser.keys(['Control', 'a']);
     }
 
     await browser.keys(KEY.BACKSPACE);
