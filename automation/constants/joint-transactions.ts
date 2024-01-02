@@ -45,7 +45,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   },
   SEWER: {
     identifier: 'Sewer',
-    name: 'LASVEGASVALLEYSEWER',
+    name: 'VEGASSEWER',
     amount: 25.0,
     day: 1,
     type: TRANSACTION_TYPE.EXPENSE,
