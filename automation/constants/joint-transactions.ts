@@ -86,6 +86,13 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     type: TRANSACTION_TYPE.EXPENSE,
     validateTransaction: (t) => parseInt(t.amount) === 465,
   },
+  HOA: {
+    identifier: 'HOA',
+    name: 'NOT KNOWN YET',
+    amount: 85.0,
+    day: 15,
+    type: TRANSACTION_TYPE.EXPENSE,
+  },
   NATURAL_GAS: {
     identifier: 'Natural Gas',
     name: 'SOUTHWEST GAS',
@@ -97,13 +104,6 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     identifier: 'Trash',
     name: 'REPUBLIC SERVICES',
     amount: 20.0,
-    day: 20,
-    type: TRANSACTION_TYPE.EXPENSE,
-  },
-  HOA: {
-    identifier: 'HOA',
-    name: 'NOT KNOWN YET',
-    amount: 85.0,
     day: 20,
     type: TRANSACTION_TYPE.EXPENSE,
   },
