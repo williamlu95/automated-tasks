@@ -9,7 +9,7 @@ export const TRANSACTION_TYPE = {
 export const INCOME: Record<string, ExpectedTransaction> = Object.freeze({
   MOTHER_SALARY: {
     identifier: "Mother's Salary",
-    name: 'HEALTH PLAN OF N DIR DEP',
+    name: 'UNITED HEALTHCAR',
     amount: 500.0,
     day: 0,
     days: getPayDaysForMonth(new Date('09/29/23')),
