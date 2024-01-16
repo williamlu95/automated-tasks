@@ -43,11 +43,13 @@ class GoogleBalanceSheetPage extends Page {
     }
   }
 
-  async resetToNextRow(headers: string[]) {
-    await browser.keys(KEY.ARROW_DOWN);
-    await browser.pause(KEY_PRESS_TIMEOUT);
+  async resetToNextRow(headerLength: number, skipDownKey: boolean = false) {
+    if (!skipDownKey) {
+      await browser.keys(KEY.ARROW_DOWN);
+      await browser.pause(KEY_PRESS_TIMEOUT);
+    }
 
-    for (let i = 0; i < headers.length; i++) {
+    for (let i = 0; i < headerLength; i++) {
       await browser.keys(KEY.ARROW_LEFT);
       await browser.pause(KEY_PRESS_TIMEOUT);
     }
@@ -57,7 +59,7 @@ class GoogleBalanceSheetPage extends Page {
     await browser.pause(5000);
     await this.clearSheet();
     await this.setHeaders(BALANCE_HEADERS);
-    await this.resetToNextRow(BALANCE_HEADERS);
+    await this.resetToNextRow(BALANCE_HEADERS.length);
 
     for (let i = 0; i < balances.length; i += 1) {
       const balance = balances[i];
@@ -65,7 +67,13 @@ class GoogleBalanceSheetPage extends Page {
       await this.typeInCell(balance.date);
       await this.typeInCell(balance.amount);
       await this.typeInCell(balance.overall);
-      await this.resetToNextRow(BALANCE_HEADERS);
+
+      if (balance.overall.startsWith('=')) {
+        await browser.keys(['Enter']);
+        await this.resetToNextRow(BALANCE_HEADERS.length - 1, true);
+      } else {
+        await this.resetToNextRow(BALANCE_HEADERS.length);
+      }
     }
   }
 
@@ -73,7 +81,7 @@ class GoogleBalanceSheetPage extends Page {
     await browser.pause(5000);
     await this.clearSheet();
     await this.setHeaders(CC_BALANCE_HEADERS);
-    await this.resetToNextRow(CC_BALANCE_HEADERS);
+    await this.resetToNextRow(CC_BALANCE_HEADERS.length);
 
     for (let i = 0; i < balances.length; i += 1) {
       const balance = balances[i];
@@ -81,7 +89,7 @@ class GoogleBalanceSheetPage extends Page {
       await this.typeInCell(balance.expectedBalance);
       await this.typeInCell(balance.actualBalance);
       await this.typeInCell(balance.difference);
-      await this.resetToNextRow(CC_BALANCE_HEADERS);
+      await this.resetToNextRow(CC_BALANCE_HEADERS.length);
     }
   }
 

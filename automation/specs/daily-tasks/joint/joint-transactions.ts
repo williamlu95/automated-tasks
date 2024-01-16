@@ -11,6 +11,8 @@ import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
 
 const { JOINT_SOFI = '', JOINT_BILL = '', JOINT_FOOD = '' } = process.env;
 
+const OVERALL_FORMULA = '=INDIRECT("C" & ROW()) + INDIRECT("D" & ROW() - 1)';
+
 export class JointTransactions {
   private FOOD_BUDGET = 600;
 
@@ -128,30 +130,28 @@ export class JointTransactions {
       },
     ];
 
-    let currentBalance = checkingBalance + creditCardBalance;
     balanceSheet.push({
       name: 'Credit Card Balance',
       date: format(today, 'P'),
       amount: formatToDollars(creditCardBalance),
-      overall: formatToDollars(currentBalance),
+      overall: OVERALL_FORMULA,
     });
 
-    currentBalance += foodBalance;
     balanceSheet.push({
       name: 'Current Food Balance',
       date: format(today, 'P'),
       amount: formatToDollars(foodBalance),
-      overall: formatToDollars(currentBalance),
+      overall: OVERALL_FORMULA,
     });
 
     if (foodBalance < this.FOOD_BUDGET) {
       const outstandingFoodBalance = -(this.FOOD_BUDGET + foodBalance);
-      currentBalance += outstandingFoodBalance;
+
       balanceSheet.push({
         name: 'Outstanding Food Balance',
         date: format(today, 'P'),
         amount: formatToDollars(outstandingFoodBalance),
-        overall: formatToDollars(currentBalance),
+        overall: OVERALL_FORMULA,
       });
     }
 
@@ -162,13 +162,11 @@ export class JointTransactions {
     allTransactions.forEach((t) => {
       const amount = t.type === TRANSACTION_TYPE.INCOME ? t.amount : -t.amount;
 
-      currentBalance += amount;
-
       balanceSheet.push({
         name: t.identifier,
         date: t.day,
         amount: formatToDollars(amount),
-        overall: formatToDollars(currentBalance),
+        overall: OVERALL_FORMULA,
       });
     });
 
