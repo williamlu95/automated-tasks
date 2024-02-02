@@ -10,7 +10,7 @@ export const TRANSACTION_TYPE = {
 };
 
 export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
-  MOTHER_SALARY: {
+  LISA_SALARY: {
     identifier: "Lisa's Salary",
     name: 'Sunrise Hospital',
     amount: 950.0,
@@ -18,10 +18,10 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
     days: getBiweeklyPayDaysForMonths(new Date('11/15/23')),
     type: TRANSACTION_TYPE.INCOME,
   },
-  FATHER_SSDI: {
+  WILL_SALARY: {
     identifier: "William's Salary",
     name: 'BETTERLESSON',
-    amount: 1845.0,
+    amount: 2000.0,
     day: '0',
     days: getSemiMonthylPayDaysForMonths(),
     type: TRANSACTION_TYPE.INCOME,
