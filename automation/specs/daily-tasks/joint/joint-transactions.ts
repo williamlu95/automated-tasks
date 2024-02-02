@@ -145,12 +145,14 @@ export class JointTransactions {
     });
 
     const outstandingFoodBalance = -(this.FOOD_BUDGET + foodBalance);
-    balanceSheet.push({
-      name: 'Outstanding Food Balance',
-      date: format(today, 'P'),
-      amount: formatToDollars(Math.max(outstandingFoodBalance, 0)),
-      overall: OVERALL_FORMULA,
-    });
+    if (outstandingFoodBalance < 0) {
+      balanceSheet.push({
+        name: 'Outstanding Food Balance',
+        date: format(today, 'P'),
+        amount: formatToDollars(Math.max(outstandingFoodBalance, 0)),
+        overall: OVERALL_FORMULA,
+      });
+    }
 
     const allTransactions = this.outstandingExpenses
       .concat(this.outstandingIncome)
