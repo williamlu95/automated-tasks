@@ -53,7 +53,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   FURNITURE: {
     identifier: 'Furniture (Custom Cash)',
     name: 'CITI AUTOPAY',
-    amount: 240.0,
+    amount: 300.0,
     day: 2,
     type: TRANSACTION_TYPE.EXPENSE,
   },
