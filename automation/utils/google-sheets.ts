@@ -1,12 +1,10 @@
 import { JWT } from 'google-auth-library';
 import { GoogleSpreadsheet } from 'google-spreadsheet';
 
-const SCOPES = ['https://www.googleapis.com/auth/spreadsheets'];
-
 const jwt = new JWT({
   email: process.env.GOOGLE_EMAIL,
   key: process.env.GOOGLE_PRIVATE_KEY,
-  scopes: SCOPES,
+  scopes: ['https://www.googleapis.com/auth/spreadsheets'],
 });
 
 export const replaceSheetData = async (sheetName: string, rowData: string[][]) => {

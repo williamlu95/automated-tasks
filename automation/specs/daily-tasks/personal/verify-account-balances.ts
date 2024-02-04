@@ -52,5 +52,4 @@ export const verifyAccountBalance = async (
   ]);
 
   await replaceSheetData("William's Balance", accountBalance);
-  await browser.pause(5000);
 };
