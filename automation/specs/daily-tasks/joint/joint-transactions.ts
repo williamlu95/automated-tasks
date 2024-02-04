@@ -149,7 +149,7 @@ export class JointTransactions {
       balanceSheet.push({
         name: 'Outstanding Food Balance',
         date: format(today, 'P'),
-        amount: formatToDollars(Math.max(outstandingFoodBalance, 0)),
+        amount: formatToDollars(outstandingFoodBalance),
         overall: OVERALL_FORMULA,
       });
     }
