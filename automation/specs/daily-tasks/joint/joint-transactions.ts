@@ -3,7 +3,7 @@ import { addMonths, format, getMonth } from 'date-fns';
 import { TRANSACTION_HEADERS } from '../../../constants/transaction';
 import MintLoginPage from '../../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../../pageobjects/mint-transaction-page';
-import { BalanceSheet, ExpectedJointTransaction, Transaction } from '../../../types/transaction';
+import { ExpectedJointTransaction, Transaction } from '../../../types/transaction';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/joint-transactions';
 import { includesName } from '../../../utils/includes-name';
@@ -121,37 +121,37 @@ export class JointTransactions {
     const foodBalance = formatFromDollars(this.balances[JOINT_FOOD]);
     const today = new Date();
 
-    const balanceSheet: BalanceSheet[] = [
-      {
-        name: 'Joint Account Balance',
-        date: format(today, 'P'),
-        amount: formatToDollars(checkingBalance),
-        overall: formatToDollars(checkingBalance),
-      },
+    const balanceSheet: string[][] = [
+      [
+        'Joint Account Balance',
+        format(today, 'P'),
+        formatToDollars(checkingBalance),
+        formatToDollars(checkingBalance),
+      ],
     ];
 
-    balanceSheet.push({
-      name: 'Credit Card Balance',
-      date: format(today, 'P'),
-      amount: formatToDollars(creditCardBalance),
-      overall: OVERALL_FORMULA,
-    });
+    balanceSheet.push([
+      'Credit Card Balance',
+      format(today, 'P'),
+      formatToDollars(creditCardBalance),
+      OVERALL_FORMULA,
+    ]);
 
-    balanceSheet.push({
-      name: 'Current Food Balance',
-      date: format(today, 'P'),
-      amount: formatToDollars(foodBalance),
-      overall: OVERALL_FORMULA,
-    });
+    balanceSheet.push([
+      'Current Food Balance',
+      format(today, 'P'),
+      formatToDollars(foodBalance),
+      OVERALL_FORMULA,
+    ]);
 
     const outstandingFoodBalance = -(this.FOOD_BUDGET + foodBalance);
     if (outstandingFoodBalance < 0) {
-      balanceSheet.push({
-        name: 'Outstanding Food Balance',
-        date: format(today, 'P'),
-        amount: formatToDollars(outstandingFoodBalance),
-        overall: OVERALL_FORMULA,
-      });
+      balanceSheet.push([
+        'Outstanding Food Balance',
+        format(today, 'P'),
+        formatToDollars(outstandingFoodBalance),
+        OVERALL_FORMULA,
+      ]);
     }
 
     const allTransactions = this.outstandingExpenses
@@ -161,12 +161,7 @@ export class JointTransactions {
     allTransactions.forEach((t) => {
       const amount = t.type === TRANSACTION_TYPE.INCOME ? t.amount : -t.amount;
 
-      balanceSheet.push({
-        name: t.identifier,
-        date: t.day,
-        amount: formatToDollars(amount),
-        overall: OVERALL_FORMULA,
-      });
+      balanceSheet.push([t.identifier, t.day, formatToDollars(amount), OVERALL_FORMULA]);
     });
 
     return balanceSheet;

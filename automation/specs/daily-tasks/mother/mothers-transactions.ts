@@ -3,7 +3,7 @@ import { format, getMonth } from 'date-fns';
 import { TRANSACTION_HEADERS } from '../../../constants/transaction';
 import MintLoginPage from '../../../pageobjects/mint-login-page';
 import MintTransactionPage from '../../../pageobjects/mint-transaction-page';
-import { BalanceSheet, ExpectedTransaction, Transaction } from '../../../types/transaction';
+import { ExpectedTransaction, Transaction } from '../../../types/transaction';
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/mothers-transactions';
 import { includesName } from '../../../utils/includes-name';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
@@ -51,19 +51,19 @@ export class MothersTransactions {
     let currentBalance = checkingBalance + creditCardBalance;
     const today = new Date();
 
-    const balanceSheet: BalanceSheet[] = [
-      {
-        name: 'Checking Account Balance',
-        date: format(today, 'P'),
-        amount: formatToDollars(checkingBalance),
-        overall: formatToDollars(checkingBalance),
-      },
-      {
-        name: 'Credit Card Balance',
-        date: format(today, 'P'),
-        amount: formatToDollars(creditCardBalance),
-        overall: formatToDollars(currentBalance),
-      },
+    const balanceSheet: string[][] = [
+      [
+        'Checking Account Balance',
+        format(today, 'P'),
+        formatToDollars(checkingBalance),
+        formatToDollars(checkingBalance),
+      ],
+      [
+        'Credit Card Balance',
+        format(today, 'P'),
+        formatToDollars(creditCardBalance),
+        formatToDollars(currentBalance),
+      ],
     ];
 
     const allTransactions = this.outstandingExpenses
@@ -75,12 +75,12 @@ export class MothersTransactions {
 
       currentBalance += amount;
 
-      balanceSheet.push({
-        name: t.identifier,
-        date: format(today.setDate(t.day), 'P'),
-        amount: formatToDollars(amount),
-        overall: formatToDollars(currentBalance),
-      });
+      balanceSheet.push([
+        t.identifier,
+        format(today.setDate(t.day), 'P'),
+        formatToDollars(amount),
+        formatToDollars(currentBalance),
+      ]);
     });
 
     return balanceSheet;

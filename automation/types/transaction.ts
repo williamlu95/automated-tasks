@@ -31,13 +31,6 @@ export type Balance = {
   difference: string;
 };
 
-export type BalanceSheet = {
-  name: string;
-  date: string;
-  amount: string;
-  overall: string;
-};
-
 export type ExpectedTransaction = {
   identifier: string;
   name: string;

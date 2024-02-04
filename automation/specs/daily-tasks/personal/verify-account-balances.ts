@@ -1,6 +1,6 @@
 import { WALLET_ACCOUNT } from '../../../constants/transaction';
-import GoogleBalanceSheetPage from '../../../pageobjects/google-balance-sheet-page';
 import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
+import { replaceSheetData } from '../../../utils/google-sheets';
 
 const {
   CHASE_CHECKING,
@@ -44,14 +44,13 @@ export const verifyAccountBalance = async (
 ): Promise<void> => {
   const expectedBalances = await WalletDashboardPage.getAllAccountBalances();
 
-  const accountBalance = Object.entries(ACCOUNTS).map(([name, number = '']) => ({
-    accountName: name,
-    expectedBalance: expectedBalances[name],
-    actualBalance: actualBalances[number],
-    difference: balanceDifference(expectedBalances[name], actualBalances[number]),
-  }));
+  const accountBalance = Object.entries(ACCOUNTS).map(([name, number = '']) => [
+    name,
+    expectedBalances[name],
+    actualBalances[number],
+    balanceDifference(expectedBalances[name], actualBalances[number]),
+  ]);
 
-  await GoogleBalanceSheetPage.openPersonalBalanceSheet();
-  await GoogleBalanceSheetPage.setCreditBalances(accountBalance);
+  await replaceSheetData("William's Balance", accountBalance);
   await browser.pause(5000);
 };

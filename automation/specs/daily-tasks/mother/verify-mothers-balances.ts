@@ -1,4 +1,4 @@
-import GoogleBalanceSheetPage from '../../../pageobjects/google-balance-sheet-page';
+import { replaceSheetData } from '../../../utils/google-sheets';
 import { readMothersEmails } from '../../../utils/notification';
 import { MothersTransactions } from './mothers-transactions';
 
@@ -14,7 +14,5 @@ export const verifyMothersBalances = async () => {
   const transactions = new MothersTransactions();
   await transactions.initializeTransactions();
   const balanceSheet = await transactions.getBalanceSheet();
-
-  await GoogleBalanceSheetPage.openMothersBalanceSheet();
-  await GoogleBalanceSheetPage.setBalances(balanceSheet);
+  replaceSheetData("Mother's Balance", balanceSheet);
 };
