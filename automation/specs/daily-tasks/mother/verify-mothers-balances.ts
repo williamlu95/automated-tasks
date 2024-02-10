@@ -14,5 +14,5 @@ export const verifyMothersBalances = async () => {
   const transactions = new MothersTransactions();
   await transactions.initializeTransactions();
   const balanceSheet = await transactions.getBalanceSheet();
-  replaceSheetData("Mother's Balance", balanceSheet);
+  await replaceSheetData("Mother's Balance", balanceSheet);
 };
