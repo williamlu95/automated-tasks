@@ -1,5 +1,8 @@
 import {
-  readPersonalEmails, verificationCodes, readMothersEmails, readJointEmails,
+  readPersonalEmails,
+  verificationCodes,
+  readMothersEmails,
+  readJointEmails,
 } from '../utils/notification';
 import Page from './page';
 
@@ -9,7 +12,7 @@ const {
   MOTHER_MINT_LOGIN = '',
   MOTHER_MINT_PASSWORD = '',
   JOINT_MINT_LOGIN = '',
-  JOINT_MINT_PASSWORD = ''
+  JOINT_MINT_PASSWORD = '',
 } = process.env;
 
 class MintLoginPage extends Page {
@@ -35,6 +38,10 @@ class MintLoginPage extends Page {
 
   get biometricSkipButton() {
     return $('button[data-testid="WebAuthnRegSkip"]');
+  }
+
+  get closeModalButton() {
+    return $('button[aria-label="Close Modal"]');
   }
 
   get verificationInput() {
@@ -80,6 +87,15 @@ class MintLoginPage extends Page {
     }
   }
 
+  async closeModal() {
+    await browser.pause(5000);
+    const closeButton = await this.closeModalButton;
+
+    if (await closeButton.isExisting()) {
+      await closeButton.click();
+    }
+  }
+
   private async login(username: string, password: string, readEmails: () => Promise<void>) {
     await browser.waitUntil(() => this.usernameInput && this.usernameInput.isClickable());
     await browser.pause(5000);
@@ -90,6 +106,7 @@ class MintLoginPage extends Page {
     await this.submitPasswordButton.click();
     await this.completeVerification(readEmails);
     await this.skipBiometricQuestion();
+    await this.closeModal();
     await browser.waitUntil(async () => {
       const url = await browser.getUrl();
       return url.includes('https://mint.intuit.com/transactions');
