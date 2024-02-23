@@ -1,7 +1,17 @@
 import { Transaction } from '../types/transaction';
 import { includesName } from '../utils/includes-name';
 
-export const TRANSACTION_HEADERS = ['date', 'description', 'originalDescription', 'amount', 'type', 'category', 'account', 'labels', 'notes'];
+export const TRANSACTION_HEADERS = [
+  'date',
+  'description',
+  'originalDescription',
+  'amount',
+  'type',
+  'category',
+  'account',
+  'labels',
+  'notes',
+];
 
 export const WALLET_ACCOUNT = Object.freeze({
   CHASE_CHECKING: 'Chase Checking',
@@ -41,16 +51,16 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     template: 'Chase Income',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'chaseIncome',
-    isTransactionIncluded: (t: Transaction) => t.description.includes(INCOME_NAME)
-    && t.account === ACCOUNT_NAME.CHASE,
+    isTransactionIncluded: (t: Transaction) =>
+      t.description.includes(INCOME_NAME) && t.account === ACCOUNT_NAME.CHASE,
   },
   WELLS_FARGO_INCOME: {
     walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
     template: 'Wells Fargo Income',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'wellsFargoIncome',
-    isTransactionIncluded: (t: Transaction) => t.description.includes(INCOME_NAME)
-    && t.account === ACCOUNT_NAME.WELLS_FARGO,
+    isTransactionIncluded: (t: Transaction) =>
+      t.description.includes(INCOME_NAME) && t.account === ACCOUNT_NAME.WELLS_FARGO,
   },
   TMOBILE: {
     walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_AUTOGRAPH,
@@ -59,14 +69,21 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     transactionCountKey: 'tmobilePayments',
     isTransactionIncluded: () => false,
   },
+  STUDENT_LOAN: {
+    walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
+    template: 'Student Loan',
+    type: TRANSACTION_TYPE.DEBIT,
+    transactionCountKey: 'studentLoanPayments',
+    isTransactionIncluded: (t: Transaction) =>
+      includesName(t.description, 'DEPT EDUCATION STUDENT'),
+  },
 });
 
-const isAutoPayTransaction = (
-  autoPayName: string,
-) => (
-  t: Transaction,
-): boolean => includesName(t.description, autoPayName)
-&& ([ACCOUNT_NAME.CHASE, ACCOUNT_NAME.WELLS_FARGO] as string[]).includes(t.account);
+const isAutoPayTransaction =
+  (autoPayName: string) =>
+  (t: Transaction): boolean =>
+    includesName(t.description, autoPayName) &&
+    ([ACCOUNT_NAME.CHASE, ACCOUNT_NAME.WELLS_FARGO] as string[]).includes(t.account);
 
 export const AUTO_PAY = Object.freeze({
   CHASE: {
@@ -81,10 +98,7 @@ export const AUTO_PAY = Object.freeze({
   AMEX: {
     paymentCountKey: 'amexPayments',
     isTransactionIncluded: isAutoPayTransaction('AMERICAN EXPRESS ACH PMT'),
-    transfers: [
-      WALLET_ACCOUNT.AMEX_GOLD,
-      WALLET_ACCOUNT.AMEX_BLUE,
-    ],
+    transfers: [WALLET_ACCOUNT.AMEX_GOLD, WALLET_ACCOUNT.AMEX_BLUE],
   },
   CAPITAL_ONE: {
     paymentCountKey: 'capitalOnePayments',

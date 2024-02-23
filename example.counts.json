@@ -8,5 +8,6 @@
     "citiPayments": 0,
     "discoverPayments": 0,
     "wellsFargoPayments": 0,
-    "tmobilePayments": 0
+    "tmobilePayments": 0,
+    "studentLoanPayments": 0
 }
