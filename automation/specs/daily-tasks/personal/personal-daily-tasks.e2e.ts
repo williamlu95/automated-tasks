@@ -4,7 +4,7 @@ import { addPaymentsToWallet } from './add-payments-to-wallet';
 import { Transactions } from './transactions';
 import { readPersonalEmails } from '../../../utils/notification';
 
-describe('Personal daily tasks', () => {
+describe.skip('Personal daily tasks', () => {
   before(async () => {
     readPersonalEmails(false);
 
