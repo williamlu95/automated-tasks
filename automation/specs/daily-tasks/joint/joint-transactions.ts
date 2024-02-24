@@ -34,7 +34,7 @@ export class JointTransactions {
   async initializeTransactions() {
     await MintLoginPage.open();
     await MintLoginPage.loginToJoint();
-    const transactionsPath = await MintTransactionPage.downloadTransactions();
+    const transactionsPath = await MintTransactionPage.downloadTransactionsOld();
     const transactions = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionsPath);
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);

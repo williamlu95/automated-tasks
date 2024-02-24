@@ -2,7 +2,6 @@ import LoginPage from '../../../pageobjects/wallet-login-page';
 import { addTransactionToWallet } from './add-transaction-to-wallet';
 import { addPaymentsToWallet } from './add-payments-to-wallet';
 import { Transactions } from './transactions';
-import { verifyAccountBalance } from './verify-account-balances';
 import { readPersonalEmails } from '../../../utils/notification';
 
 describe('Personal daily tasks', () => {
@@ -26,8 +25,6 @@ describe('Personal daily tasks', () => {
     if (paymentTransactions.length) {
       await addPaymentsToWallet(paymentTransactions);
     }
-
-    await verifyAccountBalance(transactions.getBalances());
   });
 
   it('tasks have successfully ran', () => expect(true).toEqual(true));

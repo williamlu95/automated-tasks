@@ -6,6 +6,9 @@ import { downloadDir } from '../utils/file';
 class MintTransactionPage extends Page {
   private filePath = path.join(downloadDir, 'transactions.csv');
 
+  get buttons() {
+    return $$('button');
+  }
 
   get bankAccountTab() {
     return $('button[aria-controls="react-collapsed-toggle-5"]');
@@ -27,12 +30,22 @@ class MintTransactionPage extends Page {
     return $('li[data-automation-id="EXPORT_ALL_TRANSACTIONS"]');
   }
 
+  async getDownloadMyTransactionsButton() {
+    await browser.waitUntil(async () => {
+      const buttons = await this.buttons;
+      return !!buttons.length;
+    });
+
+    const dropdowns = await this.buttons;
+    return this.getElementFromList(dropdowns, 'Download my transactions');
+  }
+
   async getAllAccountBalances(): Promise<Record<string, string>> {
     await browser.waitUntil(async () => (await this.accountListItems.length) > 0);
 
     const accountList = await this.accountListItems;
     const accountItemsHTML = await Promise.all(
-      accountList.map((accountListItem) => accountListItem.getHTML()),
+      accountList.map((accountListItem) => accountListItem.getHTML())
     );
 
     const accountBalanceEntries = accountItemsHTML.map((html) => {
@@ -44,6 +57,14 @@ class MintTransactionPage extends Page {
   }
 
   async downloadTransactions(): Promise<string> {
+    this.cleanOldTransactions();
+    const downloadMyTransactionsButton = await this.getDownloadMyTransactionsButton();
+    await downloadMyTransactionsButton.click();
+    await browser.waitUntil(() => fs.existsSync(this.filePath));
+    return this.filePath;
+  }
+
+  async downloadTransactionsOld(): Promise<string> {
     this.cleanOldTransactions();
     await browser.waitUntil(() => this.settingsButton && this.settingsButton.isClickable());
     await this.settingsButton.click();

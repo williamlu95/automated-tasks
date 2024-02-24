@@ -29,7 +29,7 @@ export class MothersTransactions {
   async initializeTransactions() {
     await MintLoginPage.open();
     await MintLoginPage.loginToMothers();
-    const transactionsPath = await MintTransactionPage.downloadTransactions();
+    const transactionsPath = await MintTransactionPage.downloadTransactionsOld();
     const transactions = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionsPath);
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);

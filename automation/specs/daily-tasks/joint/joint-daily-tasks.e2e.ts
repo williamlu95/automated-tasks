@@ -1,6 +1,6 @@
 import { verifyJointBalances } from './verify-joint-balances';
 
-describe('Joint daily tasks', () => {
+describe.skip('Joint daily tasks', () => {
   before(async () => {
     await verifyJointBalances();
   });

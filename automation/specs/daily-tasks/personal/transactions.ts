@@ -25,13 +25,10 @@ export class Transactions {
 
   private autoPayTransactions: AutoPay[];
 
-  private balances: Record<string, string>;
-
   constructor() {
     this.transactionsForCurrentMonth = [];
     this.templateTransactions = [];
     this.autoPayTransactions = [];
-    this.balances = {};
   }
 
   async initializeTransactions() {
@@ -50,8 +47,6 @@ export class Transactions {
     this.autoPayTransactions = Object.values(AUTO_PAY).flatMap((p) =>
       this.#getTransactionsForAutoPay(p)
     );
-
-    this.balances = await MintTransactionPage.getAllAccountBalances();
   }
 
   #getTransactionsForTemplate({
@@ -128,9 +123,5 @@ export class Transactions {
 
   getPaymentTransactions() {
     return this.autoPayTransactions;
-  }
-
-  getBalances() {
-    return this.balances;
   }
 }
