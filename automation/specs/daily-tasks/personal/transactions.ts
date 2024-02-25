@@ -28,10 +28,13 @@ export class Transactions {
 
   private autoPayTransactions: AutoPay[];
 
+  private balances: Record<string, string>;
+
   constructor() {
     this.transactionsForCurrentMonth = [];
     this.templateTransactions = [];
     this.autoPayTransactions = [];
+    this.balances = {};
   }
 
   async initializeTransactions() {
@@ -40,6 +43,7 @@ export class Transactions {
     await EmpowerTransactionPage.open();
     const transactionsPath = await EmpowerTransactionPage.downloadTransactions();
     const transactions = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionsPath);
+    this.balances = await EmpowerTransactionPage.getAllAccountBalances();
 
     this.transactionsForCurrentMonth = this.#getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);
@@ -127,5 +131,9 @@ export class Transactions {
 
   getPaymentTransactions() {
     return this.autoPayTransactions;
+  }
+
+  getBalances() {
+    return this.balances;
   }
 }

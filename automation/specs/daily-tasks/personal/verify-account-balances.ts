@@ -1,4 +1,4 @@
-import { WALLET_ACCOUNT } from '../../../constants/transaction';
+import { WALLET_ACCOUNT } from '../../../constants/personal-transactions';
 import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
 import { replaceSheetData } from '../../../utils/google-sheets';
 

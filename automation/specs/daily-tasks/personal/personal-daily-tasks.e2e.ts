@@ -3,6 +3,7 @@ import { addTransactionToWallet } from './add-transaction-to-wallet';
 import { addPaymentsToWallet } from './add-payments-to-wallet';
 import { Transactions } from './transactions';
 import { readPersonalEmails } from '../../../utils/notification';
+import { verifyAccountBalance } from './verify-account-balances';
 
 describe('Personal daily tasks', () => {
   before(async () => {
@@ -25,6 +26,8 @@ describe('Personal daily tasks', () => {
     if (paymentTransactions.length) {
       await addPaymentsToWallet(paymentTransactions);
     }
+
+    await verifyAccountBalance(transactions.getBalances());
   });
 
   it('tasks have successfully ran', () => expect(true).toEqual(true));
