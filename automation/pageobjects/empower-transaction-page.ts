@@ -15,14 +15,22 @@ class EmpowerTransactionPage extends Page {
   }
 
   async downloadTransactions(): Promise<string> {
+    await this.cleanFiles();
     await browser.waitUntil(() => this.downloadCsvButton && this.downloadCsvButton.isClickable());
     await this.downloadCsvButton.click();
-    await browser.pause(5000);
     const transactionFile = await this.getTransactionFile();
     return path.join(downloadDir, transactionFile);
   }
 
+  private async cleanFiles() {
+    const files = fs.readdirSync(`${downloadDir}/`);
+    files.forEach((file) => {
+      fs.rmSync(path.join(downloadDir, file));
+    });
+  }
+
   private async getTransactionFile() {
+    await browser.waitUntil(() => fs.readdirSync(`${downloadDir}/`).length > 0);
     const files = fs.readdirSync(`${downloadDir}/`);
     return files.find((f) => f.endsWith(this.fileName)) ?? '';
   }

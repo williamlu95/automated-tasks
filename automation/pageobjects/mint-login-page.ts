@@ -1,14 +1,7 @@
-import {
-  readPersonalEmails,
-  verificationCodes,
-  readMothersEmails,
-  readJointEmails,
-} from '../utils/notification';
+import { verificationCodes, readMothersEmails, readJointEmails } from '../utils/notification';
 import Page from './page';
 
 const {
-  MINT_LOGIN = '',
-  MINT_PASSWORD = '',
   MOTHER_MINT_LOGIN = '',
   MOTHER_MINT_PASSWORD = '',
   JOINT_MINT_LOGIN = '',
@@ -111,10 +104,6 @@ class MintLoginPage extends Page {
       const url = await browser.getUrl();
       return url.includes('https://mint.intuit.com/transactions');
     });
-  }
-
-  async loginToPersonal() {
-    await this.login(MINT_LOGIN, MINT_PASSWORD, readPersonalEmails);
   }
 
   async loginToMothers() {

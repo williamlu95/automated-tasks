@@ -33,6 +33,10 @@ class EmpowerLoginPage extends Page {
     return $$('button[type="submit"]');
   }
 
+  get userLink() {
+    return $('a#userId');
+  }
+
   async getSubmitCodeButton() {
     await browser.waitUntil(async () => {
       const items = await this.submitButtons;
@@ -68,6 +72,7 @@ class EmpowerLoginPage extends Page {
   }
 
   private async completeVerification(readEmails: () => Promise<void>) {
+    await browser.waitUntil(() => this.emailMeButton && this.emailMeButton.isClickable());
     await this.emailMeButton.click();
 
     await browser.waitUntil(async () => {
@@ -76,24 +81,21 @@ class EmpowerLoginPage extends Page {
     });
 
     await this.codeInput.setValue(verificationCodes.empower);
-    await browser.pause(2000);
     const button = await this.getSubmitCodeButton();
     await button.click();
   }
 
   private async login(username: string, password: string, readEmails: () => Promise<void>) {
     await browser.waitUntil(() => this.usernameInput && this.usernameInput.isClickable());
-    await browser.pause(5000);
     await this.usernameInput.setValue(username);
     await this.continueButton.click();
-    await browser.pause(5000);
     await this.completeVerification(readEmails);
     await browser.waitUntil(() => this.rememberMeCheckbox.isClickable());
     await this.rememberMeCheckbox.click();
     await browser.waitUntil(() => this.passwordInput.isClickable());
     await this.passwordInput.setValue(password);
     await this.signInButton.click();
-    await browser.pause(5000);
+    await browser.waitUntil(() => this.userLink && this.userLink.isDisplayed());
   }
 
   async loginToPersonal() {
