@@ -11,6 +11,5 @@ export const addPaymentsToWallet = async (transactions: AutoPay[] = []): Promise
         Math.abs(parseFloat(amount))
       )} from ${fromAccount} to ${toAccount}`
     );
-    await browser.pause(5000);
   }
 };
