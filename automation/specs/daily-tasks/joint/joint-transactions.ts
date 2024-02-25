@@ -1,13 +1,13 @@
 import * as csv from 'csvtojson';
 import { addMonths, format, getMonth } from 'date-fns';
 import { TRANSACTION_HEADERS } from '../../../constants/transaction';
-import MintLoginPage from '../../../pageobjects/mint-login-page';
-import MintTransactionPage from '../../../pageobjects/mint-transaction-page';
 import { ExpectedJointTransaction, Transaction } from '../../../types/transaction';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/joint-transactions';
 import { includesName } from '../../../utils/includes-name';
 import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
+import EmpowerLoginPage from '../../../pageobjects/empower-login-page';
+import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 
 const { JOINT_SOFI = '', JOINT_BILL = '', JOINT_FOOD = '' } = process.env;
 
@@ -32,9 +32,10 @@ export class JointTransactions {
   }
 
   async initializeTransactions() {
-    await MintLoginPage.open();
-    await MintLoginPage.loginToJoint();
-    const transactionsPath = await MintTransactionPage.downloadTransactionsOld();
+    await EmpowerLoginPage.open();
+    await EmpowerLoginPage.loginToJoint();
+    await EmpowerTransactionPage.open();
+    const transactionsPath = await EmpowerTransactionPage.downloadTransactions();
     const transactions = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionsPath);
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
@@ -46,7 +47,7 @@ export class JointTransactions {
     this.outstandingIncome = this.calculateOutstandingIncome();
     console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
 
-    this.balances = await MintTransactionPage.getAllAccountBalances();
+    this.balances = await EmpowerTransactionPage.getAllAccountBalances();
     console.log(`Balances: ${JSON.stringify(this.balances, null, 4)}`);
   }
 
@@ -55,7 +56,7 @@ export class JointTransactions {
 
     Object.values(INCOME).forEach((value) => {
       const paidSalary = this.transactionsForCurrentMonth.filter((t) =>
-        includesName(t.description, value.name)
+        includesName(t.Description, value.name)
       );
 
       const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map((day) => ({
@@ -76,7 +77,7 @@ export class JointTransactions {
       if (
         this.transactionsForCurrentMonth.some(
           (t) =>
-            includesName(t.description, e.name) &&
+            includesName(t.Description, e.name) &&
             (!e.validateTransaction || e.validateTransaction(t))
         )
       ) {
@@ -169,7 +170,7 @@ export class JointTransactions {
 
   private getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
     const transactionsForCurrentMonth = transactions.filter((t) => {
-      const transactionDate = new Date(t.date);
+      const transactionDate = new Date(t.Date);
       const isSameMonth = getMonth(transactionDate) === getMonth(new Date());
 
       if (isSameMonth) {

@@ -1,13 +1,10 @@
 export type Transaction = {
-  date: string;
-  description: string;
-  originalDescription: string;
-  amount: string;
-  type: string;
-  category: string;
-  account: string;
-  labels: string;
-  notes: string;
+  Date: string;
+  Account: string;
+  Description: string;
+  Category: string;
+  Tags: string;
+  Amount: string;
 };
 
 export type Balance = {

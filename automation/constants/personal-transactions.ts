@@ -1,31 +1,7 @@
+import { Transaction } from '../types/transaction';
 import { includesName } from '../utils/includes-name';
 
 const { CHASE_CHECKING = '', WELLS_FARGO_CHECKING = '' } = process.env;
-
-export type Transaction = {
-  Date: string;
-  Account: string;
-  Description: string;
-  Category: string;
-  Tags: string;
-  Amount: string;
-};
-
-export type TemplateTransaction = {
-  walletAccountName: string;
-  template: string;
-  type: string;
-  transactionCountKey: string;
-  isTransactionIncluded: (t: Transaction) => boolean;
-};
-
-export type AutoPayTransaction = {
-  paymentCountKey: string;
-  isTransactionIncluded: (t: Transaction) => boolean;
-  transfers: string[];
-};
-
-export const TRANSACTION_HEADERS = ['Date', 'Account', 'Description', 'Category', 'Tags', 'Amount'];
 
 export const WALLET_ACCOUNT = Object.freeze({
   CHASE_CHECKING: 'Chase Checking',

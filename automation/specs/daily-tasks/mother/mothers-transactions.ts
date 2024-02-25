@@ -1,17 +1,12 @@
 import * as csv from 'csvtojson';
 import { format, getMonth } from 'date-fns';
-import {
-  EXPENSE,
-  ExpectedTransaction,
-  INCOME,
-  TRANSACTION_HEADERS,
-  TRANSACTION_TYPE,
-  Transaction,
-} from '../../../constants/mothers-transactions';
+import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/mothers-transactions';
 import { includesName } from '../../../utils/includes-name';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import EmpowerLoginPage from '../../../pageobjects/empower-login-page';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
+import { ExpectedTransaction, Transaction } from '../../../types/transaction';
+import { TRANSACTION_HEADERS } from '../../../constants/transaction';
 
 const { MOTHERS_WF = '', MOTHERS_CITI = '' } = process.env;
 

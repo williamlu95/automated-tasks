@@ -1,11 +1,1 @@
-export const TRANSACTION_HEADERS = [
-  'date',
-  'description',
-  'originalDescription',
-  'amount',
-  'type',
-  'category',
-  'account',
-  'labels',
-  'notes',
-];
+export const TRANSACTION_HEADERS = ['Date', 'Account', 'Description', 'Category', 'Tags', 'Amount'];

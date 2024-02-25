@@ -1,25 +1,5 @@
+import { ExpectedTransaction } from '../types/transaction';
 import { getPayDaysForMonth, getSecondWednesday } from '../utils/date-formatters';
-
-export type Transaction = {
-  Date: string;
-  Account: string;
-  Description: string;
-  Category: string;
-  Tags: string;
-  Amount: string;
-};
-
-export type ExpectedTransaction = {
-  identifier: string;
-  name: string;
-  amount: number;
-  day: number;
-  days?: number[];
-  type: string;
-  validateTransaction?: (t: Transaction) => boolean;
-};
-
-export const TRANSACTION_HEADERS = ['Date', 'Account', 'Description', 'Category', 'Tags', 'Amount'];
 
 export const TRANSACTION_TYPE = {
   INCOME: 'income',
