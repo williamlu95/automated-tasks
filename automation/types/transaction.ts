@@ -10,20 +10,6 @@ export type Transaction = {
   notes: string;
 };
 
-export type TemplateTransaction = {
-  walletAccountName: string;
-  template: string;
-  type: string;
-  transactionCountKey: string;
-  isTransactionIncluded: (t: Transaction) => boolean;
-};
-
-export type AutoPayTransaction = {
-  paymentCountKey: string;
-  isTransactionIncluded: (t: Transaction) => boolean;
-  transfers: string[];
-};
-
 export type Balance = {
   accountName: string;
   expectedBalance: string;

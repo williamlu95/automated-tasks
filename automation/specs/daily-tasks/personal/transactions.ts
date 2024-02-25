@@ -1,22 +1,25 @@
 import * as csv from 'csvtojson';
 import { endOfMonth, getMonth, isSameDay } from 'date-fns';
-import {
-  TEMPLATE_TRANSACTION,
-  ACCOUNT_NAME,
-  AUTO_PAY,
-  FROM_ACCOUNT,
-  TRANSACTION_HEADERS,
-} from '../../../constants/transaction';
-import MintLoginPage from '../../../pageobjects/mint-login-page';
-import MintTransactionPage from '../../../pageobjects/mint-transaction-page';
 import { TransactionCounts } from '../../../utils/transaction-counts';
-import { AutoPayTransaction, TemplateTransaction, Transaction } from '../../../types/transaction';
+import EmpowerLoginPage from '../../../pageobjects/empower-login-page';
+import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
+import {
+  AUTO_PAY,
+  AutoPayTransaction,
+  TEMPLATE_TRANSACTION,
+  TRANSACTION_HEADERS,
+  TemplateTransaction,
+  Transaction,
+  getFromAccount,
+} from '../../../constants/personal-transactions';
 
 export type Template = Omit<
   Omit<TemplateTransaction, 'isTransactionIncluded'>,
   'transactionCountKey'
 > & { amount: string };
 export type AutoPay = { fromAccount: string; toAccount: string; amount: string };
+
+const { WELLS_FARGO_CHECKING = '' } = process.env;
 
 export class Transactions {
   private transactionsForCurrentMonth: Transaction[];
@@ -32,9 +35,10 @@ export class Transactions {
   }
 
   async initializeTransactions() {
-    await MintLoginPage.open();
-    await MintLoginPage.loginToPersonal();
-    const transactionsPath = await MintTransactionPage.downloadTransactions();
+    await EmpowerLoginPage.open();
+    await EmpowerLoginPage.loginToPersonal();
+    await EmpowerTransactionPage.open();
+    const transactionsPath = await EmpowerTransactionPage.downloadTransactions();
     const transactions = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionsPath);
 
     this.transactionsForCurrentMonth = this.#getTransactionsForCurrentMonth(transactions);
@@ -61,13 +65,13 @@ export class Transactions {
     TransactionCounts.addToTransactionCount(transactions.length, transactionCountKey);
     return transactions.map((t) => ({
       ...restOfTemplate,
-      amount: t.amount,
+      amount: t.Amount,
     }));
   }
 
   #getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
     const transactionsForCurrentMonth = transactions.filter((t) => {
-      const transactionDate = new Date(t.date);
+      const transactionDate = new Date(t.Date);
       const currentMonth = TransactionCounts.getTransactionMonth();
       const isSameMonth = getMonth(transactionDate) === currentMonth;
 
@@ -77,7 +81,7 @@ export class Transactions {
 
       const lastMonth = new Date(new Date().getFullYear(), currentMonth - 1);
       const isLastDayOfLastMonth = isSameDay(transactionDate, endOfMonth(lastMonth));
-      const isWellsFargoCheckingAccount = t.account === ACCOUNT_NAME.WELLS_FARGO;
+      const isWellsFargoCheckingAccount = t.Account.endsWith(WELLS_FARGO_CHECKING);
 
       if (isLastDayOfLastMonth && isWellsFargoCheckingAccount) {
         return true;
@@ -98,14 +102,14 @@ export class Transactions {
     const allBankPayments = this.transactionsForCurrentMonth
       .filter((t) => isTransactionIncluded(t))
       .map((t, i) => {
-        const fromAccount = FROM_ACCOUNT[t.account];
+        const fromAccount = getFromAccount(t.Account);
 
         if (!transfers[i] || !fromAccount) return null;
 
         return {
           fromAccount,
           toAccount: transfers[i],
-          amount: t.amount,
+          amount: t.Amount,
         };
       });
 
