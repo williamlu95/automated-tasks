@@ -1,12 +1,17 @@
 import * as csv from 'csvtojson';
 import { format, getMonth } from 'date-fns';
-import { TRANSACTION_HEADERS } from '../../../constants/transaction';
-import MintLoginPage from '../../../pageobjects/mint-login-page';
-import MintTransactionPage from '../../../pageobjects/mint-transaction-page';
-import { ExpectedTransaction, Transaction } from '../../../types/transaction';
-import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/mothers-transactions';
+import {
+  EXPENSE,
+  ExpectedTransaction,
+  INCOME,
+  TRANSACTION_HEADERS,
+  TRANSACTION_TYPE,
+  Transaction,
+} from '../../../constants/mothers-transactions';
 import { includesName } from '../../../utils/includes-name';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
+import EmpowerLoginPage from '../../../pageobjects/empower-login-page';
+import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 
 const { MOTHERS_WF = '', MOTHERS_CITI = '' } = process.env;
 
@@ -27,9 +32,10 @@ export class MothersTransactions {
   }
 
   async initializeTransactions() {
-    await MintLoginPage.open();
-    await MintLoginPage.loginToMothers();
-    const transactionsPath = await MintTransactionPage.downloadTransactionsOld();
+    await EmpowerLoginPage.open();
+    await EmpowerLoginPage.loginToMother();
+    await EmpowerTransactionPage.open();
+    const transactionsPath = await EmpowerTransactionPage.downloadTransactions();
     const transactions = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionsPath);
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
@@ -41,7 +47,7 @@ export class MothersTransactions {
     this.outstandingIncome = this.calculateOutstandingIncome();
     console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
 
-    this.balances = await MintTransactionPage.getAllAccountBalances();
+    this.balances = await EmpowerTransactionPage.getAllAccountBalances();
     console.log(`Balances: ${JSON.stringify(this.balances, null, 4)}`);
   }
 
@@ -90,7 +96,7 @@ export class MothersTransactions {
     const expenses: ExpectedTransaction[] = [];
 
     Object.values(EXPENSE).forEach((e) => {
-      if (this.transactionsForCurrentMonth.every((t) => !includesName(t.description, e.name))) {
+      if (this.transactionsForCurrentMonth.every((t) => !includesName(t.Description, e.name))) {
         expenses.push(e);
       }
     });
@@ -105,7 +111,7 @@ export class MothersTransactions {
       switch (key) {
         case 'MOTHER_SALARY':
           const paidSalary = this.transactionsForCurrentMonth.filter((t) =>
-            includesName(t.description, value.name)
+            includesName(t.Description, value.name)
           );
 
           const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map((day) => ({
@@ -118,7 +124,7 @@ export class MothersTransactions {
 
         default:
           if (
-            this.transactionsForCurrentMonth.every((t) => !includesName(t.description, value.name))
+            this.transactionsForCurrentMonth.every((t) => !includesName(t.Description, value.name))
           ) {
             income.push(value);
           }
@@ -130,7 +136,7 @@ export class MothersTransactions {
 
   private getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
     const transactionsForCurrentMonth = transactions.filter((t) => {
-      const transactionDate = new Date(t.date);
+      const transactionDate = new Date(t.Date);
       const isSameMonth = getMonth(transactionDate) === getMonth(new Date());
 
       if (isSameMonth) {

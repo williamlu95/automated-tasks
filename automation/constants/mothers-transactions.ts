@@ -1,5 +1,25 @@
-import { ExpectedTransaction } from '../types/transaction';
 import { getPayDaysForMonth, getSecondWednesday } from '../utils/date-formatters';
+
+export type Transaction = {
+  Date: string;
+  Account: string;
+  Description: string;
+  Category: string;
+  Tags: string;
+  Amount: string;
+};
+
+export type ExpectedTransaction = {
+  identifier: string;
+  name: string;
+  amount: number;
+  day: number;
+  days?: number[];
+  type: string;
+  validateTransaction?: (t: Transaction) => boolean;
+};
+
+export const TRANSACTION_HEADERS = ['Date', 'Account', 'Description', 'Category', 'Tags', 'Amount'];
 
 export const TRANSACTION_TYPE = {
   INCOME: 'income',
@@ -9,7 +29,7 @@ export const TRANSACTION_TYPE = {
 export const INCOME: Record<string, ExpectedTransaction> = Object.freeze({
   MOTHER_SALARY: {
     identifier: "Mother's Salary",
-    name: 'UNITED HEALTHCAR',
+    name: 'Unitedhealth Group',
     amount: 500.0,
     day: 0,
     days: getPayDaysForMonth(new Date('09/29/23')),
@@ -17,8 +37,8 @@ export const INCOME: Record<string, ExpectedTransaction> = Object.freeze({
   },
   FATHER_SSDI: {
     identifier: "Father's SSDI",
-    name: 'SSA TREAS 310',
-    amount: 1959.0,
+    name: 'Social Security Administration',
+    amount: 2018.1,
     day: getSecondWednesday(),
     type: TRANSACTION_TYPE.INCOME,
   },
@@ -27,14 +47,14 @@ export const INCOME: Record<string, ExpectedTransaction> = Object.freeze({
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   UTILITIES: {
     identifier: 'Utilities',
-    name: 'CNLV UTILITIES',
+    name: 'City Of North Las Vegas',
     amount: 121.0,
     day: 2,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   ELECTRICITY: {
     identifier: 'NV Energy',
-    name: 'NV ENERGY SOUTH NPC PYMT',
+    name: 'Nv Energy',
     amount: 122.0,
     day: 2,
     type: TRANSACTION_TYPE.EXPENSE,
@@ -48,63 +68,63 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   },
   SOLAR: {
     identifier: 'Sunrun',
-    name: 'SUNRUN',
+    name: 'Sunrun',
     amount: 103.0,
     day: 6,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   NATURAL_GAS: {
     identifier: 'SW Gas',
-    name: 'SOUTHWEST GAS',
+    name: 'Southwest Gas',
     amount: 122.0,
     day: 12,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   MORTGAGE: {
     identifier: 'Mortgage',
-    name: 'US BANK HOME MTG',
+    name: 'Us Bank',
     amount: 1540.0,
     day: 15,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   IRS: {
     identifier: 'IRS',
-    name: 'IRS USATAXPYMT',
+    name: 'Irs',
     amount: 170.0,
     day: 15,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   CAR_INSURANCE: {
     identifier: 'GEICO',
-    name: 'GEICO',
+    name: 'Geico',
     amount: 90.0,
     day: 15,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   HOME_SECURITY: {
     identifier: 'Vivint',
-    name: 'VIVINT',
+    name: 'Vivint',
     amount: 33.0,
     day: 15,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   INTERNET: {
     identifier: 'Cox Cable',
-    name: 'COX LAS VEGAS COMM',
+    name: 'Cox Communications',
     amount: 140.0,
     day: 18,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   CAR_LOAN: {
     identifier: 'Nissan',
-    name: 'Nissan Auto Loan',
+    name: 'Nissan',
     amount: 540.0,
     day: 27,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   SAVINGS: {
     identifier: 'Savings',
-    name: 'AMERICANEXPRESS TRANSFER',
+    name: 'American Express',
     amount: 0.0,
     day: 28,
     type: TRANSACTION_TYPE.EXPENSE,

@@ -1,9 +1,16 @@
-import { readPersonalEmails, verificationCodes, readJointEmails } from '../utils/notification';
+import {
+  readPersonalEmails,
+  verificationCodes,
+  readJointEmails,
+  readMothersEmails,
+} from '../utils/notification';
 import Page from './page';
 
 const {
   EMPOWER_LOGIN = '',
   EMPOWER_PASSWORD = '',
+  MOTHER_EMPOWER_LOGIN = '',
+  MOTHER_EMPOWER_PASSWORD = '',
   JOINT_EMPOWER_LOGIN = '',
   JOINT_EMPOWER_PASSWORD = '',
 } = process.env;
@@ -104,6 +111,10 @@ class EmpowerLoginPage extends Page {
 
   async loginToJoint() {
     await this.login(JOINT_EMPOWER_LOGIN, JOINT_EMPOWER_PASSWORD, readJointEmails);
+  }
+
+  async loginToMother() {
+    await this.login(MOTHER_EMPOWER_LOGIN, MOTHER_EMPOWER_PASSWORD, readMothersEmails);
   }
 
   open() {

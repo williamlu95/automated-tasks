@@ -83,7 +83,7 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     type: TRANSACTION_TYPE.DEBIT,
     transactionCountKey: 'studentLoanPayments',
     isTransactionIncluded: (t: Transaction) =>
-      includesName(t.Description, 'DEPT EDUCATION STUDENT'),
+      includesName(t.Description, 'Us Department Of Education'),
   },
 });
 
