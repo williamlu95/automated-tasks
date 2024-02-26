@@ -31,28 +31,28 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   MORTGAGE: {
     identifier: 'Mortgage',
-    name: '',
+    name: 'NOT KNOWN YET',
     amount: 3230.0,
     day: 1,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   WATER: {
     identifier: 'Water',
-    name: '',
+    name: 'NOT KNOWN YET',
     amount: 50.0,
     day: 1,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   SEWER: {
     identifier: 'Sewer',
-    name: '',
+    name: 'NOT KNOWN YET',
     amount: 25.0,
     day: 1,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   FURNITURE: {
     identifier: 'Furniture (Custom Cash)',
-    name: '',
+    name: 'NOT KNOWN YET',
     amount: 600.0,
     day: 2,
     type: TRANSACTION_TYPE.EXPENSE,
@@ -102,7 +102,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   },
   TRASH: {
     identifier: 'Trash',
-    name: '',
+    name: 'NOT KNOWN YET',
     amount: 20.0,
     day: 20,
     type: TRANSACTION_TYPE.EXPENSE,
