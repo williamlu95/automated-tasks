@@ -17,6 +17,8 @@ const {
   WELLS_FARGO_AUTOGRAPH,
 } = process.env;
 
+const CHECKING_ACCOUNTS = [CHASE_CHECKING, WELLS_FARGO_CHECKING];
+
 const ACCOUNTS = {
   [WALLET_ACCOUNT.CHASE_CHECKING]: CHASE_CHECKING,
   [WALLET_ACCOUNT.WELLS_FARGO_CHECKING]: WELLS_FARGO_CHECKING,
@@ -44,12 +46,18 @@ export const verifyAccountBalance = async (
 ): Promise<void> => {
   const expectedBalances = await WalletDashboardPage.getAllAccountBalances();
 
-  const accountBalance = Object.entries(ACCOUNTS).map(([name, number = '']) => [
-    name,
-    expectedBalances[name],
-    actualBalances[number],
-    balanceDifference(expectedBalances[name], actualBalances[number]),
-  ]);
+  const accountBalance = Object.entries(ACCOUNTS).map(([name, number = '']) => {
+    const actualBalance = CHECKING_ACCOUNTS.includes(number)
+      ? actualBalances[number]
+      : `-${actualBalances[number]}`;
+
+    return [
+      name,
+      expectedBalances[name],
+      actualBalance,
+      balanceDifference(expectedBalances[name], actualBalance),
+    ];
+  });
 
   await replaceSheetData("William's Balance", accountBalance);
 };
