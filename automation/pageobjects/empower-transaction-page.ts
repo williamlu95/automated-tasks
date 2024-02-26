@@ -23,6 +23,11 @@ class EmpowerTransactionPage extends Page {
   }
 
   private async cleanFiles() {
+    if (!fs.existsSync(downloadDir)) {
+      fs.mkdirSync(downloadDir);
+      return;
+    }
+
     const files = fs.readdirSync(`${downloadDir}/`);
     files.forEach((file) => {
       fs.rmSync(path.join(downloadDir, file));

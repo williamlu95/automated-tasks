@@ -1,9 +1,4 @@
-import {
-  readPersonalEmails,
-  verificationCodes,
-  readJointEmails,
-  readMothersEmails,
-} from '../utils/notification';
+import { readPersonalEmails, verificationCodes } from '../utils/notification';
 import Page from './page';
 
 const {
@@ -28,8 +23,16 @@ class EmpowerLoginPage extends Page {
     return $('button[value="challengeEmail"]');
   }
 
+  get textMeButton() {
+    return $('button[value="challengeSMS"]');
+  }
+
   get codeInput() {
     return $('input[name="code"]');
+  }
+
+  get codeInputs() {
+    return $$('input[name="code"]');
   }
 
   get submitButton() {
@@ -79,15 +82,15 @@ class EmpowerLoginPage extends Page {
   }
 
   private async completeVerification(readEmails: () => Promise<void>) {
-    await browser.waitUntil(() => this.emailMeButton && this.emailMeButton.isClickable());
-    await this.emailMeButton.click();
+    await browser.waitUntil(() => this.textMeButton && this.textMeButton.isClickable());
+    await this.textMeButton.click();
 
     await browser.waitUntil(async () => {
       await readEmails();
       return !!verificationCodes.empower;
     });
 
-    await this.codeInput.setValue(verificationCodes.empower);
+    await this.codeInputs[1].setValue(verificationCodes.empower);
     const button = await this.getSubmitCodeButton();
     await button.click();
   }
@@ -110,11 +113,11 @@ class EmpowerLoginPage extends Page {
   }
 
   async loginToJoint() {
-    await this.login(JOINT_EMPOWER_LOGIN, JOINT_EMPOWER_PASSWORD, readJointEmails);
+    await this.login(JOINT_EMPOWER_LOGIN, JOINT_EMPOWER_PASSWORD, readPersonalEmails);
   }
 
   async loginToMother() {
-    await this.login(MOTHER_EMPOWER_LOGIN, MOTHER_EMPOWER_PASSWORD, readMothersEmails);
+    await this.login(MOTHER_EMPOWER_LOGIN, MOTHER_EMPOWER_PASSWORD, readPersonalEmails);
   }
 
   open() {

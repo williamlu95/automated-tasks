@@ -5,13 +5,11 @@ import EmpowerLoginPage from '../../../pageobjects/empower-login-page';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import {
   AUTO_PAY,
-  AutoPayTransaction,
   TEMPLATE_TRANSACTION,
-  TRANSACTION_HEADERS,
-  TemplateTransaction,
-  Transaction,
   getFromAccount,
 } from '../../../constants/personal-transactions';
+import { Transaction, TemplateTransaction, AutoPayTransaction } from '../../../types/transaction';
+import { TRANSACTION_HEADERS } from '../../../constants/transaction';
 
 export type Template = Omit<
   Omit<TemplateTransaction, 'isTransactionIncluded'>,

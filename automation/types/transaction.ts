@@ -33,3 +33,17 @@ export type ExpectedJointTransaction = {
   type: string;
   validateTransaction?: (t: Transaction) => boolean;
 };
+
+export type TemplateTransaction = {
+  walletAccountName: string;
+  template: string;
+  type: string;
+  transactionCountKey: string;
+  isTransactionIncluded: (t: Transaction) => boolean;
+};
+
+export type AutoPayTransaction = {
+  paymentCountKey: string;
+  isTransactionIncluded: (t: Transaction) => boolean;
+  transfers: string[];
+};

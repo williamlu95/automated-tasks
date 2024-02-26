@@ -1,6 +1,6 @@
 import { verifyMothersBalances } from './verify-mothers-balances';
 
-describe.skip('Mother daily tasks', () => {
+describe('Mother daily tasks', () => {
   before(async () => {
     await verifyMothersBalances();
   });

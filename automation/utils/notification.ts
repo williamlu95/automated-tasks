@@ -24,9 +24,7 @@ const emailer = nodemailer.createTransport({
 });
 
 export const verificationCodes = {
-  mint: '',
   empower: '',
-  tmobile: '',
 };
 
 export const errorNotification = async (errorMessage: string) => {
@@ -108,15 +106,7 @@ const readEmails =
                       setVerificationCodes
                     ) {
                       const text = partData.replace(/<[^>]*>?/gm, '').replace(/\s/g, '');
-                      const mintVerificationCode = text.match(/Verificationcode:(\d+)/)?.[1];
-                      verificationCodes.mint = mintVerificationCode;
-
-                      const tmobileVerificationCode = text.match(
-                        /YourT-MobileIDverificationcodeis(\d+)/
-                      )?.[1];
-                      verificationCodes.tmobile = tmobileVerificationCode;
-
-                      const empowerVerificationCode = text.match(/4-digitcodebelow.(\d+)/)?.[1];
+                      const empowerVerificationCode = text.match(/authenticationcodeis(\d+)/)?.[1];
                       verificationCodes.empower = empowerVerificationCode;
                     }
 
