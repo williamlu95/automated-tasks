@@ -1,5 +1,5 @@
 import { replaceSheetData } from '../../../utils/google-sheets';
-import { readMothersEmails } from '../../../utils/notification';
+import { readPersonalEmails } from '../../../utils/notification';
 import { MothersTransactions } from './mothers-transactions';
 
 const RUN_AT_HOUR = new Date().getHours(); // Change to specific hour to run only once a day
@@ -9,7 +9,7 @@ export const verifyMothersBalances = async () => {
     return;
   }
 
-  readMothersEmails(false);
+  readPersonalEmails(false);
 
   const transactions = new MothersTransactions();
   await transactions.initializeTransactions();

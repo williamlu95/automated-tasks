@@ -1,5 +1,5 @@
 import { replaceSheetData } from '../../../utils/google-sheets';
-import { readJointEmails } from '../../../utils/notification';
+import { readPersonalEmails } from '../../../utils/notification';
 import { JointTransactions } from './joint-transactions';
 
 const RUN_AT_HOUR = new Date().getHours(); // Change to specific hour to run only once a day
@@ -9,7 +9,7 @@ export const verifyJointBalances = async () => {
     return;
   }
 
-  readJointEmails(false);
+  readPersonalEmails(false);
 
   const transactions = new JointTransactions();
   await transactions.initializeTransactions();
