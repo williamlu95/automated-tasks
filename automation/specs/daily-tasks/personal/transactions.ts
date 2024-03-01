@@ -1,5 +1,4 @@
-import * as csv from 'csvtojson';
-import { endOfMonth, getMonth, isSameDay } from 'date-fns';
+import { getMonth, isSameDay, startOfMonth, subDays } from 'date-fns';
 import { TransactionCounts } from '../../../utils/transaction-counts';
 import EmpowerLoginPage from '../../../pageobjects/empower-login-page';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
@@ -9,15 +8,12 @@ import {
   getFromAccount,
 } from '../../../constants/personal-transactions';
 import { Transaction, TemplateTransaction, AutoPayTransaction } from '../../../types/transaction';
-import { TRANSACTION_HEADERS } from '../../../constants/transaction';
 
 export type Template = Omit<
   Omit<TemplateTransaction, 'isTransactionIncluded'>,
   'transactionCountKey'
 > & { amount: string };
 export type AutoPay = { fromAccount: string; toAccount: string; amount: string };
-
-const { WELLS_FARGO_CHECKING = '', CHASE_CHECKING = '' } = process.env;
 
 export class Transactions {
   private transactionsForCurrentMonth: Transaction[];
@@ -39,8 +35,7 @@ export class Transactions {
     await EmpowerLoginPage.open();
     await EmpowerLoginPage.loginToPersonal();
     await EmpowerTransactionPage.open();
-    const transactionsPath = await EmpowerTransactionPage.downloadTransactions();
-    const transactions = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionsPath);
+    const transactions = await EmpowerTransactionPage.downloadTransactions();
     this.balances = await EmpowerTransactionPage.getAllAccountBalances();
 
     this.transactionsForCurrentMonth = this.#getTransactionsForCurrentMonth(transactions);
@@ -81,12 +76,15 @@ export class Transactions {
         return true;
       }
 
-      const lastMonth = new Date(new Date().getFullYear(), currentMonth - 1);
-      const isLastDayOfLastMonth = isSameDay(transactionDate, endOfMonth(lastMonth));
-      const isCheckingAccount =
-        t.Account.endsWith(WELLS_FARGO_CHECKING) || t.Account.endsWith(CHASE_CHECKING);
+      const lastDayOfLastMonth = subDays(
+        startOfMonth(new Date(new Date().getFullYear(), currentMonth)),
+        1
+      );
 
-      if (isLastDayOfLastMonth && isCheckingAccount) {
+      lastDayOfLastMonth.setUTCHours(0);
+      const isLastDayOfLastMonth = isSameDay(transactionDate, lastDayOfLastMonth);
+
+      if (isLastDayOfLastMonth) {
         return true;
       }
 

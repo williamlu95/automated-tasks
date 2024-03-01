@@ -1,6 +1,4 @@
-import * as csv from 'csvtojson';
 import { addMonths, format, getMonth } from 'date-fns';
-import { TRANSACTION_HEADERS } from '../../../constants/transaction';
 import { ExpectedJointTransaction, Transaction } from '../../../types/transaction';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/joint-transactions';
@@ -35,8 +33,7 @@ export class JointTransactions {
     await EmpowerLoginPage.open();
     await EmpowerLoginPage.loginToJoint();
     await EmpowerTransactionPage.open();
-    const transactionsPath = await EmpowerTransactionPage.downloadTransactions();
-    const transactions = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionsPath);
+    const transactions = await EmpowerTransactionPage.downloadTransactions();
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);

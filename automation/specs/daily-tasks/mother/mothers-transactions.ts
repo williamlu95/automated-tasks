@@ -1,4 +1,3 @@
-import * as csv from 'csvtojson';
 import { format, getMonth } from 'date-fns';
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/mothers-transactions';
 import { includesName } from '../../../utils/includes-name';
@@ -6,7 +5,6 @@ import { formatFromDollars, formatToDollars } from '../../../utils/currency-form
 import EmpowerLoginPage from '../../../pageobjects/empower-login-page';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import { ExpectedTransaction, Transaction } from '../../../types/transaction';
-import { TRANSACTION_HEADERS } from '../../../constants/transaction';
 
 const { MOTHERS_WF = '', MOTHERS_CITI = '' } = process.env;
 
@@ -30,8 +28,7 @@ export class MothersTransactions {
     await EmpowerLoginPage.open();
     await EmpowerLoginPage.loginToMother();
     await EmpowerTransactionPage.open();
-    const transactionsPath = await EmpowerTransactionPage.downloadTransactions();
-    const transactions = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionsPath);
+    const transactions = await EmpowerTransactionPage.downloadTransactions();
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);

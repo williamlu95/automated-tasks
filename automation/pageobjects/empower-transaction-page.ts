@@ -1,7 +1,10 @@
+import * as csv from 'csvtojson';
 import * as fs from 'fs';
 import * as path from 'path';
 import Page from './page';
 import { downloadDir } from '../utils/file';
+import { TRANSACTION_HEADERS } from '../constants/transaction';
+import { Transaction } from '../types/transaction';
 
 class EmpowerTransactionPage extends Page {
   private fileName = 'transactions.csv';
@@ -14,12 +17,18 @@ class EmpowerTransactionPage extends Page {
     return $$('div.qa-sidebar-account-header');
   }
 
-  async downloadTransactions(): Promise<string> {
+  async downloadTransactions(): Promise<Transaction[]> {
     await this.cleanFiles();
     await browser.waitUntil(() => this.downloadCsvButton && this.downloadCsvButton.isClickable());
     await this.downloadCsvButton.click();
     const transactionFile = await this.getTransactionFile();
-    return path.join(downloadDir, transactionFile);
+    const transactionPath = path.join(downloadDir, transactionFile);
+
+    await browser.waitUntil(
+      async () => !!(await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionPath)).length
+    );
+
+    return csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionPath);
   }
 
   private async cleanFiles() {
@@ -35,7 +44,11 @@ class EmpowerTransactionPage extends Page {
   }
 
   private async getTransactionFile() {
-    await browser.waitUntil(() => fs.readdirSync(`${downloadDir}/`).length > 0);
+    await browser.waitUntil(() => {
+      const files = fs.readdirSync(`${downloadDir}/`);
+      return files.some((f) => f.endsWith(this.fileName));
+    });
+
     const files = fs.readdirSync(`${downloadDir}/`);
     return files.find((f) => f.endsWith(this.fileName)) ?? '';
   }
