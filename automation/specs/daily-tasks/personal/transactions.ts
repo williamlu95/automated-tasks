@@ -17,7 +17,7 @@ export type Template = Omit<
 > & { amount: string };
 export type AutoPay = { fromAccount: string; toAccount: string; amount: string };
 
-const { WELLS_FARGO_CHECKING = '' } = process.env;
+const { WELLS_FARGO_CHECKING = '', CHASE_CHECKING = '' } = process.env;
 
 export class Transactions {
   private transactionsForCurrentMonth: Transaction[];
@@ -83,9 +83,10 @@ export class Transactions {
 
       const lastMonth = new Date(new Date().getFullYear(), currentMonth - 1);
       const isLastDayOfLastMonth = isSameDay(transactionDate, endOfMonth(lastMonth));
-      const isWellsFargoCheckingAccount = t.Account.endsWith(WELLS_FARGO_CHECKING);
+      const isCheckingAccount =
+        t.Account.endsWith(WELLS_FARGO_CHECKING) || t.Account.endsWith(CHASE_CHECKING);
 
-      if (isLastDayOfLastMonth && isWellsFargoCheckingAccount) {
+      if (isLastDayOfLastMonth && isCheckingAccount) {
         return true;
       }
 
