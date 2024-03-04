@@ -31,7 +31,7 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   MORTGAGE: {
     identifier: 'Mortgage',
-    name: 'NOT KNOWN YET',
+    name: 'Pennymac',
     amount: 3230.0,
     day: 1,
     type: TRANSACTION_TYPE.EXPENSE,
