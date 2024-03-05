@@ -56,7 +56,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     amount: 600.0,
     day: 2,
     type: TRANSACTION_TYPE.EXPENSE,
-    validateTransaction: (t) => parseInt(t.Amount) === 600,
+    validateTransaction: (t) => Math.abs(parseInt(t.Amount)) === 600,
   },
   CAR_INSURANCE: {
     identifier: 'Car Insurance',
@@ -85,7 +85,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     amount: 465.0,
     day: 15,
     type: TRANSACTION_TYPE.EXPENSE,
-    validateTransaction: (t) => parseInt(t.Amount) === 465,
+    validateTransaction: (t) => Math.abs(parseInt(t.Amount)) === 465,
   },
   HOA: {
     identifier: 'HOA',
