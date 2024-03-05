@@ -38,7 +38,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   },
   WATER: {
     identifier: 'Water',
-    name: 'NOT KNOWN YET',
+    name: 'Las Vegas Valley Water District',
     amount: 50.0,
     day: 1,
     type: TRANSACTION_TYPE.EXPENSE,
