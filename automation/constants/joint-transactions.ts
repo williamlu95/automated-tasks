@@ -52,10 +52,11 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   },
   FURNITURE: {
     identifier: 'Furniture (Custom Cash)',
-    name: 'NOT KNOWN YET',
+    name: 'Citibank',
     amount: 600.0,
     day: 2,
     type: TRANSACTION_TYPE.EXPENSE,
+    validateTransaction: (t) => parseInt(t.Amount) === 600,
   },
   CAR_INSURANCE: {
     identifier: 'Car Insurance',
