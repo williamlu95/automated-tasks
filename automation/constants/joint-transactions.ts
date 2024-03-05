@@ -110,7 +110,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   },
   SIDS: {
     identifier: 'SIDs',
-    name: 'NOT KNOWN YET',
+    name: 'City Of Lv Sid',
     amount: 35.0,
     day: 20,
     type: TRANSACTION_TYPE.EXPENSE,
