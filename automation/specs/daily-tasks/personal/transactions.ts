@@ -1,4 +1,3 @@
-import { getMonth, isSameDay, startOfMonth, subDays } from 'date-fns';
 import { TransactionCounts } from '../../../utils/transaction-counts';
 import EmpowerLoginPage from '../../../pageobjects/empower-login-page';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
@@ -8,6 +7,7 @@ import {
   getFromAccount,
 } from '../../../constants/personal-transactions';
 import { Transaction, TemplateTransaction, AutoPayTransaction } from '../../../types/transaction';
+import { DateTime } from 'luxon';
 
 export type Template = Omit<
   Omit<TemplateTransaction, 'isTransactionIncluded'>,
@@ -68,21 +68,15 @@ export class Transactions {
 
   #getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
     const transactionsForCurrentMonth = transactions.filter((t) => {
-      const transactionDate = new Date(t.Date);
-      const currentMonth = TransactionCounts.getTransactionMonth();
-      const isSameMonth = getMonth(transactionDate) === currentMonth;
+      const transactionDate = DateTime.fromISO(t.Date);
+      const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');
 
       if (isSameMonth) {
         return true;
       }
 
-      const lastDayOfLastMonth = subDays(
-        startOfMonth(new Date(new Date().getFullYear(), currentMonth)),
-        1
-      );
-
-      lastDayOfLastMonth.setUTCHours(0);
-      const isLastDayOfLastMonth = isSameDay(transactionDate, lastDayOfLastMonth);
+      const lastDayOfLastMonth = DateTime.now().minus({ month: 1 }).endOf('month');
+      const isLastDayOfLastMonth = transactionDate.hasSame(lastDayOfLastMonth, 'day');
 
       if (isLastDayOfLastMonth) {
         return true;

@@ -1,10 +1,11 @@
-import { format, getMonth } from 'date-fns';
+import { format } from 'date-fns';
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/mothers-transactions';
 import { includesName } from '../../../utils/includes-name';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import EmpowerLoginPage from '../../../pageobjects/empower-login-page';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import { ExpectedTransaction, Transaction } from '../../../types/transaction';
+import { DateTime } from 'luxon';
 
 const { MOTHERS_WF = '', MOTHERS_CITI = '' } = process.env;
 
@@ -128,8 +129,8 @@ export class MothersTransactions {
 
   private getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
     const transactionsForCurrentMonth = transactions.filter((t) => {
-      const transactionDate = new Date(t.Date);
-      const isSameMonth = getMonth(transactionDate) === getMonth(new Date());
+      const transactionDate = DateTime.fromISO(t.Date);
+      const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');
 
       if (isSameMonth) {
         return true;

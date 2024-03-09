@@ -1,4 +1,4 @@
-import { addMonths, format, getMonth } from 'date-fns';
+import { addMonths, format } from 'date-fns';
 import { ExpectedJointTransaction, Transaction } from '../../../types/transaction';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/joint-transactions';
@@ -6,6 +6,7 @@ import { includesName } from '../../../utils/includes-name';
 import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
 import EmpowerLoginPage from '../../../pageobjects/empower-login-page';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
+import { DateTime } from 'luxon';
 
 const { JOINT_SOFI = '', JOINT_BILL = '', JOINT_FOOD = '' } = process.env;
 
@@ -167,8 +168,8 @@ export class JointTransactions {
 
   private getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
     const transactionsForCurrentMonth = transactions.filter((t) => {
-      const transactionDate = new Date(t.Date);
-      const isSameMonth = getMonth(transactionDate) === getMonth(new Date());
+      const transactionDate = DateTime.fromISO(t.Date);
+      const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');
 
       if (isSameMonth) {
         return true;
