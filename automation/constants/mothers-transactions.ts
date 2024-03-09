@@ -10,7 +10,7 @@ export const INCOME: Record<string, ExpectedTransaction> = Object.freeze({
   MOTHER_SALARY: {
     identifier: "Mother's Salary",
     name: 'Unitedhealth Group',
-    amount: 500.0,
+    amount: 450.0,
     day: 0,
     days: getPayDaysForMonth(new Date('09/29/23')),
     type: TRANSACTION_TYPE.INCOME,
@@ -91,7 +91,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   INTERNET: {
     identifier: 'Cox Cable',
     name: 'Cox Communications',
-    amount: 140.0,
+    amount: 107.0,
     day: 18,
     type: TRANSACTION_TYPE.EXPENSE,
   },
