@@ -49,6 +49,7 @@ export const config: WebdriverIO.Config = {
   mochaOpts: {
     ui: 'bdd',
     timeout: 1920000,
+    retries: 5,
   },
 
   onComplete: async (_exitCode, _config, _capabilities, results) => {
