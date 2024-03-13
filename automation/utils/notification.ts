@@ -106,7 +106,7 @@ const readEmails =
                       setVerificationCodes
                     ) {
                       const text = partData.replace(/<[^>]*>?/gm, '').replace(/\s/g, '');
-                      const empowerVerificationCode = text.match(/authenticationcodeis(\d+)/)?.[1];
+                      const empowerVerificationCode = text.match(/4-digitcodebelow.(\d+)/)?.[1];
                       verificationCodes.empower = empowerVerificationCode;
                     }
 

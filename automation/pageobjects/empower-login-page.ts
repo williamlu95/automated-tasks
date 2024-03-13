@@ -82,15 +82,15 @@ class EmpowerLoginPage extends Page {
   }
 
   private async completeVerification(readEmails: () => Promise<void>) {
-    await browser.waitUntil(() => this.textMeButton && this.textMeButton.isClickable());
-    await this.textMeButton.click();
+    await browser.waitUntil(() => this.emailMeButton && this.emailMeButton.isClickable());
+    await this.emailMeButton.click();
 
     await browser.waitUntil(async () => {
       await readEmails();
       return !!verificationCodes.empower;
     });
 
-    await this.codeInputs[1].setValue(verificationCodes.empower);
+    await this.codeInput.setValue(verificationCodes.empower);
     const button = await this.getSubmitCodeButton();
     await button.click();
   }

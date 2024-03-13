@@ -4,11 +4,12 @@ import { formatFromDollars, formatToDollars } from '../../../utils/currency-form
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/joint-transactions';
 import { includesName } from '../../../utils/includes-name';
 import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
-import EmpowerLoginPage from '../../../pageobjects/empower-login-page';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import { DateTime } from 'luxon';
 
 const { JOINT_SOFI = '', JOINT_BILL = '', JOINT_FOOD = '' } = process.env;
+
+const INCLUDED_TRANSACTIONS = [JOINT_SOFI, JOINT_BILL, JOINT_FOOD];
 
 const OVERALL_FORMULA = '=INDIRECT("C" & ROW()) + INDIRECT("D" & ROW() - 1)';
 
@@ -31,9 +32,6 @@ export class JointTransactions {
   }
 
   async initializeTransactions() {
-    await EmpowerLoginPage.open();
-    await EmpowerLoginPage.loginToJoint();
-    await EmpowerTransactionPage.open();
     const transactions = await EmpowerTransactionPage.downloadTransactions();
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
@@ -167,16 +165,18 @@ export class JointTransactions {
   }
 
   private getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
-    const transactionsForCurrentMonth = transactions.filter((t) => {
-      const transactionDate = DateTime.fromISO(t.Date);
-      const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');
+    const transactionsForCurrentMonth = transactions
+      .filter((t) => INCLUDED_TRANSACTIONS.some((it) => t.Account.endsWith(it)))
+      .filter((t) => {
+        const transactionDate = DateTime.fromISO(t.Date);
+        const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');
 
-      if (isSameMonth) {
-        return true;
-      }
+        if (isSameMonth) {
+          return true;
+        }
 
-      return false;
-    });
+        return false;
+      });
 
     transactionsForCurrentMonth.reverse();
     return transactionsForCurrentMonth;

@@ -2,12 +2,13 @@ import { format } from 'date-fns';
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/mothers-transactions';
 import { includesName } from '../../../utils/includes-name';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
-import EmpowerLoginPage from '../../../pageobjects/empower-login-page';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import { ExpectedTransaction, Transaction } from '../../../types/transaction';
 import { DateTime } from 'luxon';
 
 const { MOTHERS_WF = '', MOTHERS_CITI = '' } = process.env;
+
+const INCLUDED_TRANSACTIONS = [MOTHERS_WF, MOTHERS_CITI];
 
 export class MothersTransactions {
   private transactionsForCurrentMonth: Transaction[];
@@ -26,9 +27,6 @@ export class MothersTransactions {
   }
 
   async initializeTransactions() {
-    await EmpowerLoginPage.open();
-    await EmpowerLoginPage.loginToMother();
-    await EmpowerTransactionPage.open();
     const transactions = await EmpowerTransactionPage.downloadTransactions();
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
@@ -128,16 +126,18 @@ export class MothersTransactions {
   }
 
   private getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
-    const transactionsForCurrentMonth = transactions.filter((t) => {
-      const transactionDate = DateTime.fromISO(t.Date);
-      const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');
+    const transactionsForCurrentMonth = transactions
+      .filter((t) => INCLUDED_TRANSACTIONS.some((it) => t.Account.endsWith(it)))
+      .filter((t) => {
+        const transactionDate = DateTime.fromISO(t.Date);
+        const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');
 
-      if (isSameMonth) {
-        return true;
-      }
+        if (isSameMonth) {
+          return true;
+        }
 
-      return false;
-    });
+        return false;
+      });
 
     transactionsForCurrentMonth.reverse();
     return transactionsForCurrentMonth;

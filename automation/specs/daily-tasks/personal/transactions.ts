@@ -1,5 +1,4 @@
 import { TransactionCounts } from '../../../utils/transaction-counts';
-import EmpowerLoginPage from '../../../pageobjects/empower-login-page';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import {
   AUTO_PAY,
@@ -8,6 +7,40 @@ import {
 } from '../../../constants/personal-transactions';
 import { Transaction, TemplateTransaction, AutoPayTransaction } from '../../../types/transaction';
 import { DateTime } from 'luxon';
+
+const {
+  CHASE_CHECKING = '',
+  AMEX_GOLD = '',
+  CAPITAL_ONE_VENTURE_X = '',
+  CITI_CUSTOM_CASH = '',
+  CHASE_FREEDOM_FLEX = '',
+  DISCOVER_IT = '',
+  CHASE_AMAZON = '',
+  CHASE_FREEDOM_UNLIMITED = '',
+  WELLS_FARGO_PLATINUM = '',
+  WELLS_FARGO_CHECKING = '',
+  WELLS_FARGO_ACTIVE_CASH = '',
+  AMEX_BLUE = '',
+  WELLS_FARGO_AUTOGRAPH = '',
+  CITI_DOUBLE_CASH = '',
+} = process.env;
+
+const INCLUDED_TRANSACTIONS = [
+  CHASE_CHECKING,
+  AMEX_GOLD,
+  CAPITAL_ONE_VENTURE_X,
+  CITI_CUSTOM_CASH,
+  CHASE_FREEDOM_FLEX,
+  DISCOVER_IT,
+  CHASE_AMAZON,
+  CHASE_FREEDOM_UNLIMITED,
+  WELLS_FARGO_PLATINUM,
+  WELLS_FARGO_CHECKING,
+  WELLS_FARGO_ACTIVE_CASH,
+  AMEX_BLUE,
+  WELLS_FARGO_AUTOGRAPH,
+  CITI_DOUBLE_CASH,
+];
 
 export type Template = Omit<
   Omit<TemplateTransaction, 'isTransactionIncluded'>,
@@ -32,9 +65,6 @@ export class Transactions {
   }
 
   async initializeTransactions() {
-    await EmpowerLoginPage.open();
-    await EmpowerLoginPage.loginToPersonal();
-    await EmpowerTransactionPage.open();
     const transactions = await EmpowerTransactionPage.downloadTransactions();
     this.balances = await EmpowerTransactionPage.getAllAccountBalances();
 
@@ -67,23 +97,25 @@ export class Transactions {
   }
 
   #getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
-    const transactionsForCurrentMonth = transactions.filter((t) => {
-      const transactionDate = DateTime.fromISO(t.Date);
-      const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');
+    const transactionsForCurrentMonth = transactions
+      .filter((t) => INCLUDED_TRANSACTIONS.some((it) => t.Account.endsWith(it)))
+      .filter((t) => {
+        const transactionDate = DateTime.fromISO(t.Date);
+        const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');
 
-      if (isSameMonth) {
-        return true;
-      }
+        if (isSameMonth) {
+          return true;
+        }
 
-      const lastDayOfLastMonth = DateTime.now().minus({ month: 1 }).endOf('month');
-      const isLastDayOfLastMonth = transactionDate.hasSame(lastDayOfLastMonth, 'day');
+        const lastDayOfLastMonth = DateTime.now().minus({ month: 1 }).endOf('month');
+        const isLastDayOfLastMonth = transactionDate.hasSame(lastDayOfLastMonth, 'day');
 
-      if (isLastDayOfLastMonth) {
-        return true;
-      }
+        if (isLastDayOfLastMonth) {
+          return true;
+        }
 
-      return false;
-    });
+        return false;
+      });
 
     transactionsForCurrentMonth.reverse();
     return transactionsForCurrentMonth;

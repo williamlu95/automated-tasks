@@ -4,9 +4,12 @@ import * as path from 'path';
 import Page from './page';
 import { downloadDir } from '../utils/file';
 import { TRANSACTION_HEADERS } from '../constants/transaction';
+import EmpowerLoginPage from './empower-login-page';
 import { Transaction } from '../types/transaction';
 
 class EmpowerTransactionPage extends Page {
+  private transactionKey = 'transactions';
+  private balanceKey = 'balance';
   private fileName = 'transactions.csv';
 
   get downloadCsvButton() {
@@ -18,17 +21,32 @@ class EmpowerTransactionPage extends Page {
   }
 
   async downloadTransactions(): Promise<Transaction[]> {
+    const cachedTransactions = await browser.sharedStore.get(this.transactionKey);
+
+    if (cachedTransactions) {
+      return JSON.parse(cachedTransactions);
+    }
+
+    await EmpowerLoginPage.open();
+    await EmpowerLoginPage.loginToPersonal();
+    await this.open();
     await this.cleanFiles();
     await browser.waitUntil(() => this.downloadCsvButton && this.downloadCsvButton.isClickable());
     await this.downloadCsvButton.click();
     const transactionFile = await this.getTransactionFile();
     const transactionPath = path.join(downloadDir, transactionFile);
 
-    await browser.waitUntil(
-      async () => !!(await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionPath)).length
+    await browser.waitUntil(async () => {
+      const t = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionPath);
+      return !!t.length;
+    });
+
+    const transactions: Transaction[] = await csv({ headers: TRANSACTION_HEADERS }).fromFile(
+      transactionPath
     );
 
-    return csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionPath);
+    browser.sharedStore.set(this.transactionKey, JSON.stringify(transactions));
+    return transactions;
   }
 
   private async cleanFiles() {
@@ -54,6 +72,12 @@ class EmpowerTransactionPage extends Page {
   }
 
   async getAllAccountBalances() {
+    const cachedBalances = await browser.sharedStore.get(this.balanceKey);
+
+    if (cachedBalances) {
+      return JSON.parse(cachedBalances);
+    }
+
     await browser.waitUntil(async () => (await this.sideBarAccount.length) > 0);
 
     const accountList = await this.sideBarAccount;
@@ -72,7 +96,9 @@ class EmpowerTransactionPage extends Page {
       return [accountNumber, balance];
     });
 
-    return Object.fromEntries(accountBalanceEntries);
+    const balances = Object.fromEntries(accountBalanceEntries);
+    browser.sharedStore.set(this.balanceKey, JSON.stringify(balances));
+    return balances;
   }
 
   open() {
