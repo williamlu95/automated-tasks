@@ -27,7 +27,7 @@
         "wdio:daily": "wdio run wdio.conf.ts --suite daily"
     },
     "dependencies": {
-        "chromedriver": "^120.0.0",
+        "chromedriver": "^122.0.0",
         "csvtojson": "^2.0.10",
         "date-fns": "^2.28.0",
         "dotenv": "^16.0.0",
