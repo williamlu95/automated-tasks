@@ -1,3 +1,5 @@
+import { ExpectedJointTransaction, ExpectedTransaction } from '../types/transaction';
+import { getSemiMonthylPayDaysForMonths } from '../utils/date-formatters';
 import { Transaction } from '../types/transaction';
 import { includesName } from '../utils/includes-name';
 
@@ -12,10 +14,6 @@ export const WALLET_ACCOUNT = Object.freeze({
   CHASE_AMAZON: 'Chase Amazon',
   CHASE_FREEDOM_UNLIMITED: 'Chase Freedom Unlimited',
   WELLS_FARGO_PLATINUM: 'Wells Fargo Platinum',
-  WELLS_FARGO_CHECKING: 'Wells Fargo Checking',
-  WELLS_FARGO_ACTIVE_CASH: 'Wells Fargo Active Cash',
-  AMEX_BLUE: 'AMEX Blue',
-  WELLS_FARGO_AUTOGRAPH: 'Wells Fargo Autograph',
 });
 
 export const TRANSACTION_TYPE = Object.freeze({
@@ -38,34 +36,10 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     isTransactionIncluded: (t: Transaction) =>
       includesName(t.Description, INCOME_NAME) && t.Account.endsWith(CHASE_CHECKING),
   },
-  WELLS_FARGO_INCOME: {
-    walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
-    template: 'Wells Fargo Income',
-    type: TRANSACTION_TYPE.CREDIT,
-    transactionCountKey: 'wellsFargoIncome',
-    isTransactionIncluded: (t: Transaction) =>
-      includesName(t.Description, INCOME_NAME) && t.Account.endsWith(WELLS_FARGO_CHECKING),
-  },
-  TMOBILE: {
-    walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_AUTOGRAPH,
-    template: 'T-Mobile',
-    type: TRANSACTION_TYPE.DEBIT,
-    transactionCountKey: 'tmobilePayments',
-    isTransactionIncluded: () => false,
-  },
-  STUDENT_LOAN: {
-    walletAccountName: WALLET_ACCOUNT.WELLS_FARGO_CHECKING,
-    template: 'Student Loan',
-    type: TRANSACTION_TYPE.DEBIT,
-    transactionCountKey: 'studentLoanPayments',
-    isTransactionIncluded: (t: Transaction) =>
-      includesName(t.Description, 'Us Department Of Education'),
-  },
 });
 
 export const getFromAccount = (accountName: string): string => {
   if (accountName.endsWith(CHASE_CHECKING)) return WALLET_ACCOUNT.CHASE_CHECKING;
-  if (accountName.endsWith(WELLS_FARGO_CHECKING)) return WALLET_ACCOUNT.WELLS_FARGO_CHECKING;
   return '';
 };
 
@@ -90,7 +64,7 @@ export const AUTO_PAY = Object.freeze({
     isTransactionIncluded: (t: Transaction) =>
       isAutoPayTransaction('American Express')(t) &&
       t.Category === CATEGORY_TYPE.CREDIT_CARD_PAYMENT,
-    transfers: [WALLET_ACCOUNT.AMEX_GOLD, WALLET_ACCOUNT.AMEX_BLUE],
+    transfers: [WALLET_ACCOUNT.AMEX_GOLD],
   },
   CAPITAL_ONE: {
     paymentCountKey: 'capitalOnePayments',
@@ -105,10 +79,56 @@ export const AUTO_PAY = Object.freeze({
   WELLS_FARGO: {
     paymentCountKey: 'wellsFargoPayments',
     isTransactionIncluded: isAutoPayTransaction('Wells Fargo Bank'),
-    transfers: [
-      WALLET_ACCOUNT.WELLS_FARGO_AUTOGRAPH,
-      WALLET_ACCOUNT.WELLS_FARGO_ACTIVE_CASH,
-      WALLET_ACCOUNT.WELLS_FARGO_PLATINUM,
-    ],
+    transfers: ['', '', WALLET_ACCOUNT.WELLS_FARGO_PLATINUM],
+  },
+});
+
+export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
+  WILL_SALARY: {
+    identifier: "William's Salary",
+    name: 'Betterlesson',
+    amount: 1000.0,
+    day: '0',
+    days: getSemiMonthylPayDaysForMonths(),
+    type: TRANSACTION_TYPE.CREDIT,
+  },
+});
+
+export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
+  STUDENT_LOAN: {
+    identifier: 'Student Loan',
+    name: 'Us Department Of Education',
+    amount: 1750.0,
+    day: 9,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
+  HULU: {
+    identifier: 'Hulu',
+    name: 'Hulu',
+    amount: 18.0,
+    day: 21,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
+  AMAZON_PRIME: {
+    identifier: 'Amazon Prime',
+    name: 'Amazon Prime',
+    amount: 7.0,
+    day: 22,
+    type: TRANSACTION_TYPE.DEBIT,
+    validateTransaction: (t) => t.Category === 'Dues & Subscriptions',
+  },
+  EOS: {
+    identifier: 'EOS',
+    name: 'Eos Fitness',
+    amount: 27.0,
+    day: 23,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
+  TMOBILE: {
+    identifier: 'T-Mobile',
+    name: 'T-mobile',
+    amount: 171.0,
+    day: 25,
+    type: TRANSACTION_TYPE.DEBIT,
   },
 });

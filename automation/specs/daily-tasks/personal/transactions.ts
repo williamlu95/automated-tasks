@@ -2,11 +2,23 @@ import { TransactionCounts } from '../../../utils/transaction-counts';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import {
   AUTO_PAY,
+  EXPENSE,
+  INCOME,
   TEMPLATE_TRANSACTION,
+  TRANSACTION_TYPE,
   getFromAccount,
 } from '../../../constants/personal-transactions';
-import { Transaction, TemplateTransaction, AutoPayTransaction } from '../../../types/transaction';
+import {
+  Transaction,
+  TemplateTransaction,
+  AutoPayTransaction,
+  ExpectedJointTransaction,
+} from '../../../types/transaction';
 import { DateTime } from 'luxon';
+import { includesName } from '../../../utils/includes-name';
+import { addMonths, format } from 'date-fns';
+import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
+import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 
 const {
   CHASE_CHECKING = '',
@@ -42,6 +54,8 @@ const INCLUDED_TRANSACTIONS = [
   CITI_DOUBLE_CASH,
 ];
 
+const OVERALL_FORMULA = '=INDIRECT("C" & ROW()) + INDIRECT("D" & ROW() - 1)';
+
 export type Template = Omit<
   Omit<TemplateTransaction, 'isTransactionIncluded'>,
   'transactionCountKey'
@@ -57,11 +71,17 @@ export class Transactions {
 
   private balances: Record<string, string>;
 
+  private outstandingExpenses: ExpectedJointTransaction[];
+
+  private outstandingIncome: ExpectedJointTransaction[];
+
   constructor() {
     this.transactionsForCurrentMonth = [];
     this.templateTransactions = [];
     this.autoPayTransactions = [];
     this.balances = {};
+    this.outstandingExpenses = [];
+    this.outstandingIncome = [];
   }
 
   async initializeTransactions() {
@@ -77,6 +97,70 @@ export class Transactions {
 
     this.autoPayTransactions = Object.values(AUTO_PAY).flatMap((p) =>
       this.#getTransactionsForAutoPay(p)
+    );
+
+    this.outstandingExpenses = this.calculateOutstandingExpenses();
+    console.log(`Outstanding Expenses: ${JSON.stringify(this.outstandingExpenses, null, 4)}`);
+
+    this.outstandingIncome = this.calculateOutstandingIncome();
+    console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
+  }
+
+  private calculateOutstandingIncome(): ExpectedJointTransaction[] {
+    const income: ExpectedJointTransaction[] = [];
+
+    Object.values(INCOME).forEach((value) => {
+      const paidSalary = this.transactionsForCurrentMonth.filter(
+        (t) =>
+          includesName(t.Description, value.name) &&
+          t.Account.endsWith(WELLS_FARGO_CHECKING) &&
+          DateTime.fromISO(t.Date).hasSame(DateTime.now(), 'month')
+      );
+
+      const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map((day) => ({
+        ...value,
+        day,
+      }));
+
+      income.push(...unpaidSalary);
+    });
+
+    return income.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
+  }
+
+  private calculateOutstandingExpenses(): ExpectedJointTransaction[] {
+    const expenses: ExpectedJointTransaction[] = [];
+
+    Object.values(EXPENSE).forEach((e) => {
+      if (
+        this.transactionsForCurrentMonth.some(
+          (t) =>
+            includesName(t.Description, e.name) &&
+            (!e.validateTransaction || e.validateTransaction(t))
+        )
+      ) {
+        return;
+      }
+
+      expenses.push({ ...e, day: format(new Date().setDate(e.day), 'P'), days: undefined });
+    });
+    expenses.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
+    const futureExpenses = this.calculateFutureExpenses();
+
+    return expenses.concat(futureExpenses);
+  }
+
+  private calculateFutureExpenses(): ExpectedJointTransaction[] {
+    const futureDates = Array(ADDITIONAL_MONTHS)
+      .fill(new Date())
+      .map((date, index) => addMonths(date, index + 1));
+
+    return futureDates.flatMap((futureDate) =>
+      Object.values(EXPENSE).map((e) => ({
+        ...e,
+        day: format(new Date(futureDate).setDate(e.day), 'P'),
+        days: undefined,
+      }))
     );
   }
 
@@ -158,5 +242,55 @@ export class Transactions {
 
   getBalances() {
     return this.balances;
+  }
+
+  async getBalanceSheet() {
+    const checkingBalance = formatFromDollars(this.balances[WELLS_FARGO_CHECKING]);
+    const wfActiveCreditCard = -formatFromDollars(this.balances[WELLS_FARGO_ACTIVE_CASH]);
+    const wfAutographCreditCard = -formatFromDollars(this.balances[WELLS_FARGO_AUTOGRAPH]);
+    const amexBlueCreditCard = -formatFromDollars(this.balances[AMEX_BLUE]);
+    const today = new Date();
+
+    const balanceSheet: string[][] = [
+      [
+        'Wells Fargo Checking Balance',
+        format(today, 'P'),
+        formatToDollars(checkingBalance),
+        formatToDollars(checkingBalance),
+      ],
+    ];
+
+    balanceSheet.push([
+      'Wells Fargo Active Balance',
+      format(today, 'P'),
+      formatToDollars(wfActiveCreditCard),
+      OVERALL_FORMULA,
+    ]);
+
+    balanceSheet.push([
+      'Wells Fargo Autograph Balance',
+      format(today, 'P'),
+      formatToDollars(wfAutographCreditCard),
+      OVERALL_FORMULA,
+    ]);
+
+    balanceSheet.push([
+      'Amex Blue Balance',
+      format(today, 'P'),
+      formatToDollars(amexBlueCreditCard),
+      OVERALL_FORMULA,
+    ]);
+
+    const allTransactions = this.outstandingExpenses
+      .concat(this.outstandingIncome)
+      .sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
+
+    allTransactions.forEach((t) => {
+      const amount = t.type === TRANSACTION_TYPE.CREDIT ? t.amount : -t.amount;
+
+      balanceSheet.push([t.identifier, t.day, formatToDollars(amount), OVERALL_FORMULA]);
+    });
+
+    return balanceSheet;
   }
 }

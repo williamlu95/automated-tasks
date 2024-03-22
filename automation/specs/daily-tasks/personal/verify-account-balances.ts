@@ -12,16 +12,12 @@ const {
   CHASE_FREEDOM_UNLIMITED,
   WELLS_FARGO_PLATINUM,
   WELLS_FARGO_CHECKING,
-  WELLS_FARGO_ACTIVE_CASH,
-  AMEX_BLUE,
-  WELLS_FARGO_AUTOGRAPH,
 } = process.env;
 
 const CHECKING_ACCOUNTS = [CHASE_CHECKING, WELLS_FARGO_CHECKING];
 
 const ACCOUNTS = {
   [WALLET_ACCOUNT.CHASE_CHECKING]: CHASE_CHECKING,
-  [WALLET_ACCOUNT.WELLS_FARGO_CHECKING]: WELLS_FARGO_CHECKING,
   [WALLET_ACCOUNT.AMEX_GOLD]: AMEX_GOLD,
   [WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X]: CAPITAL_ONE_VENTURE_X,
   [WALLET_ACCOUNT.CHASE_FREEDOM_FLEX]: CHASE_FREEDOM_FLEX,
@@ -29,9 +25,6 @@ const ACCOUNTS = {
   [WALLET_ACCOUNT.CHASE_AMAZON]: CHASE_AMAZON,
   [WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED]: CHASE_FREEDOM_UNLIMITED,
   [WALLET_ACCOUNT.WELLS_FARGO_PLATINUM]: WELLS_FARGO_PLATINUM,
-  [WALLET_ACCOUNT.WELLS_FARGO_ACTIVE_CASH]: WELLS_FARGO_ACTIVE_CASH,
-  [WALLET_ACCOUNT.AMEX_BLUE]: AMEX_BLUE,
-  [WALLET_ACCOUNT.WELLS_FARGO_AUTOGRAPH]: WELLS_FARGO_AUTOGRAPH,
 };
 
 const balanceDifference = (expected: string, actual: string): string => {
@@ -42,7 +35,8 @@ const balanceDifference = (expected: string, actual: string): string => {
 };
 
 export const verifyAccountBalance = async (
-  actualBalances: Record<string, string>
+  actualBalances: Record<string, string>,
+  balanceSheet: string[][]
 ): Promise<void> => {
   const expectedBalances = await WalletDashboardPage.getAllAccountBalances();
 
@@ -60,4 +54,5 @@ export const verifyAccountBalance = async (
   });
 
   await replaceSheetData("William's Balance", accountBalance);
+  await replaceSheetData('Personal Balance', balanceSheet);
 };

@@ -11,6 +11,7 @@ class EmpowerTransactionPage extends Page {
   private transactionKey = 'transactions';
   private balanceKey = 'balance';
   private fileName = 'transactions.csv';
+  private retryCount = 5;
 
   get downloadCsvButton() {
     return $('button[data-testid="csv-btn"]');
@@ -18,6 +19,25 @@ class EmpowerTransactionPage extends Page {
 
   get sideBarAccount() {
     return $$('div.qa-sidebar-account-header');
+  }
+
+  private async download(count: number = 0): Promise<Transaction[]> {
+    if (count >= this.retryCount) {
+      return this.download(count + 1);
+    }
+
+    await this.cleanFiles();
+    await browser.waitUntil(() => this.downloadCsvButton && this.downloadCsvButton.isClickable());
+    await this.downloadCsvButton.click();
+    const transactionFile = await this.getTransactionFile();
+    const transactionPath = path.join(downloadDir, transactionFile);
+
+    const transactions: Transaction[] = await csv({ headers: TRANSACTION_HEADERS }).fromFile(
+      transactionPath
+    );
+
+    browser.sharedStore.set(this.transactionKey, JSON.stringify(transactions));
+    return transactions;
   }
 
   async downloadTransactions(): Promise<Transaction[]> {
@@ -30,23 +50,7 @@ class EmpowerTransactionPage extends Page {
     await EmpowerLoginPage.open();
     await EmpowerLoginPage.loginToPersonal();
     await this.open();
-    await this.cleanFiles();
-    await browser.waitUntil(() => this.downloadCsvButton && this.downloadCsvButton.isClickable());
-    await this.downloadCsvButton.click();
-    const transactionFile = await this.getTransactionFile();
-    const transactionPath = path.join(downloadDir, transactionFile);
-
-    await browser.waitUntil(async () => {
-      const t = await csv({ headers: TRANSACTION_HEADERS }).fromFile(transactionPath);
-      return !!t.length;
-    });
-
-    const transactions: Transaction[] = await csv({ headers: TRANSACTION_HEADERS }).fromFile(
-      transactionPath
-    );
-
-    browser.sharedStore.set(this.transactionKey, JSON.stringify(transactions));
-    return transactions;
+    return this.download();
   }
 
   private async cleanFiles() {

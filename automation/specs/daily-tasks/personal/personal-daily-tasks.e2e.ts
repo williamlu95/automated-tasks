@@ -27,7 +27,7 @@ describe('Personal daily tasks', () => {
       await addPaymentsToWallet(paymentTransactions);
     }
 
-    await verifyAccountBalance(transactions.getBalances());
+    await verifyAccountBalance(transactions.getBalances(), await transactions.getBalanceSheet());
   });
 
   it('tasks have successfully ran', () => expect(true).toEqual(true));
