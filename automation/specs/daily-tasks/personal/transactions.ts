@@ -287,7 +287,7 @@ export class Transactions {
 
     allTransactions.forEach((t) => {
       const amount = t.type === TRANSACTION_TYPE.CREDIT ? t.amount : -t.amount;
-
+      if (t.identifier === EXPENSE.STUDENT_LOAN.identifier && t.day === '04/09/2024') return;
       balanceSheet.push([t.identifier, t.day, formatToDollars(amount), OVERALL_FORMULA]);
     });
 
