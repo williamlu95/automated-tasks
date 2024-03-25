@@ -46,8 +46,7 @@ export const getFromAccount = (accountName: string): string => {
 const isAutoPayTransaction =
   (autoPayName: string) =>
   (t: Transaction): boolean =>
-    includesName(t.Description, autoPayName) &&
-    (t.Account.endsWith(CHASE_CHECKING) || t.Account.endsWith(WELLS_FARGO_CHECKING));
+    includesName(t.Description, autoPayName) && t.Account.endsWith(CHASE_CHECKING);
 
 export const AUTO_PAY = Object.freeze({
   CHASE: {
@@ -79,7 +78,7 @@ export const AUTO_PAY = Object.freeze({
   WELLS_FARGO: {
     paymentCountKey: 'wellsFargoPayments',
     isTransactionIncluded: isAutoPayTransaction('Wells Fargo Bank'),
-    transfers: ['', '', WALLET_ACCOUNT.WELLS_FARGO_PLATINUM],
+    transfers: [WALLET_ACCOUNT.WELLS_FARGO_PLATINUM],
   },
 });
 
