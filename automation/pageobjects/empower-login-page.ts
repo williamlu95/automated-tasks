@@ -11,6 +11,10 @@ const {
 } = process.env;
 
 class EmpowerLoginPage extends Page {
+  get acceptCookiesButton() {
+    return $('button#onetrust-accept-btn-handler');
+  }
+
   get usernameInput() {
     return $('input[name="username"]');
   }
@@ -95,8 +99,18 @@ class EmpowerLoginPage extends Page {
     await button.click();
   }
 
+  private async acceptCookie() {
+    await browser.pause(10000);
+    const cookiesButtonExists = await this.acceptCookiesButton.isExisting();
+
+    if (cookiesButtonExists) {
+      await this.acceptCookiesButton.click();
+    }
+  }
+
   private async login(username: string, password: string, readEmails: () => Promise<void>) {
     await browser.waitUntil(() => this.usernameInput && this.usernameInput.isClickable());
+    await this.acceptCookie();
     await this.usernameInput.setValue(username);
     await this.continueButton.click();
     await this.completeVerification(readEmails);
