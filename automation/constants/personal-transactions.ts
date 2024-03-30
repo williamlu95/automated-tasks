@@ -97,7 +97,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   STUDENT_LOAN: {
     identifier: 'Student Loan',
     name: 'Us Department Of Education',
-    amount: 326.0,
+    amount: 346.0,
     day: 9,
     type: TRANSACTION_TYPE.DEBIT,
   },
