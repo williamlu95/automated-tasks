@@ -6,12 +6,11 @@ import { includesName } from '../../../utils/includes-name';
 import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import { DateTime } from 'luxon';
+import { OVERALL_FORMULA } from '../../../utils/balance';
 
 const { JOINT_SOFI = '', JOINT_BILL = '', JOINT_FOOD = '' } = process.env;
 
 const INCLUDED_TRANSACTIONS = [JOINT_SOFI, JOINT_BILL, JOINT_FOOD];
-
-const OVERALL_FORMULA = '=INDIRECT("C" & ROW()) + INDIRECT("D" & ROW() - 1)';
 
 export class JointTransactions {
   private FOOD_BUDGET = 600;

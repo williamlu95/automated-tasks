@@ -19,6 +19,7 @@ import { includesName } from '../../../utils/includes-name';
 import { addMonths, format } from 'date-fns';
 import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
+import { OVERALL_FORMULA } from '../../../utils/balance';
 
 const {
   CHASE_CHECKING = '',
@@ -53,8 +54,6 @@ const INCLUDED_TRANSACTIONS = [
   WELLS_FARGO_AUTOGRAPH,
   CITI_DOUBLE_CASH,
 ];
-
-const OVERALL_FORMULA = '=INDIRECT("C" & ROW()) + INDIRECT("D" & ROW() - 1)';
 
 export type Template = Omit<
   Omit<TemplateTransaction, 'isTransactionIncluded'>,

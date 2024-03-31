@@ -1,5 +1,6 @@
 import { WALLET_ACCOUNT } from '../../../constants/personal-transactions';
 import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
+import { notifyOfNeagtiveBalance } from '../../../utils/balance';
 import { replaceSheetData } from '../../../utils/google-sheets';
 
 const {
@@ -39,6 +40,7 @@ export const verifyAccountBalance = async (
   balanceSheet: string[][]
 ): Promise<void> => {
   const expectedBalances = await WalletDashboardPage.getAllAccountBalances();
+  await notifyOfNeagtiveBalance(balanceSheet, 'Personal');
 
   const accountBalance = Object.entries(ACCOUNTS).map(([name, number = '']) => {
     const actualBalance = CHECKING_ACCOUNTS.includes(number)

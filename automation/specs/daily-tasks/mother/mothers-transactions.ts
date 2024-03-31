@@ -5,6 +5,7 @@ import { formatFromDollars, formatToDollars } from '../../../utils/currency-form
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import { ExpectedTransaction, Transaction } from '../../../types/transaction';
 import { DateTime } from 'luxon';
+import { OVERALL_FORMULA } from '../../../utils/balance';
 
 const { MOTHERS_WF = '', MOTHERS_CITI = '' } = process.env;
 
@@ -45,7 +46,6 @@ export class MothersTransactions {
   async getBalanceSheet() {
     const checkingBalance = formatFromDollars(this.balances[MOTHERS_WF]);
     const creditCardBalance = -formatFromDollars(this.balances[MOTHERS_CITI]);
-    let currentBalance = checkingBalance + creditCardBalance;
     const today = new Date();
 
     const balanceSheet: string[][] = [
@@ -59,7 +59,7 @@ export class MothersTransactions {
         'Credit Card Balance',
         format(today, 'P'),
         formatToDollars(creditCardBalance),
-        formatToDollars(currentBalance),
+        OVERALL_FORMULA,
       ],
     ];
 
@@ -70,13 +70,11 @@ export class MothersTransactions {
     allTransactions.forEach((t) => {
       const amount = t.type === TRANSACTION_TYPE.INCOME ? t.amount : -t.amount;
 
-      currentBalance += amount;
-
       balanceSheet.push([
         t.identifier,
         format(today.setDate(t.day), 'P'),
         formatToDollars(amount),
-        formatToDollars(currentBalance),
+        OVERALL_FORMULA,
       ]);
     });
 

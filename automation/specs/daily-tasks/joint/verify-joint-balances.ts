@@ -1,3 +1,4 @@
+import { notifyOfNeagtiveBalance } from '../../../utils/balance';
 import { replaceSheetData } from '../../../utils/google-sheets';
 import { readPersonalEmails } from '../../../utils/notification';
 import { JointTransactions } from './joint-transactions';
@@ -14,5 +15,6 @@ export const verifyJointBalances = async () => {
   const transactions = new JointTransactions();
   await transactions.initializeTransactions();
   const balanceSheet = await transactions.getBalanceSheet();
+  await notifyOfNeagtiveBalance(balanceSheet, 'Joint');
   await replaceSheetData('Joint Balance', balanceSheet);
 };
