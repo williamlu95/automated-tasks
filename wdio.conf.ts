@@ -9,6 +9,9 @@ const { LOG_LEVEL } = process.env;
 
 type WebdriverLogTypes = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'silent';
 
+const FAILED_ATTEMPTS_KEY = 'failedAttempts';
+const FAILED_ATTEMPT_LIMIT = 3;
+
 export const config: WebdriverIO.Config = {
   specs: ['./automation/specs/**/*.e2e.ts'],
   suites: {
@@ -56,11 +59,16 @@ export const config: WebdriverIO.Config = {
     rmdir(downloadDir);
 
     if (results.failed > 0) {
+      TransactionCounts.addToTransactionCount(1, FAILED_ATTEMPTS_KEY);
+    } else {
+      TransactionCounts.setTransactionCount(0, FAILED_ATTEMPTS_KEY);
+    }
+    const failedAttempts = TransactionCounts.getTransactionCount(FAILED_ATTEMPTS_KEY);
+
+    if (failedAttempts >= FAILED_ATTEMPT_LIMIT) {
       return sendEmail({
-        subject: 'Automation Script Failed',
-        text: `${results.failed} automated script${
-          results.failed === 1 ? 's' : ''
-        } failed to complete.`,
+        subject: 'ACTION REQUIRED: Automation Script Failure',
+        html: `<h1><strong>Failed Attempt Count: </strong><span style="color: red;">${failedAttempts}</span></h1>`,
       });
     }
 

@@ -36,7 +36,7 @@ class EmpowerTransactionPage extends Page {
       transactionPath
     );
 
-    browser.sharedStore.set(this.transactionKey, JSON.stringify(transactions));
+    browser.sharedStore.set(this.transactionKey, transactions);
     return transactions;
   }
 
@@ -44,7 +44,7 @@ class EmpowerTransactionPage extends Page {
     const cachedTransactions = await browser.sharedStore.get(this.transactionKey);
 
     if (cachedTransactions) {
-      return JSON.parse(cachedTransactions);
+      return cachedTransactions;
     }
 
     await EmpowerLoginPage.open();
@@ -79,7 +79,7 @@ class EmpowerTransactionPage extends Page {
     const cachedBalances = await browser.sharedStore.get(this.balanceKey);
 
     if (cachedBalances) {
-      return JSON.parse(cachedBalances);
+      return cachedBalances;
     }
 
     await browser.waitUntil(async () => (await this.sideBarAccount.length) > 0);
@@ -101,7 +101,7 @@ class EmpowerTransactionPage extends Page {
     });
 
     const balances = Object.fromEntries(accountBalanceEntries);
-    browser.sharedStore.set(this.balanceKey, JSON.stringify(balances));
+    browser.sharedStore.set(this.balanceKey, balances);
     return balances;
   }
 

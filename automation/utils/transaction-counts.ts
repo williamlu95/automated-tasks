@@ -40,6 +40,10 @@ export class TransactionCounts {
     this.counts[transactionCountKey] += amount;
   }
 
+  private setTransactionCount(amount: number, transactionCountKey: string): void {
+    this.counts[transactionCountKey] = amount;
+  }
+
   public static getInstance(): TransactionCounts {
     if (!TransactionCounts.instance) {
       TransactionCounts.instance = new TransactionCounts();
@@ -66,5 +70,10 @@ export class TransactionCounts {
   public static addToTransactionCount(amount: number, transactionCountKey: string): void {
     const transactionCounts = this.getInstance();
     transactionCounts.addToTransactionCount(amount, transactionCountKey);
+  }
+
+  public static setTransactionCount(amount: number, transactionCountKey: string): void {
+    const transactionCounts = this.getInstance();
+    transactionCounts.setTransactionCount(amount, transactionCountKey);
   }
 }
