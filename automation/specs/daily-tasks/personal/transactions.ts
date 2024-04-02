@@ -248,6 +248,10 @@ export class Transactions {
     const wfActiveCreditCard = -formatFromDollars(this.balances[WELLS_FARGO_ACTIVE_CASH]);
     const wfAutographCreditCard = -formatFromDollars(this.balances[WELLS_FARGO_AUTOGRAPH]);
     const amexBlueCreditCard = -formatFromDollars(this.balances[AMEX_BLUE]);
+    const chaseFreedomUnlimitedCreditCard = -formatFromDollars(
+      this.balances[CHASE_FREEDOM_UNLIMITED]
+    );
+
     const today = new Date();
 
     const balanceSheet: string[][] = [
@@ -277,6 +281,13 @@ export class Transactions {
       'Amex Blue Balance',
       format(today, 'P'),
       formatToDollars(amexBlueCreditCard),
+      OVERALL_FORMULA,
+    ]);
+
+    balanceSheet.push([
+      'Chase Freedom Unlimited Balance',
+      format(today, 'P'),
+      formatToDollars(chaseFreedomUnlimitedCreditCard),
       OVERALL_FORMULA,
     ]);
 

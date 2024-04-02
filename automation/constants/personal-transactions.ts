@@ -3,7 +3,7 @@ import { getSemiMonthylPayDaysForMonths } from '../utils/date-formatters';
 import { Transaction } from '../types/transaction';
 import { includesName } from '../utils/includes-name';
 
-const { CHASE_CHECKING = '', WELLS_FARGO_CHECKING = '' } = process.env;
+const { CHASE_CHECKING = '' } = process.env;
 
 export const WALLET_ACCOUNT = Object.freeze({
   CHASE_CHECKING: 'Chase Checking',
@@ -99,6 +99,13 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     name: 'Us Department Of Education',
     amount: 346.0,
     day: 9,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
+  GOOGLE_ONE: {
+    identifier: 'Google One',
+    name: 'Google',
+    amount: 3.0,
+    day: 14,
     type: TRANSACTION_TYPE.DEBIT,
   },
   HULU: {
