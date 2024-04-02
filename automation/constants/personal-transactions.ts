@@ -52,11 +52,7 @@ export const AUTO_PAY = Object.freeze({
   CHASE: {
     paymentCountKey: 'chasePayments',
     isTransactionIncluded: isAutoPayTransaction('Chase'),
-    transfers: [
-      WALLET_ACCOUNT.CHASE_AMAZON,
-      WALLET_ACCOUNT.CHASE_FREEDOM_FLEX,
-      WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED,
-    ],
+    transfers: [WALLET_ACCOUNT.CHASE_AMAZON, WALLET_ACCOUNT.CHASE_FREEDOM_FLEX],
   },
   AMEX: {
     paymentCountKey: 'amexPayments',
