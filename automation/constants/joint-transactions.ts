@@ -53,7 +53,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   CAR_INSURANCE: {
     identifier: 'Car Insurance',
     name: 'Geico',
-    amount: 141.0,
+    amount: 155.0,
     day: 9,
     type: TRANSACTION_TYPE.EXPENSE,
   },
