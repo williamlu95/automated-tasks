@@ -1,5 +1,9 @@
 import { ExpectedJointTransaction, ExpectedTransaction } from '../types/transaction';
 import {
+  calculateSemiYearlyTotalAmountDue,
+  calculateQuarterlyTotalAmountDue,
+} from '../utils/calculator';
+import {
   getBiweeklyPayDaysForMonths,
   getSemiMonthylPayDaysForMonths,
 } from '../utils/date-formatters';
@@ -36,6 +40,13 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     day: 1,
     type: TRANSACTION_TYPE.EXPENSE,
   },
+  SIDS: {
+    identifier: 'SIDs',
+    name: 'City Of Lv Sid',
+    amount: calculateSemiYearlyTotalAmountDue(195.0),
+    day: 1,
+    type: TRANSACTION_TYPE.EXPENSE,
+  },
   WATER: {
     identifier: 'Water',
     name: 'Las Vegas Valley Water District',
@@ -46,7 +57,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   SEWER: {
     identifier: 'Sewer',
     name: 'NOT KNOWN YET',
-    amount: 25.0,
+    amount: calculateQuarterlyTotalAmountDue(80.0),
     day: 1,
     type: TRANSACTION_TYPE.EXPENSE,
   },
@@ -96,14 +107,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   TRASH: {
     identifier: 'Trash',
     name: 'NOT KNOWN YET',
-    amount: 20.0,
-    day: 20,
-    type: TRANSACTION_TYPE.EXPENSE,
-  },
-  SIDS: {
-    identifier: 'SIDs',
-    name: 'City Of Lv Sid',
-    amount: 35.0,
+    amount: calculateQuarterlyTotalAmountDue(55.0),
     day: 20,
     type: TRANSACTION_TYPE.EXPENSE,
   },
