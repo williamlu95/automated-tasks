@@ -2,9 +2,9 @@ import { DateTime, Interval } from 'luxon';
 
 const MONTHS_IN_QUARTER = 3;
 
-export const calculateQuarterlyTotalAmountDue = (total: number): number => {
+export const calculateQuarterlyTotalAmountDue = (total: number, today: DateTime): number => {
   const monthsSinceQuarter = Math.ceil(
-    DateTime.now().diff(DateTime.now().startOf('quarter'), ['months']).toObject().months || 1
+    today.diff(today.startOf('quarter'), ['months']).toObject().months || 1
   );
 
   const monthlyAmount = total / MONTHS_IN_QUARTER;
@@ -13,8 +13,7 @@ export const calculateQuarterlyTotalAmountDue = (total: number): number => {
 
 const MONTHS_IN_SEMI_YEAR = 6;
 
-const calculateMonthsSinceLastSemiYear = (): number => {
-  const today = DateTime.now();
+const calculateMonthsSinceLastSemiYear = (today: DateTime): number => {
   const start = DateTime.fromObject({ month: 4 });
   const end = DateTime.fromObject({ month: 10 });
   const interval = Interval.fromDateTimes(start, end);
@@ -30,8 +29,8 @@ const calculateMonthsSinceLastSemiYear = (): number => {
   return Math.ceil(today.diff(start, ['months']).toObject().months || 1);
 };
 
-export const calculateSemiYearlyTotalAmountDue = (total: number): number => {
-  const monthsSinceSemiYear = calculateMonthsSinceLastSemiYear();
+export const calculateSemiYearlyTotalAmountDue = (total: number, today: DateTime): number => {
+  const monthsSinceSemiYear = calculateMonthsSinceLastSemiYear(today);
   const monthlyAmount = total / MONTHS_IN_SEMI_YEAR;
   return monthlyAmount * monthsSinceSemiYear;
 };

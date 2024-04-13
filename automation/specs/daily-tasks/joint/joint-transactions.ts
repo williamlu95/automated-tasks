@@ -1,7 +1,12 @@
-import { addMonths, format } from 'date-fns';
+import { format } from 'date-fns';
 import { ExpectedJointTransaction, Transaction } from '../../../types/transaction';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
-import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/joint-transactions';
+import {
+  EXPENSE,
+  INCOME,
+  TRANSACTION_TYPE,
+  generateExpenseForDate,
+} from '../../../constants/joint-transactions';
 import { includesName } from '../../../utils/includes-name';
 import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
@@ -88,9 +93,9 @@ export class JointTransactions {
   }
 
   private calculateFutureExpenses(): ExpectedJointTransaction[] {
-    const futureDates = Array(ADDITIONAL_MONTHS)
-      .fill(new Date())
-      .map((date, index) => addMonths(date, index + 1));
+    const futureDates: DateTime[] = Array(ADDITIONAL_MONTHS)
+      .fill(DateTime.now())
+      .map((date, index) => date.plus({ months: index + 1 }));
 
     return futureDates.flatMap((futureDate) =>
       [
@@ -98,13 +103,13 @@ export class JointTransactions {
           identifier: 'Food Budget',
           name: '',
           amount: this.FOOD_BUDGET,
-          day: format(new Date(futureDate).setDate(1), 'P'),
+          day: format(futureDate.toJSDate().setDate(1), 'P'),
           type: TRANSACTION_TYPE.EXPENSE,
         },
       ].concat(
-        Object.values(EXPENSE).map((e) => ({
+        Object.values(generateExpenseForDate(futureDate)).map((e) => ({
           ...e,
-          day: format(new Date(futureDate).setDate(e.day), 'P'),
+          day: format(futureDate.toJSDate().setDate(e.day), 'P'),
           days: undefined,
         }))
       )
