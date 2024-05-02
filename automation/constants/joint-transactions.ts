@@ -80,7 +80,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     INTERNET: {
       identifier: 'Internet',
       name: 'Cox Communications',
-      amount: 110.0,
+      amount: 95.0,
       day: 14,
       type: TRANSACTION_TYPE.EXPENSE,
     },
