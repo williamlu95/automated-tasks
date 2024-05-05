@@ -3,6 +3,7 @@ import { ExpectedJointTransaction, ExpectedTransaction } from '../types/transact
 import {
   calculateSemiYearlyTotalAmountDue,
   calculateQuarterlyTotalAmountDue,
+  calculateSewerTotalAmount,
 } from '../utils/calculator';
 import {
   getBiweeklyPayDaysForMonths,
@@ -59,7 +60,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     SEWER: {
       identifier: 'Sewer',
       name: 'City Of Las Vegas',
-      amount: calculateQuarterlyTotalAmountDue(80.0, date),
+      amount: calculateSewerTotalAmount(80.0, date),
       day: 1,
       type: TRANSACTION_TYPE.EXPENSE,
     },

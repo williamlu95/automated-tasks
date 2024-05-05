@@ -2,6 +2,19 @@ import { DateTime, Interval } from 'luxon';
 
 const MONTHS_IN_QUARTER = 3;
 
+export const calculateSewerTotalAmount = (total: number, today: DateTime): number => {
+  const quarter = today.startOf('quarter').minus({ month: 1 });
+  const monthsSinceQuarter =
+    Math.ceil(today.diff(quarter, ['months']).toObject().months || 0) % MONTHS_IN_QUARTER;
+  const monthlyAmount = total / MONTHS_IN_QUARTER;
+
+  if (monthsSinceQuarter === 0) {
+    return total;
+  }
+
+  return monthlyAmount * monthsSinceQuarter;
+};
+
 export const calculateQuarterlyTotalAmountDue = (total: number, today: DateTime): number => {
   const monthsSinceQuarter = Math.ceil(
     today.diff(today.startOf('quarter'), ['months']).toObject().months || 1
