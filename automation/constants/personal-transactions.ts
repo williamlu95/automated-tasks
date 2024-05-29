@@ -13,7 +13,6 @@ export const WALLET_ACCOUNT = Object.freeze({
   DISCOVER_IT: 'Discover It',
   CHASE_AMAZON: 'Chase Amazon',
   CHASE_FREEDOM_UNLIMITED: 'Chase Freedom Unlimited',
-  WELLS_FARGO_PLATINUM: 'Wells Fargo Platinum',
 });
 
 export const TRANSACTION_TYPE = Object.freeze({
@@ -70,11 +69,6 @@ export const AUTO_PAY = Object.freeze({
     paymentCountKey: 'discoverPayments',
     isTransactionIncluded: isAutoPayTransaction('Discover Bank'),
     transfers: [WALLET_ACCOUNT.DISCOVER_IT],
-  },
-  WELLS_FARGO: {
-    paymentCountKey: 'wellsFargoPayments',
-    isTransactionIncluded: isAutoPayTransaction('Wells Fargo Bank'),
-    transfers: [WALLET_ACCOUNT.WELLS_FARGO_PLATINUM],
   },
 });
 

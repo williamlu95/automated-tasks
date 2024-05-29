@@ -30,9 +30,9 @@ const {
   DISCOVER_IT = '',
   CHASE_AMAZON = '',
   CHASE_FREEDOM_UNLIMITED = '',
-  WELLS_FARGO_PLATINUM = '',
   WELLS_FARGO_CHECKING = '',
   WELLS_FARGO_ACTIVE_CASH = '',
+  WELLS_FARGO_PLATINUM = '',
   AMEX_BLUE = '',
   WELLS_FARGO_AUTOGRAPH = '',
   CITI_DOUBLE_CASH = '',
@@ -47,9 +47,9 @@ const INCLUDED_TRANSACTIONS = [
   DISCOVER_IT,
   CHASE_AMAZON,
   CHASE_FREEDOM_UNLIMITED,
-  WELLS_FARGO_PLATINUM,
   WELLS_FARGO_CHECKING,
   WELLS_FARGO_ACTIVE_CASH,
+  WELLS_FARGO_PLATINUM,
   AMEX_BLUE,
   WELLS_FARGO_AUTOGRAPH,
   CITI_DOUBLE_CASH,
@@ -246,6 +246,7 @@ export class Transactions {
   async getBalanceSheet() {
     const checkingBalance = formatFromDollars(this.balances[WELLS_FARGO_CHECKING]);
     const wfActiveCreditCard = -formatFromDollars(this.balances[WELLS_FARGO_ACTIVE_CASH]);
+    const wfPlatinumCreditCard = -formatFromDollars(this.balances[WELLS_FARGO_PLATINUM]);
     const wfAutographCreditCard = -formatFromDollars(this.balances[WELLS_FARGO_AUTOGRAPH]);
     const amexBlueCreditCard = -formatFromDollars(this.balances[AMEX_BLUE]);
     const chaseFreedomUnlimitedCreditCard = -formatFromDollars(
@@ -267,6 +268,13 @@ export class Transactions {
       'Wells Fargo Active Balance',
       format(today, 'P'),
       formatToDollars(wfActiveCreditCard),
+      OVERALL_FORMULA,
+    ]);
+
+    balanceSheet.push([
+      'Wells Fargo Platinum Balance',
+      format(today, 'P'),
+      formatToDollars(wfPlatinumCreditCard),
       OVERALL_FORMULA,
     ]);
 
