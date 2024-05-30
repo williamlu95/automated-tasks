@@ -36,7 +36,7 @@ export const verifyAccountBalance = async (
   balanceSheet: string[][]
 ): Promise<void> => {
   const expectedBalances = await WalletDashboardPage.getAllAccountBalances();
-  // await notifyOfNeagtiveBalance(balanceSheet, 'Personal');
+  await notifyOfNeagtiveBalance(balanceSheet, 'Personal');
 
   const accountBalance = Object.entries(ACCOUNTS).map(([name, number = '']) => {
     const actualBalance = CHECKING_ACCOUNTS.includes(number)
