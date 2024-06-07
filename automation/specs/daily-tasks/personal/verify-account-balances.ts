@@ -10,10 +10,7 @@ const {
   CHASE_FREEDOM_FLEX,
   DISCOVER_IT,
   CHASE_AMAZON,
-  WELLS_FARGO_CHECKING,
 } = process.env;
-
-const CHECKING_ACCOUNTS = [CHASE_CHECKING, WELLS_FARGO_CHECKING];
 
 const ACCOUNTS = {
   [WALLET_ACCOUNT.CHASE_CHECKING]: CHASE_CHECKING,
@@ -39,10 +36,7 @@ export const verifyAccountBalance = async (
   await notifyOfNeagtiveBalance(balanceSheet, 'Personal');
 
   const accountBalance = Object.entries(ACCOUNTS).map(([name, number = '']) => {
-    const actualBalance = CHECKING_ACCOUNTS.includes(number)
-      ? actualBalances[number]
-      : `-${actualBalances[number]}`;
-
+    const actualBalance = actualBalances[number];
     return [
       name,
       expectedBalances[name],
