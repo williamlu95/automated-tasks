@@ -112,7 +112,7 @@ export class Transactions {
       const paidSalary = this.transactionsForCurrentMonth.filter(
         (t) =>
           includesName(t.Description, value.name) &&
-          t.Account.endsWith(WELLS_FARGO_CHECKING) &&
+          t.Account?.endsWith(WELLS_FARGO_CHECKING) &&
           DateTime.fromISO(t.Date).hasSame(DateTime.now(), 'month')
       );
 
@@ -181,7 +181,7 @@ export class Transactions {
 
   #getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
     const transactionsForCurrentMonth = transactions
-      .filter((t) => INCLUDED_TRANSACTIONS.some((it) => t.Account.endsWith(it)))
+      .filter((t) => INCLUDED_TRANSACTIONS.some((it) => t.Account?.endsWith(it)))
       .filter((t) => {
         const transactionDate = DateTime.fromISO(t.Date);
         const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');

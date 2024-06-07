@@ -33,7 +33,7 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'chaseIncome',
     isTransactionIncluded: (t: Transaction) =>
-      includesName(t.Description, INCOME_NAME) && t.Account.endsWith(CHASE_CHECKING),
+      includesName(t.Description, INCOME_NAME) && t.Account?.endsWith(CHASE_CHECKING),
   },
 });
 
@@ -45,7 +45,7 @@ export const getFromAccount = (accountName: string): string => {
 const isAutoPayTransaction =
   (autoPayName: string) =>
   (t: Transaction): boolean =>
-    includesName(t.Description, autoPayName) && t.Account.endsWith(CHASE_CHECKING);
+    includesName(t.Description, autoPayName) && t.Account?.endsWith(CHASE_CHECKING);
 
 export const AUTO_PAY = Object.freeze({
   CHASE: {

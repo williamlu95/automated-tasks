@@ -125,7 +125,7 @@ export class MothersTransactions {
 
   private getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
     const transactionsForCurrentMonth = transactions
-      .filter((t) => INCLUDED_TRANSACTIONS.some((it) => t.Account.endsWith(it)))
+      .filter((t) => INCLUDED_TRANSACTIONS.some((it) => t.Account?.endsWith(it)))
       .filter((t) => {
         const transactionDate = DateTime.fromISO(t.Date);
         const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');
