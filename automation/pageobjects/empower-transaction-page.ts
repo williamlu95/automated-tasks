@@ -96,7 +96,7 @@ class EmpowerTransactionPage extends Page {
         .replace(/\n/g, '');
 
       const accountNumber = text.match(/Endingin(\d{4})/)?.[1];
-      const balance = text.match(/(\$.+\.\d{2})/)?.[1];
+      const balance = text.match(/(-?\$.+\.\d{2})/)?.[1];
       return [accountNumber, balance];
     });
 
