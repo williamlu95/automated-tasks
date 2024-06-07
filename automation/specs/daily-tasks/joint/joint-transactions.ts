@@ -118,8 +118,8 @@ export class JointTransactions {
 
   async getBalanceSheet() {
     const checkingBalance = formatFromDollars(this.balances[JOINT_SOFI]);
-    const creditCardBalance = -formatFromDollars(this.balances[JOINT_BILL]);
-    const foodBalance = -formatFromDollars(this.balances[JOINT_FOOD]);
+    const creditCardBalance = formatFromDollars(this.balances[JOINT_BILL]);
+    const foodBalance = formatFromDollars(this.balances[JOINT_FOOD]);
     const today = new Date();
 
     const balanceSheet: string[][] = [

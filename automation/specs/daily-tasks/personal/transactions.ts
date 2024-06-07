@@ -245,11 +245,11 @@ export class Transactions {
 
   async getBalanceSheet() {
     const checkingBalance = formatFromDollars(this.balances[WELLS_FARGO_CHECKING]);
-    const wfActiveCreditCard = -formatFromDollars(this.balances[WELLS_FARGO_ACTIVE_CASH]);
-    const wfPlatinumCreditCard = -formatFromDollars(this.balances[WELLS_FARGO_PLATINUM]);
-    const wfAutographCreditCard = -formatFromDollars(this.balances[WELLS_FARGO_AUTOGRAPH]);
-    const amexBlueCreditCard = -formatFromDollars(this.balances[AMEX_BLUE]);
-    const chaseFreedomUnlimitedCreditCard = -formatFromDollars(
+    const wfActiveCreditCard = formatFromDollars(this.balances[WELLS_FARGO_ACTIVE_CASH]);
+    const wfPlatinumCreditCard = formatFromDollars(this.balances[WELLS_FARGO_PLATINUM]);
+    const wfAutographCreditCard = formatFromDollars(this.balances[WELLS_FARGO_AUTOGRAPH]);
+    const amexBlueCreditCard = formatFromDollars(this.balances[AMEX_BLUE]);
+    const chaseFreedomUnlimitedCreditCard = formatFromDollars(
       this.balances[CHASE_FREEDOM_UNLIMITED]
     );
 
