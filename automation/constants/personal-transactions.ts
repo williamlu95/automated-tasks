@@ -58,7 +58,7 @@ export const AUTO_PAY = Object.freeze({
   CITI: {
     paymentCountKey: 'citiPayments',
     isTransactionIncluded: isAutoPayTransaction('Citibank'),
-    transfers: [WALLET_ACCOUNT.AMEX_GOLD],
+    transfers: [WALLET_ACCOUNT.CITI_CUSTOM_CASH],
   },
   CAPITAL_ONE: {
     paymentCountKey: 'capitalOnePayments',
