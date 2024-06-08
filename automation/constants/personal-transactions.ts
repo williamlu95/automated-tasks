@@ -55,11 +55,9 @@ export const AUTO_PAY = Object.freeze({
     isTransactionIncluded: isAutoPayTransaction('Chase'),
     transfers: [WALLET_ACCOUNT.CHASE_AMAZON, WALLET_ACCOUNT.CHASE_FREEDOM_FLEX],
   },
-  AMEX: {
-    paymentCountKey: 'amexPayments',
-    isTransactionIncluded: (t: Transaction) =>
-      isAutoPayTransaction('American Express')(t) &&
-      t.Category === CATEGORY_TYPE.CREDIT_CARD_PAYMENT,
+  CITI: {
+    paymentCountKey: 'citiPayments',
+    isTransactionIncluded: isAutoPayTransaction('Citibank'),
     transfers: [WALLET_ACCOUNT.AMEX_GOLD],
   },
   CAPITAL_ONE: {
