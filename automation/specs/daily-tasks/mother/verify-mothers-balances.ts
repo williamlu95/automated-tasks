@@ -1,4 +1,4 @@
-import { notifyOfNeagtiveBalance } from '../../../utils/balance';
+import { notifyOfNegativeBalance } from '../../../utils/balance';
 import { replaceSheetData } from '../../../utils/google-sheets';
 import { readPersonalEmails } from '../../../utils/notification';
 import { MothersTransactions } from './mothers-transactions';
@@ -15,6 +15,6 @@ export const verifyMothersBalances = async () => {
   const transactions = new MothersTransactions();
   await transactions.initializeTransactions();
   const balanceSheet = await transactions.getBalanceSheet();
-  await notifyOfNeagtiveBalance(balanceSheet, "Mother's");
+  await notifyOfNegativeBalance(balanceSheet, "Mother's");
   await replaceSheetData("Mother's Balance", balanceSheet);
 };

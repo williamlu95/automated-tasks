@@ -3,7 +3,7 @@ import { sendEmail } from './notification';
 
 export const OVERALL_FORMULA = '=INDIRECT("C" & ROW()) + INDIRECT("D" & ROW() - 1)';
 
-export const notifyOfNeagtiveBalance = async (balanceSheet: string[][], account: string) => {
+export const notifyOfNegativeBalance = async (balanceSheet: string[][], account: string) => {
   if (!balanceSheet.length) {
     return;
   }
@@ -18,7 +18,7 @@ export const notifyOfNeagtiveBalance = async (balanceSheet: string[][], account:
     min = Math.min(outstandingBalance, min);
   });
 
-  if (min <= 0) {
+  if (min <= 0 && process.env.ENABLE_NEGATIVE_BALANCE_EMAIL) {
     return sendEmail({
       subject: `ACTION REQUIRED: Negative Balance for ${account} Account`,
       html: `<h1><strong>Negative Balance: </strong><span style="color: red;">${formatToDollars(
