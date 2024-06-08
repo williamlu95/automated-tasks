@@ -13,9 +13,9 @@ import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-pag
 import { DateTime } from 'luxon';
 import { OVERALL_FORMULA } from '../../../utils/balance';
 
-const { JOINT_SOFI = '', JOINT_BILL = '', JOINT_FOOD = '' } = process.env;
+const { JOINT_SOFI = '', JOINT_BILL = '', JOINT_FOOD = '', JOINT_MISC = '' } = process.env;
 
-const INCLUDED_TRANSACTIONS = [JOINT_SOFI, JOINT_BILL, JOINT_FOOD];
+const INCLUDED_TRANSACTIONS = [JOINT_SOFI, JOINT_BILL, JOINT_FOOD, JOINT_MISC];
 
 export class JointTransactions {
   private FOOD_BUDGET = 600;
@@ -120,6 +120,7 @@ export class JointTransactions {
     const checkingBalance = formatFromDollars(this.balances[JOINT_SOFI]);
     const creditCardBalance = formatFromDollars(this.balances[JOINT_BILL]);
     const foodBalance = formatFromDollars(this.balances[JOINT_FOOD]);
+    const miscBalance = formatFromDollars(this.balances[JOINT_MISC]);
     const today = new Date();
 
     const balanceSheet: string[][] = [
@@ -132,14 +133,21 @@ export class JointTransactions {
     ];
 
     balanceSheet.push([
-      'Credit Card Balance',
+      'Bills Balance (Citi Double Cash)',
       format(today, 'P'),
       formatToDollars(creditCardBalance),
       OVERALL_FORMULA,
     ]);
 
     balanceSheet.push([
-      'Current Food Balance',
+      'Misc Balance (Marriott Boundless)',
+      format(today, 'P'),
+      formatToDollars(foodBalance),
+      OVERALL_FORMULA,
+    ]);
+
+    balanceSheet.push([
+      'Current Food Balance (AMEX Gold)',
       format(today, 'P'),
       formatToDollars(foodBalance),
       OVERALL_FORMULA,

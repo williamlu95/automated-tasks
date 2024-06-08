@@ -23,7 +23,6 @@ import { OVERALL_FORMULA } from '../../../utils/balance';
 
 const {
   CHASE_CHECKING = '',
-  AMEX_GOLD = '',
   CAPITAL_ONE_VENTURE_X = '',
   CITI_CUSTOM_CASH = '',
   CHASE_FREEDOM_FLEX = '',
@@ -35,12 +34,10 @@ const {
   WELLS_FARGO_PLATINUM = '',
   AMEX_BLUE = '',
   WELLS_FARGO_AUTOGRAPH = '',
-  CITI_DOUBLE_CASH = '',
 } = process.env;
 
 const INCLUDED_TRANSACTIONS = [
   CHASE_CHECKING,
-  AMEX_GOLD,
   CAPITAL_ONE_VENTURE_X,
   CITI_CUSTOM_CASH,
   CHASE_FREEDOM_FLEX,
@@ -52,7 +49,6 @@ const INCLUDED_TRANSACTIONS = [
   WELLS_FARGO_PLATINUM,
   AMEX_BLUE,
   WELLS_FARGO_AUTOGRAPH,
-  CITI_DOUBLE_CASH,
 ];
 
 export type Template = Omit<

@@ -13,6 +13,7 @@ export const WALLET_ACCOUNT = Object.freeze({
   DISCOVER_IT: 'Discover It',
   CHASE_AMAZON: 'Chase Amazon',
   CHASE_FREEDOM_UNLIMITED: 'Chase Freedom Unlimited',
+  CITI_CUSTOM_CASH: 'Citi Custom Cash',
 });
 
 export const TRANSACTION_TYPE = Object.freeze({
