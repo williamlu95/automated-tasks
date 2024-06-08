@@ -10,8 +10,10 @@ import {
 import { includesName } from '../../../utils/includes-name';
 import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
+import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
 import { DateTime } from 'luxon';
 import { OVERALL_FORMULA } from '../../../utils/balance';
+import { WALLET_ACCOUNT } from '../../../constants/personal-transactions';
 
 const { JOINT_SOFI = '', JOINT_BILL = '', JOINT_FOOD = '', JOINT_MISC = '' } = process.env;
 
@@ -26,13 +28,16 @@ export class JointTransactions {
 
   private outstandingIncome: ExpectedJointTransaction[];
 
-  private balances: Record<string, string>;
+  private actualBalances: Record<string, string>;
+
+  private expectedBalances: Record<string, string>;
 
   constructor() {
     this.transactionsForCurrentMonth = [];
     this.outstandingExpenses = [];
     this.outstandingIncome = [];
-    this.balances = {};
+    this.actualBalances = {};
+    this.expectedBalances = {};
   }
 
   async initializeTransactions() {
@@ -47,8 +52,11 @@ export class JointTransactions {
     this.outstandingIncome = this.calculateOutstandingIncome();
     console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
 
-    this.balances = await EmpowerTransactionPage.getAllAccountBalances();
-    console.log(`Balances: ${JSON.stringify(this.balances, null, 4)}`);
+    this.actualBalances = await EmpowerTransactionPage.getAllAccountBalances();
+    console.log(`Actual Balances: ${JSON.stringify(this.actualBalances, null, 4)}`);
+
+    this.expectedBalances = await WalletDashboardPage.loginAndGetAllAccountBalances();
+    console.log(`Expected Balances: ${JSON.stringify(this.expectedBalances, null, 4)}`);
   }
 
   private calculateOutstandingIncome(): ExpectedJointTransaction[] {
@@ -117,10 +125,10 @@ export class JointTransactions {
   }
 
   async getBalanceSheet() {
-    const checkingBalance = formatFromDollars(this.balances[JOINT_SOFI]);
-    const creditCardBalance = formatFromDollars(this.balances[JOINT_BILL]);
-    const foodBalance = formatFromDollars(this.balances[JOINT_FOOD]);
-    const miscBalance = formatFromDollars(this.balances[JOINT_MISC]);
+    const checkingBalance = formatFromDollars(this.actualBalances[JOINT_SOFI]);
+    const creditCardBalance = formatFromDollars(this.actualBalances[JOINT_BILL]);
+    const foodBalance = formatFromDollars(this.expectedBalances[WALLET_ACCOUNT.AMEX_GOLD]);
+    const miscBalance = formatFromDollars(this.expectedBalances[WALLET_ACCOUNT.MARRIOTT_BOUNDLESS]);
     const today = new Date();
 
     const balanceSheet: string[][] = [
@@ -194,7 +202,11 @@ export class JointTransactions {
     return transactionsForCurrentMonth;
   }
 
-  getBalances() {
-    return this.balances;
+  getActualBalances() {
+    return this.actualBalances;
+  }
+
+  getExpectedBalances() {
+    return this.expectedBalances;
   }
 }

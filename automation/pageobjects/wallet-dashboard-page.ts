@@ -1,7 +1,10 @@
 import AddRecordModal from './add-record-modal';
 import Page from './page';
+import LoginPage from './wallet-login-page';
 
 class WalletDashboardPage extends Page {
+  private balanceKey = 'wallet-balance';
+
   get buttons() {
     return $$('button[type="button"]');
   }
@@ -20,8 +23,9 @@ class WalletDashboardPage extends Page {
 
   async getAccountBalanceByName(name: string) {
     await browser.waitUntil(async () => (await this.accountNames.length) > 0);
-    const cardIndex = await this.accountNames
-      .findIndex(async (c) => (await c.getText()).includes(name));
+    const cardIndex = await this.accountNames.findIndex(async (c) =>
+      (await c.getText()).includes(name)
+    );
 
     const balances = await this.accountBalances;
     return balances[cardIndex];
@@ -47,18 +51,33 @@ class WalletDashboardPage extends Page {
   }
 
   async getAllAccountBalances() {
+    const cachedBalances = await browser.sharedStore.get(this.balanceKey);
+
+    if (cachedBalances) {
+      return cachedBalances;
+    }
+
     await browser.waitUntil(async () => (await this.accountBalances.length) > 0);
     const accountBalances = await this.accountBalances;
-    const balances = await Promise.all(
-      accountBalances.map((b) => b.getText()),
-    );
+    const balances = await Promise.all(accountBalances.map((b) => b.getText()));
 
     const accountNames = await this.accountNames;
-    const names = await Promise.all(
-      accountNames.map((n) => n.getText()),
-    );
+    const names = await Promise.all(accountNames.map((n) => n.getText()));
 
     return Object.fromEntries(names.map((name, i) => [name, balances[i]]));
+  }
+
+  async loginAndGetAllAccountBalances() {
+    const cachedBalances = await browser.sharedStore.get(this.balanceKey);
+
+    if (cachedBalances) {
+      return cachedBalances;
+    }
+
+    await LoginPage.open();
+    await LoginPage.login();
+
+    return this.getAllAccountBalances();
   }
 
   async addRecord(template: string, accountCardName: string, amount: string) {

@@ -9,7 +9,7 @@ import { Transaction } from '../types/transaction';
 
 class EmpowerTransactionPage extends Page {
   private transactionKey = 'transactions';
-  private balanceKey = 'balance';
+  private balanceKey = 'empower-balance';
   private fileName = 'transactions.csv';
   private retryCount = 5;
 
