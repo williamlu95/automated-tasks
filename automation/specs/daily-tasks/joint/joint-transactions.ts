@@ -140,13 +140,6 @@ export class JointTransactions {
     ]);
 
     balanceSheet.push([
-      'Misc Balance (Marriott Boundless)',
-      format(today, 'P'),
-      formatToDollars(foodBalance),
-      OVERALL_FORMULA,
-    ]);
-
-    balanceSheet.push([
       'Current Food Balance (AMEX Gold)',
       format(today, 'P'),
       formatToDollars(foodBalance),
@@ -162,6 +155,13 @@ export class JointTransactions {
         OVERALL_FORMULA,
       ]);
     }
+
+    balanceSheet.push([
+      'Misc Balance (Marriott Boundless)',
+      format(today, 'P'),
+      formatToDollars(miscBalance),
+      OVERALL_FORMULA,
+    ]);
 
     const allTransactions = this.outstandingExpenses
       .concat(this.outstandingIncome)
