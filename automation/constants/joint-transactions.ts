@@ -67,7 +67,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     CAR_INSURANCE: {
       identifier: 'Car Insurance',
       name: 'Geico',
-      amount: 155.0,
+      amount: 220.0,
       day: 9,
       type: TRANSACTION_TYPE.EXPENSE,
     },
