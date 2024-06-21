@@ -67,7 +67,7 @@ export const AUTO_PAY = Object.freeze({
   },
   DISCOVER: {
     paymentCountKey: 'discoverPayments',
-    isTransactionIncluded: isAutoPayTransaction('Discovery Trading Post'),
+    isTransactionIncluded: isAutoPayTransaction('Discover Bank'),
     transfers: [WALLET_ACCOUNT.DISCOVER_IT],
   },
 });
