@@ -25,6 +25,13 @@ export const INCOME: Record<string, ExpectedTransaction> = Object.freeze({
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
+  HOME_WARRANTY: {
+    identifier: 'Home Warranty',
+    name: 'NOT KNOWN YET',
+    amount: 60.0,
+    day: 1,
+    type: TRANSACTION_TYPE.EXPENSE,
+  },
   UTILITIES: {
     identifier: 'Utilities',
     name: 'City Of North Las Vegas',
@@ -35,7 +42,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   ELECTRICITY: {
     identifier: 'NV Energy',
     name: 'Nv Energy',
-    amount: 122.0,
+    amount: 80.0,
     day: 2,
     type: TRANSACTION_TYPE.EXPENSE,
   },
