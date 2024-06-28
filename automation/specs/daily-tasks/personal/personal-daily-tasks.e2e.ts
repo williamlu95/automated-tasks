@@ -1,9 +1,9 @@
-import LoginPage from '../../../pageobjects/wallet-login-page';
 import { addTransactionToWallet } from './add-transaction-to-wallet';
 import { addPaymentsToWallet } from './add-payments-to-wallet';
 import { Transactions } from './transactions';
 import { readPersonalEmails } from '../../../utils/notification';
 import { verifyAccountBalance } from './verify-account-balances';
+import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
 
 describe('Personal daily tasks', () => {
   before(async () => {
@@ -16,8 +16,7 @@ describe('Personal daily tasks', () => {
     const paymentTransactions = transactions.getPaymentTransactions();
     console.log(`Payment Transactions: ${JSON.stringify(paymentTransactions, null, 4)}`);
 
-    await LoginPage.open();
-    await LoginPage.login();
+    await WalletDashboardPage.open();
 
     if (templateTransactions.length) {
       await addTransactionToWallet(templateTransactions);

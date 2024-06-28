@@ -45,5 +45,5 @@ export type TemplateTransaction = {
 export type AutoPayTransaction = {
   paymentCountKey: string;
   isTransactionIncluded: (t: Transaction) => boolean;
-  transfers: string[];
+  transfers: (index: number) => string | null;
 };

@@ -9,6 +9,10 @@ class AddRecordModal extends Page {
     return $$('div[role="listbox"]');
   }
 
+  get labelDropdown() {
+    return $('div[name="labels"]');
+  }
+
   get options() {
     return $$('div[role="option"]');
   }
@@ -87,25 +91,27 @@ class AddRecordModal extends Page {
     await this.waitAndClick(addRecordButton);
   }
 
+  async selectLabel(label: string) {
+    await this.labelDropdown.click();
+    await this.selectOption(label);
+  }
+
   async addTransfer(fromAccount: string, toAccount: string, amount: number) {
     const transferItem = await this.getTransferItem();
     await this.waitAndClick(transferItem);
 
     await browser.waitUntil(
-      () => this.fromAccountDropdown && this.fromAccountDropdown.isClickable(),
+      () => this.fromAccountDropdown && this.fromAccountDropdown.isClickable()
     );
 
     await this.fromAccountDropdown.click();
     await this.selectOption(fromAccount);
-
-    await browser.waitUntil(
-      () => this.toAccountDropdown && this.toAccountDropdown.isClickable(),
-    );
-
+    await browser.waitUntil(() => this.toAccountDropdown && this.toAccountDropdown.isClickable());
     await this.toAccountDropdown.click();
     await this.selectOption(toAccount);
     await this.fromAmountInput.setValue(amount);
     await this.noteInput.setValue('Added by automated script');
+    await this.selectLabel('Automation');
     const addRecordButton = await this.getAddRecordButton();
     await this.waitAndClick(addRecordButton);
   }

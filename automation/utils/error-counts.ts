@@ -1,12 +1,13 @@
 import * as fs from 'fs';
-import { getMonth } from 'date-fns';
 import { downloadDir } from './file';
 
 const TRANSACTION_COUNT_FILE = './counts.json';
 
-export class TransactionCounts {
+export class ErrorCounts {
   // eslint-disable-next-line no-use-before-define
-  private static instance: TransactionCounts;
+  private static instance: ErrorCounts;
+
+  private static FAILED_ATTEMPTS_KEY = 'failedAttempts';
 
   private counts: Record<string, number> = {};
 
@@ -20,16 +21,7 @@ export class TransactionCounts {
       fs.mkdirSync(downloadDir);
     }
 
-    const currentMonth = getMonth(new Date());
     this.counts = JSON.parse(fs.readFileSync(TRANSACTION_COUNT_FILE).toString());
-
-    if (currentMonth !== this.counts.month) {
-      Object.keys(this.counts).forEach((key) => {
-        this.counts[key] = key === 'month' ? currentMonth : 0;
-      });
-
-      fs.writeFileSync(TRANSACTION_COUNT_FILE, JSON.stringify(this.counts, null, 4), 'utf8');
-    }
   }
 
   private getCounts(): Record<string, number> {
@@ -44,12 +36,12 @@ export class TransactionCounts {
     this.counts[transactionCountKey] = amount;
   }
 
-  public static getInstance(): TransactionCounts {
-    if (!TransactionCounts.instance) {
-      TransactionCounts.instance = new TransactionCounts();
+  public static getInstance(): ErrorCounts {
+    if (!ErrorCounts.instance) {
+      ErrorCounts.instance = new ErrorCounts();
     }
 
-    return TransactionCounts.instance;
+    return ErrorCounts.instance;
   }
 
   public static updateCountsFile(): void {
@@ -57,9 +49,9 @@ export class TransactionCounts {
     fs.writeFileSync(TRANSACTION_COUNT_FILE, JSON.stringify(counts, null, 4), 'utf8');
   }
 
-  public static getTransactionCount(transactionCountKey: string): number {
+  public static getFailedCount(): number {
     const counts = this.getInstance().getCounts();
-    return counts[transactionCountKey] || 0;
+    return counts[this.FAILED_ATTEMPTS_KEY] || 0;
   }
 
   public static getTransactionMonth(): number {
@@ -67,13 +59,13 @@ export class TransactionCounts {
     return counts.month;
   }
 
-  public static addToTransactionCount(amount: number, transactionCountKey: string): void {
+  public static addToFailedCount(amount: number): void {
     const transactionCounts = this.getInstance();
-    transactionCounts.addToTransactionCount(amount, transactionCountKey);
+    transactionCounts.addToTransactionCount(amount, this.FAILED_ATTEMPTS_KEY);
   }
 
-  public static setTransactionCount(amount: number, transactionCountKey: string): void {
+  public static setFailedCount(amount: number): void {
     const transactionCounts = this.getInstance();
-    transactionCounts.setTransactionCount(amount, transactionCountKey);
+    transactionCounts.setTransactionCount(amount, this.FAILED_ATTEMPTS_KEY);
   }
 }

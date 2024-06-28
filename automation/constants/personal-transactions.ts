@@ -53,22 +53,23 @@ export const AUTO_PAY = Object.freeze({
   CHASE: {
     paymentCountKey: 'chasePayments',
     isTransactionIncluded: isAutoPayTransaction('Chase'),
-    transfers: [WALLET_ACCOUNT.CHASE_AMAZON, WALLET_ACCOUNT.CHASE_FREEDOM_FLEX],
+    transfers: (index: number) =>
+      [WALLET_ACCOUNT.CHASE_AMAZON, WALLET_ACCOUNT.CHASE_FREEDOM_FLEX][index] || null,
   },
   CITI: {
     paymentCountKey: 'citiPayments',
     isTransactionIncluded: isAutoPayTransaction('Citibank'),
-    transfers: [WALLET_ACCOUNT.CITI_CUSTOM_CASH],
+    transfers: () => WALLET_ACCOUNT.CITI_CUSTOM_CASH,
   },
   CAPITAL_ONE: {
     paymentCountKey: 'capitalOnePayments',
     isTransactionIncluded: isAutoPayTransaction('Capital One'),
-    transfers: [WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X],
+    transfers: () => WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X,
   },
   DISCOVER: {
     paymentCountKey: 'discoverPayments',
     isTransactionIncluded: isAutoPayTransaction('Discover Bank'),
-    transfers: [WALLET_ACCOUNT.DISCOVER_IT],
+    transfers: () => WALLET_ACCOUNT.DISCOVER_IT,
   },
 });
 

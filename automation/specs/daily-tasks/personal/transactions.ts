@@ -1,4 +1,4 @@
-import { TransactionCounts } from '../../../utils/transaction-counts';
+import WalletLoginPage from '../../../pageobjects/wallet-login-page';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import {
   AUTO_PAY,
@@ -20,6 +20,7 @@ import { addMonths, format } from 'date-fns';
 import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import { OVERALL_FORMULA } from '../../../utils/balance';
+import WalletRecordPage from '../../../pageobjects/wallet-record-page';
 
 const {
   CHASE_CHECKING = '',
@@ -58,6 +59,8 @@ export type Template = Omit<
 export type AutoPay = { fromAccount: string; toAccount: string; amount: string };
 
 export class Transactions {
+  private transactionCounts: Record<string, number>;
+
   private transactionsForCurrentMonth: Transaction[];
 
   private templateTransactions: Template[];
@@ -71,6 +74,7 @@ export class Transactions {
   private outstandingIncome: ExpectedJointTransaction[];
 
   constructor() {
+    this.transactionCounts = {};
     this.transactionsForCurrentMonth = [];
     this.templateTransactions = [];
     this.autoPayTransactions = [];
@@ -80,6 +84,11 @@ export class Transactions {
   }
 
   async initializeTransactions() {
+    await WalletLoginPage.open();
+    await WalletLoginPage.login();
+    this.transactionCounts = await WalletRecordPage.getTransactionCounts();
+    console.log(`Transaction Counts: ${JSON.stringify(this.transactionCounts, null, 4)}`);
+
     const transactions = await EmpowerTransactionPage.downloadTransactions();
     this.balances = await EmpowerTransactionPage.getAllAccountBalances();
 
@@ -166,9 +175,8 @@ export class Transactions {
   }: TemplateTransaction): Template[] {
     const transactions = this.transactionsForCurrentMonth
       .filter((t) => isTransactionIncluded(t))
-      .slice(TransactionCounts.getTransactionCount(transactionCountKey));
+      .slice(this.transactionCounts[transactionCountKey]);
 
-    TransactionCounts.addToTransactionCount(transactions.length, transactionCountKey);
     return transactions.map((t) => ({
       ...restOfTemplate,
       amount: t.Amount,
@@ -210,20 +218,19 @@ export class Transactions {
       .map((t, i) => {
         const fromAccount = getFromAccount(t.Account);
 
-        if (!transfers[i] || !fromAccount) return null;
+        if (!transfers(i) || !fromAccount) return null;
 
         return {
           fromAccount,
-          toAccount: transfers[i],
+          toAccount: transfers(i),
           amount: t.Amount,
         };
       });
 
     const newBankPayments: AutoPay[] = allBankPayments
       .filter((p): p is AutoPay => p !== null)
-      .slice(TransactionCounts.getTransactionCount(paymentCountKey));
+      .slice(this.transactionCounts[paymentCountKey]);
 
-    TransactionCounts.addToTransactionCount(newBankPayments.length, paymentCountKey);
     return newBankPayments;
   }
 

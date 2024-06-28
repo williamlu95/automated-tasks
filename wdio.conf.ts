@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 import { sendEmail } from './automation/utils/notification';
 import { downloadDir, rmdir } from './automation/utils/file';
-import { TransactionCounts } from './automation/utils/transaction-counts';
+import { ErrorCounts } from './automation/utils/error-counts';
 
 dotenv.config();
 
@@ -9,7 +9,6 @@ const { LOG_LEVEL } = process.env;
 
 type WebdriverLogTypes = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'silent';
 
-const FAILED_ATTEMPTS_KEY = 'failedAttempts';
 const FAILED_ATTEMPT_LIMIT = 3;
 
 export const config: WebdriverIO.Config = {
@@ -59,11 +58,11 @@ export const config: WebdriverIO.Config = {
     rmdir(downloadDir);
 
     if (results.failed > 0) {
-      TransactionCounts.addToTransactionCount(1, FAILED_ATTEMPTS_KEY);
+      ErrorCounts.addToFailedCount(1);
     } else {
-      TransactionCounts.setTransactionCount(0, FAILED_ATTEMPTS_KEY);
+      ErrorCounts.setFailedCount(0);
     }
-    const failedAttempts = TransactionCounts.getTransactionCount(FAILED_ATTEMPTS_KEY);
+    const failedAttempts = ErrorCounts.getFailedCount();
 
     if (failedAttempts >= FAILED_ATTEMPT_LIMIT) {
       return sendEmail({
@@ -80,7 +79,7 @@ export const config: WebdriverIO.Config = {
   },
 
   after: () => {
-    TransactionCounts.updateCountsFile();
+    ErrorCounts.updateCountsFile();
   },
 
   afterTest: async (_test, _context, result) => {
