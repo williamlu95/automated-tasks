@@ -14,7 +14,11 @@ const FAILED_ATTEMPT_LIMIT = 3;
 export const config: WebdriverIO.Config = {
   specs: ['./automation/specs/**/*.e2e.ts'],
   suites: {
-    daily: ['./automation/specs/daily-tasks/**/*.e2e.ts'],
+    daily: [
+      './automation/specs/daily-tasks/personal/personal-daily-tasks.e2e.ts',
+      './automation/specs/daily-tasks/joint/joint-daily-tasks.e2e.ts',
+      './automation/specs/daily-tasks/mother/mother-daily-tasks.e2e.ts',
+    ],
   },
   exclude: [],
   autoCompileOpts: {
