@@ -21,6 +21,10 @@ class WalletRecordPage extends Page {
     return $$('div._8i-eheZb5L24RqIZiPgP8');
   }
 
+  get payees() {
+    return $$('div._35LBhpdB_XRla_m6WK5Eys');
+  }
+
   get transferNames() {
     return $$('div._1yNGMXuFq364Pg-thcczh2');
   }
@@ -65,11 +69,21 @@ class WalletRecordPage extends Page {
 
     const transferNames = await this.transferNames;
     const transferNameTexts = (await Promise.all(transferNames.map((tt) => tt.getText()))).filter(
-      (tnt) => !tnt.includes('Chase Checking')
+      (tnt) => !tnt.includes('Chase Checking'),
     );
+
+    const payees = await this.payees;
+    const payeeTexts = (await Promise.all(payees.map((tt) => tt.getText())));
 
     return {
       chaseIncome: transactionTypeTexts.filter((tt) => tt.includes('Income')).length,
+
+      waterBill: payeeTexts.filter((pt) => pt.includes('Water')).length,
+      sewerBill: payeeTexts.filter((pt) => pt.includes('Sewer')).length,
+      carInsuranceBill: payeeTexts.filter((pt) => pt.includes('Car Insurance')).length,
+      internetBill: payeeTexts.filter((pt) => pt.includes('Internet')).length,
+      trashBill: payeeTexts.filter((pt) => pt.includes('Trash')).length,
+
       citiPayments: transferNameTexts.filter((tt) => tt.includes('Citi')).length,
       capitalOnePayments: transferNameTexts.filter((tt) => tt.includes('Capital One')).length,
       chasePayments: transferNameTexts.filter((tt) => tt.includes('Chase')).length,

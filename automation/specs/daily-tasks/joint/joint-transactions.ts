@@ -1,8 +1,10 @@
 import { format } from 'date-fns';
+import { DateTime } from 'luxon';
 import { ExpectedJointTransaction, Transaction } from '../../../types/transaction';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import {
   EXPENSE,
+  FOOD_BUDGET,
   INCOME,
   TRANSACTION_TYPE,
   generateExpenseForDate,
@@ -11,17 +13,16 @@ import { includesName } from '../../../utils/includes-name';
 import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
-import { DateTime } from 'luxon';
 import { OVERALL_FORMULA } from '../../../utils/balance';
 import { WALLET_ACCOUNT } from '../../../constants/personal-transactions';
 
-const { JOINT_SOFI = '', JOINT_BILL = '', JOINT_FOOD = '', JOINT_MISC = '' } = process.env;
+const {
+  JOINT_SOFI = '', JOINT_FOOD = '', JOINT_MISC = '',
+} = process.env;
 
-const INCLUDED_TRANSACTIONS = [JOINT_SOFI, JOINT_BILL, JOINT_FOOD, JOINT_MISC];
+const INCLUDED_TRANSACTIONS = [JOINT_SOFI, JOINT_FOOD, JOINT_MISC];
 
 export class JointTransactions {
-  private FOOD_BUDGET = 600;
-
   private transactionsForCurrentMonth: Transaction[];
 
   private outstandingExpenses: ExpectedJointTransaction[];
@@ -63,9 +64,7 @@ export class JointTransactions {
     const income: ExpectedJointTransaction[] = [];
 
     Object.values(INCOME).forEach((value) => {
-      const paidSalary = this.transactionsForCurrentMonth.filter((t) =>
-        includesName(t.Description, value.name)
-      );
+      const paidSalary = this.transactionsForCurrentMonth.filter((t) => includesName(t.Description, value.name));
 
       const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map((day) => ({
         ...value,
@@ -84,9 +83,8 @@ export class JointTransactions {
     Object.values(EXPENSE).forEach((e) => {
       if (
         this.transactionsForCurrentMonth.some(
-          (t) =>
-            includesName(t.Description, e.name) &&
-            (!e.validateTransaction || e.validateTransaction(t))
+          (t) => includesName(t.Description, e.name)
+            && (!e.validateTransaction || e.validateTransaction(t)),
         )
       ) {
         return;
@@ -105,28 +103,25 @@ export class JointTransactions {
       .fill(DateTime.now())
       .map((date, index) => date.plus({ months: index + 1 }));
 
-    return futureDates.flatMap((futureDate) =>
-      [
-        {
-          identifier: 'Food Budget',
-          name: '',
-          amount: this.FOOD_BUDGET,
-          day: format(futureDate.toJSDate().setDate(1), 'P'),
-          type: TRANSACTION_TYPE.EXPENSE,
-        },
-      ].concat(
-        Object.values(generateExpenseForDate(futureDate)).map((e) => ({
-          ...e,
-          day: format(futureDate.toJSDate().setDate(e.day), 'P'),
-          days: undefined,
-        }))
-      )
-    );
+    return futureDates.flatMap((futureDate) => [
+      {
+        identifier: 'Food Budget',
+        name: '',
+        amount: FOOD_BUDGET,
+        day: format(futureDate.toJSDate().setDate(1), 'P'),
+        type: TRANSACTION_TYPE.EXPENSE,
+      },
+    ].concat(
+      Object.values(generateExpenseForDate(futureDate)).map((e) => ({
+        ...e,
+        day: format(futureDate.toJSDate().setDate(e.day), 'P'),
+        days: undefined,
+      })),
+    ));
   }
 
   async getBalanceSheet() {
     const checkingBalance = formatFromDollars(this.actualBalances[JOINT_SOFI]);
-    const creditCardBalance = formatFromDollars(this.actualBalances[JOINT_BILL]);
     const foodBalance = formatFromDollars(this.expectedBalances[WALLET_ACCOUNT.AMEX_GOLD]);
     const miscBalance = formatFromDollars(this.expectedBalances[WALLET_ACCOUNT.MARRIOTT_BOUNDLESS]);
     const today = new Date();
@@ -141,9 +136,9 @@ export class JointTransactions {
     ];
 
     balanceSheet.push([
-      'Bills Balance (Citi Double Cash)',
+      'Misc Balance (Marriott Boundless)',
       format(today, 'P'),
-      formatToDollars(creditCardBalance),
+      formatToDollars(miscBalance),
       OVERALL_FORMULA,
     ]);
 
@@ -154,7 +149,7 @@ export class JointTransactions {
       OVERALL_FORMULA,
     ]);
 
-    const outstandingFoodBalance = -(this.FOOD_BUDGET + foodBalance);
+    const outstandingFoodBalance = -(FOOD_BUDGET + foodBalance);
     if (outstandingFoodBalance < 0) {
       balanceSheet.push([
         'Outstanding Food Balance',
@@ -164,12 +159,6 @@ export class JointTransactions {
       ]);
     }
 
-    balanceSheet.push([
-      'Misc Balance (Marriott Boundless)',
-      format(today, 'P'),
-      formatToDollars(miscBalance),
-      OVERALL_FORMULA,
-    ]);
 
     const allTransactions = this.outstandingExpenses
       .concat(this.outstandingIncome)

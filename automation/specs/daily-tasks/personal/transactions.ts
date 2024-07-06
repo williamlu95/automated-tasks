@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon';
+import { addMonths, format } from 'date-fns';
 import WalletLoginPage from '../../../pageobjects/wallet-login-page';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import {
@@ -14,9 +16,7 @@ import {
   AutoPayTransaction,
   ExpectedJointTransaction,
 } from '../../../types/transaction';
-import { DateTime } from 'luxon';
 import { includesName } from '../../../utils/includes-name';
-import { addMonths, format } from 'date-fns';
 import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import { OVERALL_FORMULA } from '../../../utils/balance';
@@ -26,6 +26,7 @@ const {
   CHASE_CHECKING = '',
   CAPITAL_ONE_VENTURE_X = '',
   CITI_CUSTOM_CASH = '',
+  CITI_DOUBLE_CASH = '',
   CHASE_FREEDOM_FLEX = '',
   DISCOVER_IT = '',
   CHASE_AMAZON = '',
@@ -35,12 +36,14 @@ const {
   WELLS_FARGO_PLATINUM = '',
   AMEX_BLUE = '',
   WELLS_FARGO_AUTOGRAPH = '',
+  MARRIOTT_BOUNDLESS = '',
 } = process.env;
 
 const INCLUDED_TRANSACTIONS = [
   CHASE_CHECKING,
   CAPITAL_ONE_VENTURE_X,
   CITI_CUSTOM_CASH,
+  CITI_DOUBLE_CASH,
   CHASE_FREEDOM_FLEX,
   DISCOVER_IT,
   CHASE_AMAZON,
@@ -50,6 +53,7 @@ const INCLUDED_TRANSACTIONS = [
   WELLS_FARGO_PLATINUM,
   AMEX_BLUE,
   WELLS_FARGO_AUTOGRAPH,
+  MARRIOTT_BOUNDLESS,
 ];
 
 export type Template = Omit<
@@ -95,13 +99,9 @@ export class Transactions {
     this.transactionsForCurrentMonth = this.#getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);
 
-    this.templateTransactions = Object.values(TEMPLATE_TRANSACTION).flatMap((t) =>
-      this.#getTransactionsForTemplate(t)
-    );
+    this.templateTransactions = Object.values(TEMPLATE_TRANSACTION).flatMap((t) => this.#getTransactionsForTemplate(t));
 
-    this.autoPayTransactions = Object.values(AUTO_PAY).flatMap((p) =>
-      this.#getTransactionsForAutoPay(p)
-    );
+    this.autoPayTransactions = Object.values(AUTO_PAY).flatMap((p) => this.#getTransactionsForAutoPay(p));
 
     this.outstandingExpenses = this.calculateOutstandingExpenses();
     console.log(`Outstanding Expenses: ${JSON.stringify(this.outstandingExpenses, null, 4)}`);
@@ -115,10 +115,9 @@ export class Transactions {
 
     Object.values(INCOME).forEach((value) => {
       const paidSalary = this.transactionsForCurrentMonth.filter(
-        (t) =>
-          includesName(t.Description, value.name) &&
-          t.Account?.endsWith(WELLS_FARGO_CHECKING) &&
-          DateTime.fromISO(t.Date).hasSame(DateTime.now(), 'month')
+        (t) => includesName(t.Description, value.name)
+          && t.Account?.endsWith(WELLS_FARGO_CHECKING)
+          && DateTime.fromISO(t.Date).hasSame(DateTime.now(), 'month'),
       );
 
       const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map((day) => ({
@@ -138,9 +137,8 @@ export class Transactions {
     Object.values(EXPENSE).forEach((e) => {
       if (
         this.transactionsForCurrentMonth.some(
-          (t) =>
-            includesName(t.Description, e.name) &&
-            (!e.validateTransaction || e.validateTransaction(t))
+          (t) => includesName(t.Description, e.name)
+            && (!e.validateTransaction || e.validateTransaction(t)),
         )
       ) {
         return;
@@ -159,13 +157,11 @@ export class Transactions {
       .fill(new Date())
       .map((date, index) => addMonths(date, index + 1));
 
-    return futureDates.flatMap((futureDate) =>
-      Object.values(EXPENSE).map((e) => ({
-        ...e,
-        day: format(new Date(futureDate).setDate(e.day), 'P'),
-        days: undefined,
-      }))
-    );
+    return futureDates.flatMap((futureDate) => Object.values(EXPENSE).map((e) => ({
+      ...e,
+      day: format(new Date(futureDate).setDate(e.day), 'P'),
+      days: undefined,
+    })));
   }
 
   #getTransactionsForTemplate({
@@ -249,11 +245,12 @@ export class Transactions {
   async getBalanceSheet() {
     const checkingBalance = formatFromDollars(this.balances[WELLS_FARGO_CHECKING]);
     const wfActiveCreditCard = formatFromDollars(this.balances[WELLS_FARGO_ACTIVE_CASH]);
+    const citiDoubleCreditCard = formatFromDollars(this.balances[CITI_DOUBLE_CASH]);
     const wfPlatinumCreditCard = formatFromDollars(this.balances[WELLS_FARGO_PLATINUM]);
     const wfAutographCreditCard = formatFromDollars(this.balances[WELLS_FARGO_AUTOGRAPH]);
     const amexBlueCreditCard = formatFromDollars(this.balances[AMEX_BLUE]);
     const chaseFreedomUnlimitedCreditCard = formatFromDollars(
-      this.balances[CHASE_FREEDOM_UNLIMITED]
+      this.balances[CHASE_FREEDOM_UNLIMITED],
     );
 
     const today = new Date();
@@ -299,6 +296,13 @@ export class Transactions {
       'Chase Freedom Unlimited Balance',
       format(today, 'P'),
       formatToDollars(chaseFreedomUnlimitedCreditCard),
+      OVERALL_FORMULA,
+    ]);
+
+    balanceSheet.push([
+      'Citi Double Cash Balance',
+      format(today, 'P'),
+      formatToDollars(citiDoubleCreditCard),
       OVERALL_FORMULA,
     ]);
 

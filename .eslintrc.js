@@ -47,5 +47,7 @@ module.exports = {
     'no-console': 'off',
     'import/extensions': 'off',
     'no-case-declarations': 'off',
+    'implicit-arrow-line-break': 'off',
+    'max-len': 'off',
   },
 };

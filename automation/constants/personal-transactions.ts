@@ -1,7 +1,7 @@
-import { ExpectedJointTransaction, ExpectedTransaction } from '../types/transaction';
+import { ExpectedJointTransaction, ExpectedTransaction, Transaction } from '../types/transaction';
 import { getSemiMonthylPayDaysForMonths } from '../utils/date-formatters';
-import { Transaction } from '../types/transaction';
 import { includesName } from '../utils/includes-name';
+import { CREDIT_CARD_BILL } from './joint-transactions';
 
 const { CHASE_CHECKING = '' } = process.env;
 
@@ -34,8 +34,42 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     template: 'Chase Income',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'chaseIncome',
-    isTransactionIncluded: (t: Transaction) =>
-      includesName(t.Description, INCOME_NAME) && t.Account?.endsWith(CHASE_CHECKING),
+    isTransactionIncluded: (t: Transaction) => includesName(t.Description, INCOME_NAME) && t.Account?.endsWith(CHASE_CHECKING),
+  },
+  WATER_BILL: {
+    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
+    template: 'Water Bill',
+    type: TRANSACTION_TYPE.DEBIT,
+    transactionCountKey: 'waterBill',
+    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.WATER_BILL),
+  },
+  SEWER_BILL: {
+    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
+    template: 'Sewer Bill',
+    type: TRANSACTION_TYPE.DEBIT,
+    transactionCountKey: 'sewerBill',
+    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.SEWER_BILL),
+  },
+  CAR_INSURANCE_BILL: {
+    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
+    template: 'Car Insurance Bill',
+    type: TRANSACTION_TYPE.DEBIT,
+    transactionCountKey: 'carInsuranceBill',
+    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.CAR_INSURANCE_BILL),
+  },
+  INTERNET_BILL: {
+    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
+    template: 'Internet Bill',
+    type: TRANSACTION_TYPE.DEBIT,
+    transactionCountKey: 'internetBill',
+    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.CAR_INSURANCE_BILL),
+  },
+  TRASH_BILL: {
+    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
+    template: 'Trash Bill',
+    type: TRANSACTION_TYPE.DEBIT,
+    transactionCountKey: 'trashBill',
+    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.TRASH_BILL),
   },
 });
 
@@ -44,17 +78,13 @@ export const getFromAccount = (accountName: string): string => {
   return '';
 };
 
-const isAutoPayTransaction =
-  (autoPayName: string) =>
-  (t: Transaction): boolean =>
-    includesName(t.Description, autoPayName) && t.Account?.endsWith(CHASE_CHECKING);
+const isAutoPayTransaction = (autoPayName: string) => (t: Transaction): boolean => includesName(t.Description, autoPayName) && t.Account?.endsWith(CHASE_CHECKING);
 
 export const AUTO_PAY = Object.freeze({
   CHASE: {
     paymentCountKey: 'chasePayments',
     isTransactionIncluded: isAutoPayTransaction('Chase'),
-    transfers: (index: number) =>
-      [WALLET_ACCOUNT.CHASE_AMAZON, WALLET_ACCOUNT.CHASE_FREEDOM_FLEX][index] || null,
+    transfers: (index: number) => [WALLET_ACCOUNT.CHASE_AMAZON, WALLET_ACCOUNT.CHASE_FREEDOM_FLEX][index] || null,
   },
   CITI: {
     paymentCountKey: 'citiPayments',
@@ -85,6 +115,13 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
+  BUBBLE_BINZ: {
+    identifier: 'Bubble Binz',
+    name: 'Bubble Binz',
+    amount: 12.0,
+    day: 6,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
   GOOGLE_ONE: {
     identifier: 'Google One',
     name: 'Google',
