@@ -3,7 +3,7 @@ import { getSemiMonthylPayDaysForMonths } from '../utils/date-formatters';
 import { includesName } from '../utils/includes-name';
 import { CREDIT_CARD_BILL } from './joint-transactions';
 
-const { CHASE_CHECKING = '' } = process.env;
+const { CHASE_CHECKING = '', WELLS_FARGO_CHECKING = '' } = process.env;
 
 export const WALLET_ACCOUNT = Object.freeze({
   CHASE_CHECKING: 'Chase Checking',
@@ -107,7 +107,7 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
   WILL_SALARY: {
     identifier: "William's Salary",
     name: 'Betterlesson',
-    amount: 300.0,
+    amount: 450.0,
     day: '0',
     days: getSemiMonthylPayDaysForMonths(),
     type: TRANSACTION_TYPE.CREDIT,
@@ -121,6 +121,14 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     amount: 12.0,
     day: 6,
     type: TRANSACTION_TYPE.DEBIT,
+  },
+  PERSONAL_LOAN: {
+    identifier: 'Personal Loan',
+    name: 'Citibank',
+    amount: 300.0,
+    day: 7,
+    type: TRANSACTION_TYPE.DEBIT,
+    validateTransaction: (t) => t.Account?.endsWith(WELLS_FARGO_CHECKING),
   },
   GOOGLE_ONE: {
     identifier: 'Google One',
