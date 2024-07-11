@@ -62,7 +62,7 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     template: 'Internet Bill',
     type: TRANSACTION_TYPE.DEBIT,
     transactionCountKey: 'internetBill',
-    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.CAR_INSURANCE_BILL),
+    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.INTERNET_BILL),
   },
   TRASH_BILL: {
     walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
