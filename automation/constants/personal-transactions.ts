@@ -144,14 +144,6 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     day: 21,
     type: TRANSACTION_TYPE.DEBIT,
   },
-  AMAZON_PRIME: {
-    identifier: 'Amazon Prime',
-    name: 'Amazon Prime',
-    amount: 7.0,
-    day: 22,
-    type: TRANSACTION_TYPE.DEBIT,
-    validateTransaction: (t) => t.Category === 'Dues & Subscriptions',
-  },
   EOS: {
     identifier: 'EOS',
     name: 'Eos Fitness',
