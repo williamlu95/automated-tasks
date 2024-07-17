@@ -77,6 +77,7 @@ class WalletRecordPage extends Page {
 
     return {
       chaseIncome: transactionTypeTexts.filter((tt) => tt.includes('Income')).length,
+      marriottBonvoy: transactionTypeTexts.filter((tt) => tt.includes('Autopay')).length,
 
       waterBill: payeeTexts.filter((pt) => pt.includes('Water')).length,
       sewerBill: payeeTexts.filter((pt) => pt.includes('Sewer')).length,
