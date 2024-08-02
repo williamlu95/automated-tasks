@@ -37,7 +37,7 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
   WILL_SALARY: {
     identifier: "William's Salary",
     name: 'Betterlesson',
-    amount: 2000.0,
+    amount: 2500.0,
     day: '0',
     days: getSemiMonthylPayDaysForMonths(),
     type: TRANSACTION_TYPE.INCOME,
