@@ -125,7 +125,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   DIGITAL_OCEAN: {
     identifier: 'DigitalOcean',
     name: 'DigitalOcean',
-    amount: 4.0,
+    amount: 6.0,
     day: 1,
     type: TRANSACTION_TYPE.DEBIT,
   },
