@@ -3,7 +3,7 @@ import { getSemiMonthylPayDaysForMonths } from '../utils/date-formatters';
 import { includesName } from '../utils/includes-name';
 import { CREDIT_CARD_BILL } from './joint-transactions';
 
-const { CHASE_CHECKING = '', WELLS_FARGO_CHECKING = '', MARRIOTT_BOUNDLESS = '' } = process.env;
+const { CHASE_CHECKING = '', MARRIOTT_BOUNDLESS = '' } = process.env;
 
 export const WALLET_ACCOUNT = Object.freeze({
   CHASE_CHECKING: 'Chase Checking',
