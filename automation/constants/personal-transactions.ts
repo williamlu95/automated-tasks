@@ -122,6 +122,13 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
+  DIGITAL_OCEAN: {
+    identifier: 'DigitalOcean',
+    name: 'DigitalOcean',
+    amount: 4.0,
+    day: 1,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
   BUBBLE_BINZ: {
     identifier: 'Bubble Binz',
     name: 'Bubble Binz',
