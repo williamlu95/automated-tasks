@@ -157,6 +157,13 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     day: 25,
     type: TRANSACTION_TYPE.DEBIT,
   },
+  NETFLIX: {
+    identifier: 'Netflix',
+    name: 'Netflix',
+    amount: 24.0,
+    day: 27,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
   STUDENT_LOAN: {
     identifier: 'Student Loan',
     name: 'Us Department Of Education',

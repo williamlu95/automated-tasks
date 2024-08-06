@@ -8,10 +8,6 @@ dotenv.config();
 const {
   GMAIL_LOGIN,
   GMAIL_PASSWORD,
-  MOTHER_GMAIL_LOGIN,
-  MOTHER_GMAIL_PASSWORD,
-  JOINT_GMAIL_LOGIN,
-  JOINT_GMAIL_PASSWORD,
   MAIL_TO,
 } = process.env;
 
@@ -49,30 +45,6 @@ const personalConfig = {
   imap: {
     user: GMAIL_LOGIN || '',
     password: GMAIL_PASSWORD || '',
-    host: 'imap.gmail.com',
-    port: 993,
-    tls: true,
-    authTimeout: 3000,
-    tlsOptions: { rejectUnauthorized: false },
-  },
-};
-
-const motherConfig = {
-  imap: {
-    user: MOTHER_GMAIL_LOGIN || '',
-    password: MOTHER_GMAIL_PASSWORD || '',
-    host: 'imap.gmail.com',
-    port: 993,
-    tls: true,
-    authTimeout: 3000,
-    tlsOptions: { rejectUnauthorized: false },
-  },
-};
-
-const jointConfig = {
-  imap: {
-    user: JOINT_GMAIL_LOGIN || '',
-    password: JOINT_GMAIL_PASSWORD || '',
     host: 'imap.gmail.com',
     port: 993,
     tls: true,
@@ -135,7 +107,3 @@ const readEmails =
     });
 
 export const readPersonalEmails = readEmails(personalConfig);
-
-export const readMothersEmails = readEmails(motherConfig);
-
-export const readJointEmails = readEmails(jointConfig);
