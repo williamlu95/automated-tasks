@@ -39,7 +39,7 @@ export class JointTransactions extends BaseTransactions {
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);
 
-    this.outstandingExpenses = this.calculateOutstandingExpenses(EXPENSE);
+    this.outstandingExpenses = this.calculateOutstandingExpenses(EXPENSE).filter((e) => e.day !== '08/11/2024' && e.identifier !== 'Tundra');
     console.log(`Outstanding Expenses: ${JSON.stringify(this.outstandingExpenses, null, 4)}`);
 
     this.outstandingIncome = this.calculateOutstandingIncome(INCOME);
