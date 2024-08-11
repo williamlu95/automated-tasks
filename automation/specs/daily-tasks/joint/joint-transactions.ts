@@ -82,7 +82,7 @@ export class JointTransactions {
 
     Object.values(EXPENSE).forEach((e) => {
       // TODO: Remove after August 2024
-      if (e.name === 'Tundra' && format(new Date().setDate(e.day), 'P') === '8/11/2024') {
+      if (e.name === 'Tundra' && format(new Date().setDate(e.day), 'P') === '08/11/2024') {
         return;
       }
 
