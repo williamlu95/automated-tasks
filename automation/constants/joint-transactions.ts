@@ -37,7 +37,7 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
   WILL_SALARY: {
     identifier: "William's Salary",
     name: 'Betterlesson',
-    amount: 2000.0,
+    amount: 2250.0,
     day: '0',
     days: getSemiMonthylPayDaysForMonths(),
     type: TRANSACTION_TYPE.INCOME,
@@ -76,7 +76,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
   CAR_INSURANCE: {
     identifier: 'Car Insurance',
     name: CREDIT_CARD_BILL.CAR_INSURANCE_BILL,
-    amount: 220.0,
+    amount: 438.0,
     day: 9,
     type: TRANSACTION_TYPE.EXPENSE,
   },
@@ -85,6 +85,13 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     name: 'Nv Energy',
     amount: 300.0,
     day: 10,
+    type: TRANSACTION_TYPE.EXPENSE,
+  },
+  TUNDRA: {
+    identifier: 'Tundra',
+    name: 'Tundra',
+    amount: 823.0,
+    day: 11,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   INTERNET: {
