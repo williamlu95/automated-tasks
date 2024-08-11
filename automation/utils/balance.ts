@@ -19,10 +19,10 @@ export const notifyOfNegativeBalance = async (balanceSheet: string[][], account:
   });
 
   if (min <= 0 && process.env.ENABLE_NEGATIVE_BALANCE_EMAIL) {
-    return sendEmail({
+    await sendEmail({
       subject: `ACTION REQUIRED: Negative Balance for ${account} Account`,
       html: `<h1><strong>Negative Balance: </strong><span style="color: red;">${formatToDollars(
-        min
+        min,
       )}</span></h1>`,
     });
   }

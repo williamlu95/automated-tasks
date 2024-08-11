@@ -1,6 +1,6 @@
 import { addTransactionToWallet } from './add-transaction-to-wallet';
 import { addPaymentsToWallet } from './add-payments-to-wallet';
-import { Transactions } from './transactions';
+import { PersonalTransactions } from './personal-transactions';
 import { readPersonalEmails } from '../../../utils/notification';
 import { verifyAccountBalance } from './verify-account-balances';
 import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
@@ -9,7 +9,7 @@ describe('Personal daily tasks', () => {
   before(async () => {
     readPersonalEmails(false);
 
-    const transactions = new Transactions();
+    const transactions = new PersonalTransactions();
     await transactions.initializeTransactions();
     const templateTransactions = transactions.getTemplateTransactions();
     console.log(`Template Transactions: ${JSON.stringify(templateTransactions, null, 4)}`);

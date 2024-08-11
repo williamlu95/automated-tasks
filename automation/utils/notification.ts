@@ -34,12 +34,11 @@ export const errorNotification = async (errorMessage: string) => {
   throw Error(errorMessage);
 };
 
-export const sendEmail = async (options: Mail.Options) =>
-  emailer.sendMail({
-    ...options,
-    from: GMAIL_LOGIN,
-    to: MAIL_TO,
-  });
+export const sendEmail = async (options: Mail.Options) => emailer.sendMail({
+  ...options,
+  from: GMAIL_LOGIN,
+  to: MAIL_TO,
+});
 
 const personalConfig = {
   imap: {
@@ -53,57 +52,51 @@ const personalConfig = {
   },
 };
 
-const readEmails =
-  (config: imaps.ImapSimpleOptions) =>
-  (setVerificationCodes = true) =>
-    imaps.connect(config).then((connection) => {
-      connection
-        .openBox('INBOX')
-        .then(() => {
-          const searchCriteria = ['ALL'];
-          const fetchOptions = { bodies: ['TEXT'], struct: true };
-          return connection.search(searchCriteria, fetchOptions);
-        })
-        .then((messages) => {
-          const taskList = messages.map(
-            (message) =>
-              new Promise<void>((res, rej) => {
-                const parts = imaps.getParts(message.attributes.struct || []);
+const readEmails = (config: imaps.ImapSimpleOptions) => (setVerificationCodes = true) => imaps.connect(config).then((connection) => {
+  connection
+    .openBox('INBOX')
+    .then(() => {
+      const searchCriteria = ['ALL'];
+      const fetchOptions = { bodies: ['TEXT'], struct: true };
+      return connection.search(searchCriteria, fetchOptions);
+    })
+    .then((messages) => {
+      const taskList = messages.map(
+        (message) => new Promise<void>((res, rej) => {
+          const parts = imaps.getParts(message.attributes.struct || []);
 
-                parts.map((part) =>
-                  connection.getPartData(message, part).then((partData) => {
-                    if (
-                      part.disposition == null &&
-                      part.encoding !== 'base64' &&
-                      setVerificationCodes
-                    ) {
-                      const text = partData.replace(/<[^>]*>?/gm, '').replace(/\s/g, '');
-                      const empowerVerificationCode = text.match(/4-digitcodebelow.(\d+)/)?.[1];
-                      verificationCodes.empower = empowerVerificationCode;
-                    }
+          parts.map((part) => connection.getPartData(message, part).then((partData) => {
+            if (
+              part.disposition == null
+                      && part.encoding !== 'base64'
+                      && setVerificationCodes
+            ) {
+              const text = partData.replace(/<[^>]*>?/gm, '').replace(/\s/g, '');
+              const empowerVerificationCode = text.match(/4-digitcodebelow.(\d+)/)?.[1];
+              verificationCodes.empower = empowerVerificationCode;
+            }
 
-                    connection.addFlags(message.attributes.uid, 'Deleted', (err) => {
-                      if (err) {
-                        console.log('Problem marking message for deletion');
-                        rej(err);
-                      }
-
-                      res();
-                    });
-                  })
-                );
-              })
-          );
-
-          return Promise.all(taskList).then(() => {
-            connection.imap.closeBox(true, (err) => {
+            connection.addFlags(message.attributes.uid, 'Deleted', (err) => {
               if (err) {
-                console.log(err);
+                console.log('Problem marking message for deletion');
+                rej(err);
               }
+
+              res();
             });
-            connection.end();
-          });
+          }));
+        }),
+      );
+
+      return Promise.all(taskList).then(() => {
+        connection.imap.closeBox(true, (err) => {
+          if (err) {
+            console.log(err);
+          }
         });
+        connection.end();
+      });
     });
+});
 
 export const readPersonalEmails = readEmails(personalConfig);

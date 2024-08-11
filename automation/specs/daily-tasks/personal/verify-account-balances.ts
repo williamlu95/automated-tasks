@@ -34,7 +34,7 @@ const balanceDifference = (expected: string, actual: string): string => {
 
 export const verifyAccountBalance = async (
   actualBalances: Record<string, string>,
-  balanceSheet: string[][]
+  balanceSheet: string[][],
 ): Promise<void> => {
   const expectedBalances = await WalletDashboardPage.getAllAccountBalances();
   await notifyOfNegativeBalance(balanceSheet, 'Personal');

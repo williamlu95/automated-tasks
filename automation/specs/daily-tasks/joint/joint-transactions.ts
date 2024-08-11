@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { DateTime } from 'luxon';
-import { ExpectedJointTransaction, Transaction } from '../../../types/transaction';
+import { ExpectedJointTransaction, ExpectedTransaction } from '../../../types/transaction';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import {
   EXPENSE,
@@ -9,12 +9,12 @@ import {
   TRANSACTION_TYPE,
   generateExpenseForDate,
 } from '../../../constants/joint-transactions';
-import { includesName } from '../../../utils/includes-name';
 import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
 import { OVERALL_FORMULA } from '../../../utils/balance';
 import { WALLET_ACCOUNT } from '../../../constants/personal-transactions';
+import { BaseTransactions } from '../../../utils/base-transaction';
 
 const {
   JOINT_SOFI = '', JOINT_FOOD = '', JOINT_MISC = '',
@@ -22,21 +22,13 @@ const {
 
 const INCLUDED_TRANSACTIONS = [JOINT_SOFI, JOINT_FOOD, JOINT_MISC];
 
-export class JointTransactions {
-  private transactionsForCurrentMonth: Transaction[];
-
-  private outstandingExpenses: ExpectedJointTransaction[];
-
-  private outstandingIncome: ExpectedJointTransaction[];
-
+export class JointTransactions extends BaseTransactions {
   private actualBalances: Record<string, string>;
 
   private expectedBalances: Record<string, string>;
 
   constructor() {
-    this.transactionsForCurrentMonth = [];
-    this.outstandingExpenses = [];
-    this.outstandingIncome = [];
+    super(INCLUDED_TRANSACTIONS);
     this.actualBalances = {};
     this.expectedBalances = {};
   }
@@ -47,10 +39,10 @@ export class JointTransactions {
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);
 
-    this.outstandingExpenses = this.calculateOutstandingExpenses();
+    this.outstandingExpenses = this.calculateOutstandingExpenses(EXPENSE);
     console.log(`Outstanding Expenses: ${JSON.stringify(this.outstandingExpenses, null, 4)}`);
 
-    this.outstandingIncome = this.calculateOutstandingIncome();
+    this.outstandingIncome = this.calculateOutstandingIncome(INCOME);
     console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
 
     this.actualBalances = await EmpowerTransactionPage.getAllAccountBalances();
@@ -60,50 +52,8 @@ export class JointTransactions {
     console.log(`Expected Balances: ${JSON.stringify(this.expectedBalances, null, 4)}`);
   }
 
-  private calculateOutstandingIncome(): ExpectedJointTransaction[] {
-    const income: ExpectedJointTransaction[] = [];
-
-    Object.values(INCOME).forEach((value) => {
-      const paidSalary = this.transactionsForCurrentMonth.filter((t) => includesName(t.Description, value.name));
-
-      const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map((day) => ({
-        ...value,
-        day,
-      }));
-
-      income.push(...unpaidSalary);
-    });
-
-    return income.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
-  }
-
-  private calculateOutstandingExpenses(): ExpectedJointTransaction[] {
-    const expenses: ExpectedJointTransaction[] = [];
-
-    Object.values(EXPENSE).forEach((e) => {
-      // TODO: Remove after August 2024
-      if (e.name === 'Tundra' && format(new Date().setDate(e.day), 'P') === '08/11/2024') {
-        return;
-      }
-
-      if (
-        this.transactionsForCurrentMonth.some(
-          (t) => includesName(t.Description, e.name)
-            && (!e.validateTransaction || e.validateTransaction(t)),
-        )
-      ) {
-        return;
-      }
-
-      expenses.push({ ...e, day: format(new Date().setDate(e.day), 'P'), days: undefined });
-    });
-    expenses.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
-    const futureExpenses = this.calculateFutureExpenses();
-
-    return expenses.concat(futureExpenses);
-  }
-
-  private calculateFutureExpenses(): ExpectedJointTransaction[] {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  protected calculateFutureExpenses(_expenseTemplate: Record<string, ExpectedTransaction>): ExpectedJointTransaction[] {
     const futureDates: DateTime[] = Array(ADDITIONAL_MONTHS)
       .fill(DateTime.now())
       .map((date, index) => date.plus({ months: index + 1 }));
@@ -125,34 +75,23 @@ export class JointTransactions {
     ));
   }
 
+  protected getInitialBalanceSheet() {
+    const today = new Date();
+    return [
+      ['Joint Account Balance', formatFromDollars(this.actualBalances[JOINT_SOFI])],
+      ['Misc Balance (Marriott Boundless)', formatFromDollars(this.expectedBalances[WALLET_ACCOUNT.MARRIOTT_BOUNDLESS])],
+      ['Current Food Balance (AMEX Gold)', formatFromDollars(this.expectedBalances[WALLET_ACCOUNT.AMEX_GOLD])],
+    ].map(([name, balance], index) => [name,
+      format(today, 'P'),
+      balance,
+      index === 0 ? balance : OVERALL_FORMULA]);
+  }
+
   async getBalanceSheet() {
-    const checkingBalance = formatFromDollars(this.actualBalances[JOINT_SOFI]);
     const foodBalance = formatFromDollars(this.expectedBalances[WALLET_ACCOUNT.AMEX_GOLD]);
-    const miscBalance = formatFromDollars(this.expectedBalances[WALLET_ACCOUNT.MARRIOTT_BOUNDLESS]);
     const today = new Date();
 
-    const balanceSheet: string[][] = [
-      [
-        'Joint Account Balance',
-        format(today, 'P'),
-        formatToDollars(checkingBalance),
-        formatToDollars(checkingBalance),
-      ],
-    ];
-
-    balanceSheet.push([
-      'Misc Balance (Marriott Boundless)',
-      format(today, 'P'),
-      formatToDollars(miscBalance),
-      OVERALL_FORMULA,
-    ]);
-
-    balanceSheet.push([
-      'Current Food Balance (AMEX Gold)',
-      format(today, 'P'),
-      formatToDollars(foodBalance),
-      OVERALL_FORMULA,
-    ]);
+    const balanceSheet = this.getInitialBalanceSheet();
 
     const outstandingFoodBalance = -(FOOD_BUDGET + foodBalance);
     if (outstandingFoodBalance < 0) {
@@ -163,7 +102,6 @@ export class JointTransactions {
         OVERALL_FORMULA,
       ]);
     }
-
 
     const allTransactions = this.outstandingExpenses
       .concat(this.outstandingIncome)
@@ -176,24 +114,6 @@ export class JointTransactions {
     });
 
     return balanceSheet;
-  }
-
-  private getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
-    const transactionsForCurrentMonth = transactions
-      .filter((t) => INCLUDED_TRANSACTIONS.some((it) => t.Account?.endsWith(it)))
-      .filter((t) => {
-        const transactionDate = DateTime.fromISO(t.Date);
-        const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');
-
-        if (isSameMonth) {
-          return true;
-        }
-
-        return false;
-      });
-
-    transactionsForCurrentMonth.reverse();
-    return transactionsForCurrentMonth;
   }
 
   getActualBalances() {

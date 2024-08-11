@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import { addMonths, format } from 'date-fns';
+import { format } from 'date-fns';
 import WalletLoginPage from '../../../pageobjects/wallet-login-page';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import {
@@ -17,10 +17,10 @@ import {
   ExpectedJointTransaction,
 } from '../../../types/transaction';
 import { includesName } from '../../../utils/includes-name';
-import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import { OVERALL_FORMULA } from '../../../utils/balance';
 import WalletRecordPage from '../../../pageobjects/wallet-record-page';
+import { BaseTransactions } from '../../../utils/base-transaction';
 
 const {
   CHASE_CHECKING = '',
@@ -62,10 +62,8 @@ export type Template = Omit<
 > & { amount: string };
 export type AutoPay = { fromAccount: string; toAccount: string; amount: string };
 
-export class Transactions {
+export class PersonalTransactions extends BaseTransactions {
   private transactionCounts: Record<string, number>;
-
-  private transactionsForCurrentMonth: Transaction[];
 
   private templateTransactions: Template[];
 
@@ -73,18 +71,12 @@ export class Transactions {
 
   private balances: Record<string, string>;
 
-  private outstandingExpenses: ExpectedJointTransaction[];
-
-  private outstandingIncome: ExpectedJointTransaction[];
-
   constructor() {
+    super(INCLUDED_TRANSACTIONS);
     this.transactionCounts = {};
-    this.transactionsForCurrentMonth = [];
     this.templateTransactions = [];
     this.autoPayTransactions = [];
     this.balances = {};
-    this.outstandingExpenses = [];
-    this.outstandingIncome = [];
   }
 
   async initializeTransactions() {
@@ -96,21 +88,21 @@ export class Transactions {
     const transactions = await EmpowerTransactionPage.downloadTransactions();
     this.balances = await EmpowerTransactionPage.getAllAccountBalances();
 
-    this.transactionsForCurrentMonth = this.#getTransactionsForCurrentMonth(transactions);
+    this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);
 
-    this.templateTransactions = Object.values(TEMPLATE_TRANSACTION).flatMap((t) => this.#getTransactionsForTemplate(t));
+    this.templateTransactions = Object.values(TEMPLATE_TRANSACTION).flatMap((t) => this.getTransactionsForTemplate(t));
 
-    this.autoPayTransactions = Object.values(AUTO_PAY).flatMap((p) => this.#getTransactionsForAutoPay(p));
+    this.autoPayTransactions = Object.values(AUTO_PAY).flatMap((p) => this.getTransactionsForAutoPay(p));
 
-    this.outstandingExpenses = this.calculateOutstandingExpenses();
+    this.outstandingExpenses = this.calculateOutstandingExpenses(EXPENSE);
     console.log(`Outstanding Expenses: ${JSON.stringify(this.outstandingExpenses, null, 4)}`);
 
     this.outstandingIncome = this.calculateOutstandingIncome();
     console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
   }
 
-  private calculateOutstandingIncome(): ExpectedJointTransaction[] {
+  protected calculateOutstandingIncome(): ExpectedJointTransaction[] {
     const income: ExpectedJointTransaction[] = [];
 
     Object.values(INCOME).forEach((value) => {
@@ -131,40 +123,7 @@ export class Transactions {
     return income.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
   }
 
-  private calculateOutstandingExpenses(): ExpectedJointTransaction[] {
-    const expenses: ExpectedJointTransaction[] = [];
-
-    Object.values(EXPENSE).forEach((e) => {
-      if (
-        this.transactionsForCurrentMonth.some(
-          (t) => includesName(t.Description, e.name)
-            && (!e.validateTransaction || e.validateTransaction(t)),
-        )
-      ) {
-        return;
-      }
-
-      expenses.push({ ...e, day: format(new Date().setDate(e.day), 'P'), days: undefined });
-    });
-
-    expenses.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
-    const futureExpenses = this.calculateFutureExpenses();
-    return expenses.concat(futureExpenses);
-  }
-
-  private calculateFutureExpenses(): ExpectedJointTransaction[] {
-    const futureDates = Array(ADDITIONAL_MONTHS)
-      .fill(new Date())
-      .map((date, index) => addMonths(date, index + 1));
-
-    return futureDates.flatMap((futureDate) => Object.values(EXPENSE).map((e) => ({
-      ...e,
-      day: format(new Date(futureDate).setDate(e.day), 'P'),
-      days: undefined,
-    })));
-  }
-
-  #getTransactionsForTemplate({
+  private getTransactionsForTemplate({
     isTransactionIncluded,
     transactionCountKey,
     ...restOfTemplate
@@ -179,7 +138,7 @@ export class Transactions {
     }));
   }
 
-  #getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
+  protected getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
     const transactionsForCurrentMonth = transactions
       .filter((t) => INCLUDED_TRANSACTIONS.some((it) => t.Account?.endsWith(it)))
       .filter((t) => {
@@ -204,7 +163,7 @@ export class Transactions {
     return transactionsForCurrentMonth;
   }
 
-  #getTransactionsForAutoPay({
+  private getTransactionsForAutoPay({
     isTransactionIncluded,
     transfers,
     paymentCountKey,
@@ -242,71 +201,24 @@ export class Transactions {
     return this.balances;
   }
 
-  async getBalanceSheet() {
-    const checkingBalance = formatFromDollars(this.balances[WELLS_FARGO_CHECKING]);
-    const wfActiveCreditCard = formatFromDollars(this.balances[WELLS_FARGO_ACTIVE_CASH]);
-    const wfPlatinumCreditCard = formatFromDollars(this.balances[WELLS_FARGO_PLATINUM]);
-    const wfAutographCreditCard = formatFromDollars(this.balances[WELLS_FARGO_AUTOGRAPH]);
-    const amexBlueCreditCard = formatFromDollars(this.balances[AMEX_BLUE]);
-    const chaseFreedomUnlimitedCreditCard = formatFromDollars(
-      this.balances[CHASE_FREEDOM_UNLIMITED],
-    );
-    const citiDoubleCashCreditCard = formatFromDollars(
-      this.balances[CITI_DOUBLE_CASH],
-    );
-
+  protected getInitialBalanceSheet() {
     const today = new Date();
-
-    const balanceSheet: string[][] = [
-      [
-        'Wells Fargo Checking Balance',
-        format(today, 'P'),
-        formatToDollars(checkingBalance),
-        formatToDollars(checkingBalance),
-      ],
-    ];
-
-    balanceSheet.push([
-      'Wells Fargo Active Balance',
+    return [
+      ['Wells Fargo Checking Balance', formatFromDollars(this.balances[WELLS_FARGO_CHECKING])],
+      ['Wells Fargo Active Balance', formatFromDollars(this.balances[WELLS_FARGO_ACTIVE_CASH])],
+      ['Wells Fargo Platinum Balance', formatFromDollars(this.balances[WELLS_FARGO_PLATINUM])],
+      ['Wells Fargo Autograph Balance', formatFromDollars(this.balances[WELLS_FARGO_AUTOGRAPH])],
+      ['Amex Blue Balance', formatFromDollars(this.balances[AMEX_BLUE])],
+      ['Chase Freedom Unlimited Balance', formatFromDollars(this.balances[CHASE_FREEDOM_UNLIMITED])],
+      ['Citi Double Cash Balance', formatFromDollars(this.balances[CITI_DOUBLE_CASH])],
+    ].map(([name, balance], index) => [name,
       format(today, 'P'),
-      formatToDollars(wfActiveCreditCard),
-      OVERALL_FORMULA,
-    ]);
+      balance,
+      index === 0 ? balance : OVERALL_FORMULA]);
+  }
 
-    balanceSheet.push([
-      'Wells Fargo Platinum Balance',
-      format(today, 'P'),
-      formatToDollars(wfPlatinumCreditCard),
-      OVERALL_FORMULA,
-    ]);
-
-    balanceSheet.push([
-      'Wells Fargo Autograph Balance',
-      format(today, 'P'),
-      formatToDollars(wfAutographCreditCard),
-      OVERALL_FORMULA,
-    ]);
-
-    balanceSheet.push([
-      'Amex Blue Balance',
-      format(today, 'P'),
-      formatToDollars(amexBlueCreditCard),
-      OVERALL_FORMULA,
-    ]);
-
-    balanceSheet.push([
-      'Chase Freedom Unlimited Balance',
-      format(today, 'P'),
-      formatToDollars(chaseFreedomUnlimitedCreditCard),
-      OVERALL_FORMULA,
-    ]);
-
-    balanceSheet.push([
-      'Citi Double Cash Balance',
-      format(today, 'P'),
-      formatToDollars(citiDoubleCashCreditCard),
-      OVERALL_FORMULA,
-    ]);
+  async getBalanceSheet() {
+    const balanceSheet = this.getInitialBalanceSheet();
 
     const allTransactions = this.outstandingExpenses
       .concat(this.outstandingIncome)
