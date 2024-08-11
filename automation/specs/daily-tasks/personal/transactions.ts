@@ -251,6 +251,9 @@ export class Transactions {
     const chaseFreedomUnlimitedCreditCard = formatFromDollars(
       this.balances[CHASE_FREEDOM_UNLIMITED],
     );
+    const citiDoubleCashCreditCard = formatFromDollars(
+      this.balances[CITI_DOUBLE_CASH],
+    );
 
     const today = new Date();
 
@@ -297,6 +300,14 @@ export class Transactions {
       formatToDollars(chaseFreedomUnlimitedCreditCard),
       OVERALL_FORMULA,
     ]);
+
+    balanceSheet.push([
+      'Citi Double Cash Balance',
+      format(today, 'P'),
+      formatToDollars(citiDoubleCashCreditCard),
+      OVERALL_FORMULA,
+    ]);
+
 
     const allTransactions = this.outstandingExpenses
       .concat(this.outstandingIncome)
