@@ -1,6 +1,6 @@
 import { format } from 'date-fns';
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/mothers-transactions';
-import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
+import { formatToDollars } from '../../../utils/currency-formatter';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import { OVERALL_FORMULA } from '../../../utils/balance';
 import { BaseTransactions } from '../../../utils/base-transaction';
@@ -33,18 +33,18 @@ export class MothersTransactions extends BaseTransactions {
     console.log(`Balances: ${JSON.stringify(this.balances, null, 4)}`);
   }
 
-  protected getInitialBalanceSheet() {
+  protected getInitialBalanceSheet(): string[][] {
     const today = new Date();
     return [
-      ['Checking Account Balance', formatFromDollars(this.balances[MOTHERS_WF])],
-      ['Credit Card Balance', formatFromDollars(this.balances[MOTHERS_CITI])],
+      ['Checking Account Balance', this.balances[MOTHERS_WF]],
+      ['Credit Card Balance', this.balances[MOTHERS_CITI]],
     ].map(([name, balance], index) => [name,
       format(today, 'P'),
       balance,
       index === 0 ? balance : OVERALL_FORMULA]);
   }
 
-  async getBalanceSheet() {
+  async getBalanceSheet(): Promise<string[][]> {
     const balanceSheet = this.getInitialBalanceSheet();
 
     const allTransactions = this.outstandingExpenses

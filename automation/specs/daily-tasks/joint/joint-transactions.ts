@@ -75,12 +75,12 @@ export class JointTransactions extends BaseTransactions {
     ));
   }
 
-  protected getInitialBalanceSheet() {
+  private getInitialBalanceSheet() {
     const today = new Date();
     return [
-      ['Joint Account Balance', formatFromDollars(this.actualBalances[JOINT_SOFI])],
-      ['Misc Balance (Marriott Boundless)', formatFromDollars(this.expectedBalances[WALLET_ACCOUNT.MARRIOTT_BOUNDLESS])],
-      ['Current Food Balance (AMEX Gold)', formatFromDollars(this.expectedBalances[WALLET_ACCOUNT.AMEX_GOLD])],
+      ['Joint Account Balance', this.actualBalances[JOINT_SOFI]],
+      ['Misc Balance (Marriott Boundless)', this.expectedBalances[WALLET_ACCOUNT.MARRIOTT_BOUNDLESS]],
+      ['Current Food Balance (AMEX Gold)', this.expectedBalances[WALLET_ACCOUNT.AMEX_GOLD]],
     ].map(([name, balance], index) => [name,
       format(today, 'P'),
       balance,

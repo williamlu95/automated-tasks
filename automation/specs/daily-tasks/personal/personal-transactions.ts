@@ -17,7 +17,7 @@ import {
   ExpectedJointTransaction,
 } from '../../../types/transaction';
 import { includesName } from '../../../utils/includes-name';
-import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
+import { formatToDollars } from '../../../utils/currency-formatter';
 import { OVERALL_FORMULA } from '../../../utils/balance';
 import WalletRecordPage from '../../../pageobjects/wallet-record-page';
 import { BaseTransactions } from '../../../utils/base-transaction';
@@ -201,16 +201,16 @@ export class PersonalTransactions extends BaseTransactions {
     return this.balances;
   }
 
-  protected getInitialBalanceSheet() {
+  private getInitialBalanceSheet() {
     const today = new Date();
     return [
-      ['Wells Fargo Checking Balance', formatFromDollars(this.balances[WELLS_FARGO_CHECKING])],
-      ['Wells Fargo Active Balance', formatFromDollars(this.balances[WELLS_FARGO_ACTIVE_CASH])],
-      ['Wells Fargo Platinum Balance', formatFromDollars(this.balances[WELLS_FARGO_PLATINUM])],
-      ['Wells Fargo Autograph Balance', formatFromDollars(this.balances[WELLS_FARGO_AUTOGRAPH])],
-      ['Amex Blue Balance', formatFromDollars(this.balances[AMEX_BLUE])],
-      ['Chase Freedom Unlimited Balance', formatFromDollars(this.balances[CHASE_FREEDOM_UNLIMITED])],
-      ['Citi Double Cash Balance', formatFromDollars(this.balances[CITI_DOUBLE_CASH])],
+      ['Wells Fargo Checking Balance', this.balances[WELLS_FARGO_CHECKING]],
+      ['Wells Fargo Active Balance', this.balances[WELLS_FARGO_ACTIVE_CASH]],
+      ['Wells Fargo Platinum Balance', this.balances[WELLS_FARGO_PLATINUM]],
+      ['Wells Fargo Autograph Balance', this.balances[WELLS_FARGO_AUTOGRAPH]],
+      ['Amex Blue Balance', this.balances[AMEX_BLUE]],
+      ['Chase Freedom Unlimited Balance', this.balances[CHASE_FREEDOM_UNLIMITED]],
+      ['Citi Double Cash Balance', this.balances[CITI_DOUBLE_CASH]],
     ].map(([name, balance], index) => [name,
       format(today, 'P'),
       balance,
