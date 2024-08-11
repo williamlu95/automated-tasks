@@ -18,8 +18,7 @@ const FIRST_PAY_DAY = new Date();
 FIRST_PAY_DAY.setDate(15);
 
 export const getPayDaysForMonth = (currentDate: Date, payDays: number[] = []): number[] => {
-  const isFutureMonth =
-    getMonth(currentDate) > getMonth(new Date()) && getYear(currentDate) === getYear(new Date());
+  const isFutureMonth = getMonth(currentDate) > getMonth(new Date()) && getYear(currentDate) === getYear(new Date());
   const isFutureYear = getYear(currentDate) > getYear(new Date());
 
   if (isFutureMonth || isFutureYear) {
@@ -37,7 +36,7 @@ export const getPayDaysForMonth = (currentDate: Date, payDays: number[] = []): n
 
 export const getBiweeklyPayDaysForMonths = (
   currentDate: Date,
-  payDays: string[] = []
+  payDays: string[] = [],
 ): string[] => {
   const monthDifference = differenceInMonths(startOfMonth(currentDate), startOfMonth(new Date()));
   if (monthDifference > ADDITIONAL_MONTHS) {
@@ -55,7 +54,7 @@ export const getBiweeklyPayDaysForMonths = (
 
 export const getSemiMonthylPayDaysForMonths = (
   currentDate = FIRST_PAY_DAY,
-  payDays: string[] = []
+  payDays: string[] = [],
 ): string[] => {
   if (differenceInMonths(startOfMonth(currentDate), startOfMonth(new Date())) > ADDITIONAL_MONTHS) {
     return payDays;
@@ -68,11 +67,16 @@ export const getSemiMonthylPayDaysForMonths = (
   ]);
 };
 
-export const getSecondWednesday = () => {
-  const firstDayOfMonth = startOfMonth(new Date());
+export const getSecondWednesday = (date = new Date()) => {
+  const firstDayOfMonth = startOfMonth(date);
   const firstWednesday = isWednesday(firstDayOfMonth)
     ? firstDayOfMonth
     : nextWednesday(firstDayOfMonth);
 
-  return addDays(firstWednesday, WEEK_IN_DAYS).getDate();
+  return format(addDays(firstWednesday, WEEK_IN_DAYS), 'P');
+};
+
+export const getSecondWednesdayForMonths = (): string[] => {
+  const months = [new Date(), addMonths(new Date(), 1), addMonths(new Date(), 2)];
+  return months.map(getSecondWednesday);
 };

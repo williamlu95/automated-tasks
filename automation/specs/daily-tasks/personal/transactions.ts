@@ -146,9 +146,9 @@ export class Transactions {
 
       expenses.push({ ...e, day: format(new Date().setDate(e.day), 'P'), days: undefined });
     });
+
     expenses.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
     const futureExpenses = this.calculateFutureExpenses();
-
     return expenses.concat(futureExpenses);
   }
 
@@ -307,7 +307,6 @@ export class Transactions {
       formatToDollars(citiDoubleCashCreditCard),
       OVERALL_FORMULA,
     ]);
-
 
     const allTransactions = this.outstandingExpenses
       .concat(this.outstandingIncome)

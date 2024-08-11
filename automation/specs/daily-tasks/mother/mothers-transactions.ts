@@ -1,11 +1,12 @@
-import { format } from 'date-fns';
+import { addMonths, format } from 'date-fns';
+import { DateTime } from 'luxon';
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/mothers-transactions';
 import { includesName } from '../../../utils/includes-name';
 import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
-import { ExpectedTransaction, Transaction } from '../../../types/transaction';
-import { DateTime } from 'luxon';
+import { ExpectedJointTransaction, Transaction } from '../../../types/transaction';
 import { OVERALL_FORMULA } from '../../../utils/balance';
+import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
 
 const { MOTHERS_WF = '', MOTHERS_CITI = '' } = process.env;
 
@@ -14,9 +15,9 @@ const INCLUDED_TRANSACTIONS = [MOTHERS_WF, MOTHERS_CITI];
 export class MothersTransactions {
   private transactionsForCurrentMonth: Transaction[];
 
-  private outstandingIncome: ExpectedTransaction[];
+  private outstandingIncome: ExpectedJointTransaction[];
 
-  private outstandingExpenses: ExpectedTransaction[];
+  private outstandingExpenses: ExpectedJointTransaction[];
 
   private balances: Record<string, string>;
 
@@ -65,14 +66,14 @@ export class MothersTransactions {
 
     const allTransactions = this.outstandingExpenses
       .concat(this.outstandingIncome)
-      .sort((a, b) => a.day - b.day);
+      .sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
 
     allTransactions.forEach((t) => {
       const amount = t.type === TRANSACTION_TYPE.INCOME ? t.amount : -t.amount;
 
       balanceSheet.push([
         t.identifier,
-        format(today.setDate(t.day), 'P'),
+        t.day,
         formatToDollars(amount),
         OVERALL_FORMULA,
       ]);
@@ -81,46 +82,47 @@ export class MothersTransactions {
     return balanceSheet;
   }
 
-  private calculateOutstandingExpenses(): ExpectedTransaction[] {
-    const expenses: ExpectedTransaction[] = [];
+  private calculateOutstandingExpenses(): ExpectedJointTransaction[] {
+    const expenses: ExpectedJointTransaction[] = [];
 
     Object.values(EXPENSE).forEach((e) => {
       if (this.transactionsForCurrentMonth.every((t) => !includesName(t.Description, e.name))) {
-        expenses.push(e);
+        expenses.push({ ...e, day: format(new Date().setDate(e.day), 'P'), days: undefined });
       }
     });
 
-    return expenses.sort((a, b) => a.day - b.day);
+    expenses.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
+    const futureExpenses = this.calculateFutureExpenses();
+    return expenses.concat(futureExpenses);
   }
 
-  private calculateOutstandingIncome(): ExpectedTransaction[] {
-    const income: ExpectedTransaction[] = [];
+  private calculateFutureExpenses(): ExpectedJointTransaction[] {
+    const futureDates = Array(ADDITIONAL_MONTHS)
+      .fill(new Date())
+      .map((date, index) => addMonths(date, index + 1));
 
-    Object.entries(INCOME).forEach(([key, value]) => {
-      switch (key) {
-        case 'MOTHER_SALARY':
-          const paidSalary = this.transactionsForCurrentMonth.filter((t) =>
-            includesName(t.Description, value.name)
-          );
+    return futureDates.flatMap((futureDate) => Object.values(EXPENSE).map((e) => ({
+      ...e,
+      day: format(new Date(futureDate).setDate(e.day), 'P'),
+      days: undefined,
+    })));
+  }
 
-          const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map((day) => ({
-            ...value,
-            day,
-          }));
+  private calculateOutstandingIncome(): ExpectedJointTransaction[] {
+    const income: ExpectedJointTransaction[] = [];
 
-          income.push(...unpaidSalary);
-          break;
+    Object.values(INCOME).forEach((value) => {
+      const paidSalary = this.transactionsForCurrentMonth.filter((t) => includesName(t.Description, value.name));
 
-        default:
-          if (
-            this.transactionsForCurrentMonth.every((t) => !includesName(t.Description, value.name))
-          ) {
-            income.push(value);
-          }
-      }
+      const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map((day) => ({
+        ...value,
+        day,
+      }));
+
+      income.push(...unpaidSalary);
     });
 
-    return income.sort((a, b) => a.day - b.day);
+    return income.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
   }
 
   private getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {

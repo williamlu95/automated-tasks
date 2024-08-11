@@ -1,18 +1,18 @@
-import { ExpectedTransaction } from '../types/transaction';
-import { getPayDaysForMonth, getSecondWednesday } from '../utils/date-formatters';
+import { ExpectedJointTransaction, ExpectedTransaction } from '../types/transaction';
+import { getBiweeklyPayDaysForMonths, getSecondWednesday, getSecondWednesdayForMonths } from '../utils/date-formatters';
 
 export const TRANSACTION_TYPE = {
   INCOME: 'income',
   EXPENSE: 'expense',
 };
 
-export const INCOME: Record<string, ExpectedTransaction> = Object.freeze({
+export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
   MOTHER_SALARY: {
     identifier: "Mother's Salary",
     name: 'Unitedhealth Group',
     amount: 450.0,
-    day: 0,
-    days: getPayDaysForMonth(new Date('09/29/23')),
+    day: '0',
+    days: getBiweeklyPayDaysForMonths(new Date('09/29/23')),
     type: TRANSACTION_TYPE.INCOME,
   },
   FATHER_SSDI: {
@@ -20,6 +20,7 @@ export const INCOME: Record<string, ExpectedTransaction> = Object.freeze({
     name: 'Social Security Administration',
     amount: 2018.1,
     day: getSecondWednesday(),
+    days: getSecondWednesdayForMonths(),
     type: TRANSACTION_TYPE.INCOME,
   },
 });
