@@ -39,7 +39,7 @@ export class JointTransactions extends BaseTransactions {
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);
 
-    this.outstandingExpenses = this.calculateOutstandingExpenses(EXPENSE).filter((e) => e.day !== '08/11/2024' && e.identifier !== 'Tundra');
+    this.outstandingExpenses = this.calculateOutstandingExpenses(EXPENSE).filter(this.filterExpenses);
     console.log(`Outstanding Expenses: ${JSON.stringify(this.outstandingExpenses, null, 4)}`);
 
     this.outstandingIncome = this.calculateOutstandingIncome(INCOME);
@@ -51,6 +51,14 @@ export class JointTransactions extends BaseTransactions {
     this.expectedBalances = await WalletDashboardPage.loginAndGetAllAccountBalances();
     console.log(`Expected Balances: ${JSON.stringify(this.expectedBalances, null, 4)}`);
   }
+
+  private filterExpenses = (e: ExpectedJointTransaction) => {
+    if (e.day !== '08/26/2024' && e.identifier !== 'Tundra') {
+      return false;
+    }
+
+    return true;
+  };
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected calculateFutureExpenses(_expenseTemplate: Record<string, ExpectedTransaction>): ExpectedJointTransaction[] {

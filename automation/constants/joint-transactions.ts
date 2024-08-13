@@ -87,13 +87,6 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     day: 10,
     type: TRANSACTION_TYPE.EXPENSE,
   },
-  TUNDRA: {
-    identifier: 'Tundra',
-    name: 'Tundra',
-    amount: 823.0,
-    day: 11,
-    type: TRANSACTION_TYPE.EXPENSE,
-  },
   INTERNET: {
     identifier: 'Internet',
     name: CREDIT_CARD_BILL.INTERNET_BILL,
@@ -128,6 +121,13 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     name: CREDIT_CARD_BILL.TRASH_BILL,
     amount: calculateQuarterlyTotalAmountDue(57.0, date),
     day: 20,
+    type: TRANSACTION_TYPE.EXPENSE,
+  },
+  TUNDRA: {
+    identifier: 'Tundra',
+    name: 'Tundra',
+    amount: 823.0,
+    day: 26,
     type: TRANSACTION_TYPE.EXPENSE,
   },
 });
