@@ -53,7 +53,7 @@ export class JointTransactions extends BaseTransactions {
   }
 
   private filterExpenses = (e: ExpectedJointTransaction) => {
-    if (e.day === '08/26/2024' && e.identifier === 'Tundra') {
+    if (e.day === '08/20/2024' && e.identifier === 'Tundra') {
       return false;
     }
 
