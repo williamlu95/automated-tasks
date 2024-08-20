@@ -136,13 +136,6 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     day: 21,
     type: TRANSACTION_TYPE.DEBIT,
   },
-  EOS: {
-    identifier: 'EOS',
-    name: 'Eos Fitness',
-    amount: 27.0,
-    day: 23,
-    type: TRANSACTION_TYPE.DEBIT,
-  },
   TMOBILE: {
     identifier: 'T-Mobile',
     name: 'T-mobile',
