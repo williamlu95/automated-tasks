@@ -122,13 +122,6 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
-  GOOGLE_ONE: {
-    identifier: 'Google One',
-    name: 'Google',
-    amount: 3.0,
-    day: 14,
-    type: TRANSACTION_TYPE.DEBIT,
-  },
   HULU: {
     identifier: 'Hulu',
     name: 'Hulu',
