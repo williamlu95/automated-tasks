@@ -112,7 +112,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
   NATURAL_GAS: {
     identifier: 'Natural Gas',
     name: 'Southwest Gas',
-    amount: 120.0,
+    amount: 50.0,
     day: 18,
     type: TRANSACTION_TYPE.EXPENSE,
   },
