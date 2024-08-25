@@ -56,6 +56,7 @@ export class JointTransactions extends BaseTransactions {
     console.log(`Expected Balances: ${JSON.stringify(this.expectedBalances, null, 4)}`);
 
     this.grocerySpend = await WalletRecordPage.getGrocerySpend();
+    console.log('Grocery Spend: ', this.grocerySpend);
   }
 
   private filterExpenses = (e: ExpectedJointTransaction) => {
