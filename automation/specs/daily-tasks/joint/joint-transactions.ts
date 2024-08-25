@@ -42,7 +42,6 @@ export class JointTransactions extends BaseTransactions {
     await WalletLoginPage.open();
     await WalletLoginPage.login();
     this.grocerySpend = await WalletRecordPage.getGrocerySpend();
-    console.log('this.grocerySpend :>> ', this.grocerySpend);
 
     const transactions = await EmpowerTransactionPage.downloadTransactions();
 

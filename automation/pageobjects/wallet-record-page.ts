@@ -16,7 +16,7 @@ class WalletRecordPage extends Page {
   }
 
   get options() {
-    return $$('div[role="option"]');
+    return $$('div.visible > div[role="option"]');
   }
 
   get transactionTypes() {
@@ -32,7 +32,7 @@ class WalletRecordPage extends Page {
   }
 
   get amounts() {
-    return $$('span._3fg4YMdrgBxwppTd3zZxUP');
+    return $$('div._2incM6fyIxbGkeydtYoltF');
   }
 
   async selectOption(optionText: string): Promise<void> {
