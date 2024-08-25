@@ -15,7 +15,6 @@ import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
 import { OVERALL_FORMULA } from '../../../utils/balance';
 import { WALLET_ACCOUNT } from '../../../constants/personal-transactions';
 import { BaseTransactions } from '../../../utils/base-transaction';
-import WalletLoginPage from '../../../pageobjects/wallet-login-page';
 import WalletRecordPage from '../../../pageobjects/wallet-record-page';
 
 const {
@@ -39,10 +38,6 @@ export class JointTransactions extends BaseTransactions {
   }
 
   async initializeTransactions() {
-    await WalletLoginPage.open();
-    await WalletLoginPage.login();
-    this.grocerySpend = await WalletRecordPage.getGrocerySpend();
-
     const transactions = await EmpowerTransactionPage.downloadTransactions();
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
@@ -59,6 +54,8 @@ export class JointTransactions extends BaseTransactions {
 
     this.expectedBalances = await WalletDashboardPage.loginAndGetAllAccountBalances();
     console.log(`Expected Balances: ${JSON.stringify(this.expectedBalances, null, 4)}`);
+
+    this.grocerySpend = await WalletRecordPage.getGrocerySpend();
   }
 
   private filterExpenses = (e: ExpectedJointTransaction) => {
