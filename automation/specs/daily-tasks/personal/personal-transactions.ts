@@ -205,12 +205,8 @@ export class PersonalTransactions extends BaseTransactions {
     const today = new Date();
     return [
       ['Wells Fargo Checking Balance', this.balances[WELLS_FARGO_CHECKING]],
-      ['Wells Fargo Active Balance', this.balances[WELLS_FARGO_ACTIVE_CASH]],
-      ['Wells Fargo Platinum Balance', this.balances[WELLS_FARGO_PLATINUM]],
       ['Wells Fargo Autograph Balance', this.balances[WELLS_FARGO_AUTOGRAPH]],
       ['Amex Blue Balance', this.balances[AMEX_BLUE]],
-      ['Chase Freedom Unlimited Balance', this.balances[CHASE_FREEDOM_UNLIMITED]],
-      ['Citi Double Cash Balance', this.balances[CITI_DOUBLE_CASH]],
     ].map(([name, balance], index) => [name,
       format(today, 'P'),
       balance,
