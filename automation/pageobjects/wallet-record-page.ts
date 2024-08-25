@@ -1,4 +1,5 @@
 import { WALLET_ACCOUNT } from '../constants/personal-transactions';
+import { formatFromDollars } from '../utils/currency-formatter';
 import Page from './page';
 
 class WalletRecordPage extends Page {
@@ -28,6 +29,10 @@ class WalletRecordPage extends Page {
 
   get transferNames() {
     return $$('div._1yNGMXuFq364Pg-thcczh2');
+  }
+
+  get amounts() {
+    return $$('span._3fg4YMdrgBxwppTd3zZxUP');
   }
 
   async selectOption(optionText: string): Promise<void> {
@@ -96,6 +101,24 @@ class WalletRecordPage extends Page {
       wellsFargoActivePayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.WF_ACTIVE_CASH)).length,
       wellsFargoPlatinumPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.WF_PLATINUM)).length,
     };
+  }
+
+  async getGrocerySpend() {
+    await this.open();
+
+    await browser.waitUntil(async () => (await this.dateRangeDropdown).isClickable());
+    await this.dateRangeDropdown.click();
+    await this.selectCheckbox('This month');
+
+    await browser.waitUntil(async () => (await this.filterDropdown).isClickable());
+    await this.filterDropdown.click();
+    await browser.waitUntil(async () => (await this.options.length) > 0);
+    await this.selectOption('Monthly Grocery');
+    await browser.pause(3000);
+
+    const amounts = await this.amounts;
+    const amountsText = await Promise.all(amounts.map((a) => a.getText()));
+    return amountsText.reduce((total, amount) => total + formatFromDollars(amount), 0);
   }
 
   open() {

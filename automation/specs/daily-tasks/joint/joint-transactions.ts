@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import { DateTime } from 'luxon';
 import { ExpectedJointTransaction, ExpectedTransaction } from '../../../types/transaction';
-import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
+import { formatToDollars } from '../../../utils/currency-formatter';
 import {
   EXPENSE,
   FOOD_BUDGET,
@@ -15,6 +15,8 @@ import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
 import { OVERALL_FORMULA } from '../../../utils/balance';
 import { WALLET_ACCOUNT } from '../../../constants/personal-transactions';
 import { BaseTransactions } from '../../../utils/base-transaction';
+import WalletLoginPage from '../../../pageobjects/wallet-login-page';
+import WalletRecordPage from '../../../pageobjects/wallet-record-page';
 
 const {
   JOINT_SOFI = '', JOINT_FOOD = '', JOINT_MISC = '',
@@ -27,13 +29,21 @@ export class JointTransactions extends BaseTransactions {
 
   private expectedBalances: Record<string, string>;
 
+  private grocerySpend: number;
+
   constructor() {
     super(INCLUDED_TRANSACTIONS);
     this.actualBalances = {};
     this.expectedBalances = {};
+    this.grocerySpend = 0;
   }
 
   async initializeTransactions() {
+    await WalletLoginPage.open();
+    await WalletLoginPage.login();
+    this.grocerySpend = await WalletRecordPage.getGrocerySpend();
+    console.log('this.grocerySpend :>> ', this.grocerySpend);
+
     const transactions = await EmpowerTransactionPage.downloadTransactions();
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
@@ -96,12 +106,10 @@ export class JointTransactions extends BaseTransactions {
   }
 
   async getBalanceSheet() {
-    const foodBalance = formatFromDollars(this.expectedBalances[WALLET_ACCOUNT.AMEX_GOLD]);
     const today = new Date();
-
     const balanceSheet = this.getInitialBalanceSheet();
 
-    const outstandingFoodBalance = -(FOOD_BUDGET + foodBalance);
+    const outstandingFoodBalance = -(FOOD_BUDGET + this.grocerySpend);
     if (outstandingFoodBalance < 0) {
       balanceSheet.push([
         'Outstanding Food Balance',
