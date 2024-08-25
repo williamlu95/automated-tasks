@@ -1,3 +1,4 @@
+import { WALLET_ACCOUNT } from '../constants/personal-transactions';
 import Page from './page';
 
 class WalletRecordPage extends Page {
@@ -85,10 +86,15 @@ class WalletRecordPage extends Page {
       internetBill: payeeTexts.filter((pt) => pt.includes('Internet')).length,
       trashBill: payeeTexts.filter((pt) => pt.includes('Trash')).length,
 
-      citiPayments: transferNameTexts.filter((tt) => tt.includes('Citi')).length,
-      capitalOnePayments: transferNameTexts.filter((tt) => tt.includes('Capital One')).length,
-      chasePayments: transferNameTexts.filter((tt) => tt.includes('Chase')).length,
-      discoverPayments: transferNameTexts.filter((tt) => tt.includes('Discover It')).length,
+      citiDoublePayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CITI_DOUBLE_CASH)).length,
+      citiCustomPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CITI_CUSTOM_CASH)).length,
+      capitalOnePayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X)).length,
+      chaseAmazonPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_AMAZON)).length,
+      chaseFlexPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_FREEDOM_FLEX)).length,
+      chaseUnlimitedPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED)).length,
+      discoverPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.DISCOVER_IT)).length,
+      wellsFargoActivePayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.WF_ACTIVE_CASH)).length,
+      wellsFargoPlatinumPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.WF_PLATINUM)).length,
     };
   }
 

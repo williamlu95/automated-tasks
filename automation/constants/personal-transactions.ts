@@ -3,7 +3,17 @@ import { getSemiMonthylPayDaysForMonths } from '../utils/date-formatters';
 import { includesName } from '../utils/includes-name';
 import { CREDIT_CARD_BILL } from './joint-transactions';
 
-const { CHASE_CHECKING = '', MARRIOTT_BOUNDLESS = '' } = process.env;
+const {
+  CHASE_CHECKING = '',
+  MARRIOTT_BOUNDLESS = '',
+  CITI_CUSTOM_CASH = '',
+  CITI_DOUBLE_CASH = '',
+  CHASE_FREEDOM_FLEX = '',
+  CHASE_AMAZON = '',
+  CHASE_FREEDOM_UNLIMITED = '',
+  WELLS_FARGO_ACTIVE_CASH = '',
+  WELLS_FARGO_PLATINUM = '',
+} = process.env;
 
 export const WALLET_ACCOUNT = Object.freeze({
   CHASE_CHECKING: 'Chase Checking',
@@ -88,18 +98,33 @@ export const getFromAccount = (accountName: string): string => {
   return '';
 };
 
-const isAutoPayTransaction = (autoPayName: string) => (t: Transaction): boolean => includesName(t.Description, autoPayName) && t.Account?.endsWith(CHASE_CHECKING);
+const isAutoPayTransaction = (autoPayName: string, accountName: string = CHASE_CHECKING) => (t: Transaction): boolean => includesName(t.Description, autoPayName) && t.Account?.endsWith(accountName);
 
 export const AUTO_PAY = Object.freeze({
-  CHASE: {
-    paymentCountKey: 'chasePayments',
-    isTransactionIncluded: isAutoPayTransaction('Chase'),
-    transfers: (index: number) => [WALLET_ACCOUNT.CHASE_AMAZON, WALLET_ACCOUNT.CHASE_FREEDOM_FLEX, WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED][index] || null,
+  CHASE_AMAZON: {
+    paymentCountKey: 'chaseAmazonPayments',
+    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_AMAZON),
+    transfers: () => WALLET_ACCOUNT.CHASE_AMAZON,
   },
-  CITI: {
-    paymentCountKey: 'citiPayments',
-    isTransactionIncluded: isAutoPayTransaction('Citibank'),
-    transfers: (index: number) => [WALLET_ACCOUNT.CITI_DOUBLE_CASH, WALLET_ACCOUNT.CITI_CUSTOM_CASH][index] || null,
+  CHASE_FREEDOM_FLEX: {
+    paymentCountKey: 'chaseFlexPayments',
+    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_FREEDOM_FLEX),
+    transfers: () => WALLET_ACCOUNT.CHASE_FREEDOM_FLEX,
+  },
+  CHASE_FREEDOM_UNLIMITED: {
+    paymentCountKey: 'chaseUnlimitedPayments',
+    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_FREEDOM_UNLIMITED),
+    transfers: () => WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED,
+  },
+  CITI_DOUBLE: {
+    paymentCountKey: 'citiDoublePayments',
+    isTransactionIncluded: isAutoPayTransaction('Online Payment', CITI_DOUBLE_CASH),
+    transfers: () => WALLET_ACCOUNT.CITI_DOUBLE_CASH,
+  },
+  CITI_CUSTOM: {
+    paymentCountKey: 'citiCustomPayments',
+    isTransactionIncluded: isAutoPayTransaction('Online Payment', CITI_CUSTOM_CASH),
+    transfers: () => WALLET_ACCOUNT.CITI_CUSTOM_CASH,
   },
   CAPITAL_ONE: {
     paymentCountKey: 'capitalOnePayments',
@@ -111,10 +136,15 @@ export const AUTO_PAY = Object.freeze({
     isTransactionIncluded: isAutoPayTransaction('Discover Bank'),
     transfers: () => WALLET_ACCOUNT.DISCOVER_IT,
   },
-  WELLS_FARGO: {
-    paymentCountKey: 'wellsFargo',
-    isTransactionIncluded: isAutoPayTransaction('Wells Fargo Bank'),
-    transfers: (index: number) => [WALLET_ACCOUNT.WF_ACTIVE_CASH, WALLET_ACCOUNT.WF_PLATINUM][index] || null,
+  WELLS_FARGO_ACTIVE: {
+    paymentCountKey: 'wellsFargoActivePayments',
+    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', WELLS_FARGO_ACTIVE_CASH),
+    transfers: () => WALLET_ACCOUNT.WF_ACTIVE_CASH,
+  },
+  WELLS_FARGO_PLATINUM: {
+    paymentCountKey: 'wellsFargoPlatinumPayments',
+    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', WELLS_FARGO_PLATINUM),
+    transfers: () => WALLET_ACCOUNT.WF_PLATINUM,
   },
 });
 
