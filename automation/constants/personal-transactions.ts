@@ -13,6 +13,7 @@ const {
   CHASE_FREEDOM_UNLIMITED = '',
   WELLS_FARGO_ACTIVE_CASH = '',
   WELLS_FARGO_PLATINUM = '',
+  AMEX_GOLD = '',
 } = process.env;
 
 export const WALLET_ACCOUNT = Object.freeze({
@@ -90,6 +91,13 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'marriottBonvoy',
     isTransactionIncluded: (t: Transaction) => includesName(t.Description, 'Automatic Payment') && t.Account.includes(MARRIOTT_BOUNDLESS),
+  },
+  AMEX_GOLD: {
+    walletAccountName: WALLET_ACCOUNT.AMEX_GOLD,
+    template: 'Amex Gold',
+    type: TRANSACTION_TYPE.CREDIT,
+    transactionCountKey: 'amexGold',
+    isTransactionIncluded: (t: Transaction) => includesName(t.Description, 'Mobile Payment') && t.Account.includes(AMEX_GOLD),
   },
 });
 

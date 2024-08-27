@@ -35,6 +35,10 @@ class WalletRecordPage extends Page {
     return $$('div._2incM6fyIxbGkeydtYoltF');
   }
 
+  get rows() {
+    return $$('div._3oJhqSCX8H5S0i6pA59f9k');
+  }
+
   async selectOption(optionText: string): Promise<void> {
     await browser.waitUntil(async () => {
       const options = await this.options;
@@ -73,6 +77,9 @@ class WalletRecordPage extends Page {
     const transactionTypes = await this.transactionTypes;
     const transactionTypeTexts = await Promise.all(transactionTypes.map((tt) => tt.getText()));
 
+    const rows = await this.rows;
+    const rowsText = await Promise.all(rows.map((r) => r.getText()));
+
     const transferNames = await this.transferNames;
     const transferNameTexts = (await Promise.all(transferNames.map((tt) => tt.getText()))).filter(
       (tnt) => !tnt.includes('Chase Checking'),
@@ -83,7 +90,8 @@ class WalletRecordPage extends Page {
 
     return {
       chaseIncome: transactionTypeTexts.filter((tt) => tt.includes('Income')).length,
-      marriottBonvoy: transactionTypeTexts.filter((tt) => tt.includes('Autopay')).length,
+      marriottBonvoy: rowsText.filter((r) => r.includes('Autopay')).filter((r) => r.includes(WALLET_ACCOUNT.MARRIOTT_BOUNDLESS)).length,
+      amexGold: rowsText.filter((r) => r.includes('Autopay')).filter((r) => r.includes(WALLET_ACCOUNT.AMEX_GOLD)).length,
 
       waterBill: payeeTexts.filter((pt) => pt.includes('Water')).length,
       sewerBill: payeeTexts.filter((pt) => pt.includes('Sewer')).length,
