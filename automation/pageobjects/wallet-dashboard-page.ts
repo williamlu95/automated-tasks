@@ -23,9 +23,7 @@ class WalletDashboardPage extends Page {
 
   async getAccountBalanceByName(name: string) {
     await browser.waitUntil(async () => (await this.accountNames.length) > 0);
-    const cardIndex = await this.accountNames.findIndex(async (c) =>
-      (await c.getText()).includes(name)
-    );
+    const cardIndex = await this.accountNames.findIndex(async (c) => (await c.getText()).includes(name));
 
     const balances = await this.accountBalances;
     return balances[cardIndex];
