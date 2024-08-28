@@ -10,7 +10,6 @@ const {
   CITI_DOUBLE_CASH = '',
   CHASE_FREEDOM_FLEX = '',
   CHASE_AMAZON = '',
-  CHASE_FREEDOM_UNLIMITED = '',
   WELLS_FARGO_ACTIVE_CASH = '',
   WELLS_FARGO_PLATINUM = '',
   AMEX_GOLD = '',
@@ -119,11 +118,6 @@ export const AUTO_PAY = Object.freeze({
     isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_FREEDOM_FLEX),
     transfers: () => WALLET_ACCOUNT.CHASE_FREEDOM_FLEX,
   },
-  CHASE_FREEDOM_UNLIMITED: {
-    paymentCountKey: 'chaseUnlimitedPayments',
-    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_FREEDOM_UNLIMITED),
-    transfers: () => WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED,
-  },
   CITI_DOUBLE: {
     paymentCountKey: 'citiDoublePayments',
     isTransactionIncluded: isAutoPayTransaction('Online Payment', CITI_DOUBLE_CASH),
@@ -186,6 +180,13 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     identifier: 'Student Loan',
     name: 'Us Department Of Education',
     amount: 348.0,
+    day: 28,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
+  NETFLIX: {
+    identifier: 'Netflix',
+    name: 'Netflix',
+    amount: 7.0,
     day: 28,
     type: TRANSACTION_TYPE.DEBIT,
   },
