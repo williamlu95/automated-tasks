@@ -20,6 +20,12 @@ class TmobileDashboardPage extends Page {
   async payBill() {
     await browser.waitUntil(() => this.balanceContent && this.balanceContent.isExisting());
 
+    const balanceContentText = await this.balanceContent.getText();
+    const balanceAmount = balanceContentText.match(/([-]{0,1}\$\d+.\d+)/)?.[1];
+    if (parseFloat(balanceAmount?.replace('$', '') || '0') <= 0) {
+      return;
+    }
+
     await super.open('https://www.t-mobile.com/payments/onetimepayment');
     await browser.pause(5000);
 
