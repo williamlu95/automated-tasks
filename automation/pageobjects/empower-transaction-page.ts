@@ -9,8 +9,11 @@ import { Transaction } from '../types/transaction';
 
 class EmpowerTransactionPage extends Page {
   private transactionKey = 'transactions';
+
   private balanceKey = 'empower-balance';
+
   private fileName = 'transactions.csv';
+
   private retryCount = 5;
 
   get downloadCsvButton() {
@@ -33,7 +36,7 @@ class EmpowerTransactionPage extends Page {
     const transactionPath = path.join(downloadDir, transactionFile);
 
     const transactions: Transaction[] = await csv({ headers: TRANSACTION_HEADERS }).fromFile(
-      transactionPath
+      transactionPath,
     );
 
     browser.sharedStore.set(this.transactionKey, transactions);
@@ -86,7 +89,7 @@ class EmpowerTransactionPage extends Page {
 
     const accountList = await this.sideBarAccount;
     const accountItemsHTML = await Promise.all(
-      accountList.map((accountListItem) => accountListItem.getHTML())
+      accountList.map((accountListItem) => accountListItem.getHTML()),
     );
 
     const accountBalanceEntries = accountItemsHTML.map((html) => {
@@ -96,7 +99,7 @@ class EmpowerTransactionPage extends Page {
         .replace(/\n/g, '');
 
       const accountNumber = text.match(/Endingin(\d{4})/)?.[1];
-      const balance = text.match(/(\-?\$.+\.\d{2})/)?.[1];
+      const balance = text.match(/(-?\$.+\.\d{2})/)?.[1];
       return [accountNumber, balance];
     });
 

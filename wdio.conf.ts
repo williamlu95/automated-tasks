@@ -85,13 +85,14 @@ export const config: WebdriverIO.Config = {
     browser.setWindowSize(1280, 800);
   },
 
-  after: () => {
-    ErrorCounts.updateCountsFile();
-  },
-
-  afterTest: async (_test, _context, result) => {
-    if (result.error) {
-      await browser.saveScreenshot(`../logs/error-${new Date().getHours()}.png`);
+  after: async (result, _capabilities, spec) => {
+    if (result > 0 && spec.some((s) => s.includes('pay-tmobile-bill.e2e.ts'))) {
+      await sendEmail({
+        subject: 'ACTION REQUIRED: Pay T-Mobile Script Failure',
+        html: '<h1><strong>Failed to pay T-Mobile bill please pay manually.</strong></h1>',
+      });
     }
+
+    ErrorCounts.updateCountsFile();
   },
 };
