@@ -21,6 +21,7 @@ const emailer = nodemailer.createTransport({
 
 export const verificationCodes = {
   empower: '',
+  tmobile: '',
 };
 
 export const errorNotification = async (errorMessage: string) => {
@@ -66,14 +67,14 @@ const readEmails = (config: imaps.ImapSimpleOptions) => (setVerificationCodes = 
           const parts = imaps.getParts(message.attributes.struct || []);
 
           parts.map((part) => connection.getPartData(message, part).then((partData) => {
-            if (
-              part.disposition == null
-                      && part.encoding !== 'base64'
-                      && setVerificationCodes
-            ) {
-              const text = partData.replace(/<[^>]*>?/gm, '').replace(/\s/g, '');
+            if (part.disposition == null && setVerificationCodes) {
+              const text = part.encoding === 'BASE64' ? (Buffer.from(partData, 'base64').toString('ascii')) : partData.replace(/<[^>]*>?/gm, '').replace(/\s/g, '');
+
               const empowerVerificationCode = text.match(/4-digitcodebelow.(\d+)/)?.[1];
               verificationCodes.empower = empowerVerificationCode;
+
+              const tmobileVerificationCode = text.match(/Your account verification code is: (\d+)./)?.[1];
+              verificationCodes.tmobile = tmobileVerificationCode;
             }
 
             connection.addFlags(message.attributes.uid, 'Deleted', (err) => {
