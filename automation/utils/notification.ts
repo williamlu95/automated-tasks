@@ -22,6 +22,7 @@ const emailer = nodemailer.createTransport({
 export const verificationCodes = {
   empower: '',
   tmobile: '',
+  sofi: '',
 };
 
 export const errorNotification = async (errorMessage: string) => {
@@ -75,6 +76,9 @@ const readEmails = (config: imaps.ImapSimpleOptions) => (setVerificationCodes = 
 
               const tmobileVerificationCode = text.match(/Your account verification code is: (\d+)./)?.[1];
               verificationCodes.tmobile = tmobileVerificationCode;
+
+              const sofiVerificationCode = text.match(/LoginCode:(\d+)/)?.[1];
+              verificationCodes.sofi = sofiVerificationCode;
             }
 
             connection.addFlags(message.attributes.uid, 'Deleted', (err) => {
