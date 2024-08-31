@@ -102,13 +102,14 @@ class SofiLoginPage extends Page {
     await this.clickAccount('SoFi Checking');
 
     await this.toButton.click();
-    await this.clickAccount('SoFi Savings');
+    await this.clickAccount('Lisa\'s PTO');
 
     await browser.pause(3000);
     await this.transferSubmit.click();
 
     await browser.pause(3000);
     await this.transferConfirm.click();
+    await browser.pause(3000);
   }
 
   open() {
