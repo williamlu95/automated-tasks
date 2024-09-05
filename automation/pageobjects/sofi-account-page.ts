@@ -75,7 +75,7 @@ class SofiLoginPage extends Page {
     const rowIndex = rowsText.findIndex((rowText) => rowText.includes(name));
 
     if (rowIndex < 0) {
-      return;
+      throw new Error(`Account: ${name} was not found.`);
     }
     const radios = await this.accountRadio;
     await radios[rowIndex]?.click();
