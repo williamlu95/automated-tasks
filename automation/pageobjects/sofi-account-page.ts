@@ -79,6 +79,7 @@ class SofiLoginPage extends Page {
     }
     const radios = await this.accountRadio;
     await radios[rowIndex]?.click();
+    await browser.pause(3000);
     await this.doneButton.click();
   }
 
