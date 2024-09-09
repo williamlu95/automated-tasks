@@ -8,6 +8,11 @@ const NAME = Object.freeze({
   PTO: 'To Lisa\'s PTO Vault',
 });
 
+const ACCOUNT = Object.freeze({
+  FROM: 'SoFi Checking',
+  TO: 'Lisa\'s PTO',
+});
+
 class SofiLoginPage extends Page {
   get transferSubmit() {
     return $('button#transferSubmit');
@@ -75,11 +80,11 @@ class SofiLoginPage extends Page {
     const rowIndex = rowsText.findIndex((rowText) => rowText.includes(name));
 
     if (rowIndex < 0) {
-      throw new Error(`Account: ${name} was not found.`);
+      throw new Error(`Account ${name} was not found.`);
     }
-    const radios = await this.accountRadio;
+
+    const radios = await this.accountRows;
     await radios[rowIndex]?.click();
-    await browser.pause(3000);
     await this.doneButton.click();
   }
 
@@ -100,17 +105,22 @@ class SofiLoginPage extends Page {
     await browser.waitUntil(() => this.amountInput && this.amountInput.isClickable());
     await this.amountInput.setValue(excessAmount);
     await this.fromButton.click();
-    await this.clickAccount('SoFi Checking');
+    await this.clickAccount(ACCOUNT.FROM);
 
     await this.toButton.click();
-    await this.clickAccount('Lisa\'s PTO');
+    await this.clickAccount(ACCOUNT.TO);
 
-    await browser.pause(3000);
+    const hasFromAccount = (await this.fromButton.getText()).includes(ACCOUNT.FROM);
+    const hasToAccount = (await this.toButton.getText()).includes(ACCOUNT.TO);
+
+    if (!hasFromAccount || !hasToAccount) {
+      throw new Error('Either the from or to account does not match what should be expected.');
+    }
+
+    await browser.waitUntil(() => this.transferSubmit && this.transferSubmit.isClickable());
     await this.transferSubmit.click();
-
-    await browser.pause(3000);
+    await browser.waitUntil(() => this.transferConfirm && this.transferConfirm.isClickable());
     await this.transferConfirm.click();
-    await browser.pause(3000);
   }
 
   open() {
