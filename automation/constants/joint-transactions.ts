@@ -48,7 +48,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
   MORTGAGE: {
     identifier: 'Mortgage',
     name: 'Pennymac',
-    amount: 3230.0,
+    amount: 3450.0,
     day: 1,
     type: TRANSACTION_TYPE.EXPENSE,
   },
