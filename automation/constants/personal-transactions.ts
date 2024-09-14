@@ -165,7 +165,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   HULU: {
     identifier: 'Hulu',
     name: 'Hulu',
-    amount: 18.0,
+    amount: 20.0,
     day: 21,
     type: TRANSACTION_TYPE.DEBIT,
   },
