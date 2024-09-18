@@ -100,12 +100,7 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
   },
 });
 
-export const getFromAccount = (accountName: string): string => {
-  if (accountName.endsWith(CHASE_CHECKING)) return WALLET_ACCOUNT.CHASE_CHECKING;
-  return '';
-};
-
-const isAutoPayTransaction = (autoPayName: string, accountName: string = CHASE_CHECKING) => (t: Transaction): boolean => includesName(t.Description, autoPayName) && t.Account?.endsWith(accountName);
+const isAutoPayTransaction = (autoPayName: string, accountName: string = CHASE_CHECKING) => (t: Transaction): boolean => includesName(t.Description, autoPayName) && t.Account.includes(accountName);
 
 export const AUTO_PAY = Object.freeze({
   CHASE_AMAZON: {

@@ -8,7 +8,7 @@ import {
   INCOME,
   TEMPLATE_TRANSACTION,
   TRANSACTION_TYPE,
-  getFromAccount,
+  WALLET_ACCOUNT,
 } from '../../../constants/personal-transactions';
 import {
   Transaction,
@@ -96,6 +96,7 @@ export class PersonalTransactions extends BaseTransactions {
     this.templateTransactions = Object.values(TEMPLATE_TRANSACTION).flatMap((t) => this.getTransactionsForTemplate(t));
 
     this.autoPayTransactions = Object.values(AUTO_PAY).flatMap((p) => this.getTransactionsForAutoPay(p));
+    console.log(`AutoPay Transactions: ${JSON.stringify(this.autoPayTransactions, null, 4)}`);
 
     this.outstandingExpenses = this.calculateOutstandingExpenses(EXPENSE);
     console.log(`Outstanding Expenses: ${JSON.stringify(this.outstandingExpenses, null, 4)}`);
@@ -173,12 +174,10 @@ export class PersonalTransactions extends BaseTransactions {
     const allBankPayments = this.transactionsForCurrentMonth
       .filter((t) => isTransactionIncluded(t))
       .map((t, i) => {
-        const fromAccount = getFromAccount(t.Account);
-
-        if (!transfers(i) || !fromAccount) return null;
+        if (!transfers(i)) return null;
 
         return {
-          fromAccount,
+          fromAccount: WALLET_ACCOUNT.CHASE_CHECKING as string,
           toAccount: transfers(i),
           amount: t.Amount,
         };
