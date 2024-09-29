@@ -130,6 +130,13 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     day: 20,
     type: TRANSACTION_TYPE.EXPENSE,
   },
+  SPOTIFY: {
+    identifier: 'Spotify',
+    name: 'Spotify',
+    amount: 17.0,
+    day: 28,
+    type: TRANSACTION_TYPE.EXPENSE,
+  },
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = generateExpenseForDate(DateTime.now());
