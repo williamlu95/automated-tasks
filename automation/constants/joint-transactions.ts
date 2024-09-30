@@ -23,6 +23,7 @@ export const CREDIT_CARD_BILL = {
   CAR_INSURANCE_BILL: 'Geico',
   INTERNET_BILL: 'Cox Communications',
   TRASH_BILL: 'Republic Services',
+  SPOTIFY: 'Spotify',
 };
 
 export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
@@ -132,7 +133,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
   },
   SPOTIFY: {
     identifier: 'Spotify',
-    name: 'Spotify',
+    name: CREDIT_CARD_BILL.SPOTIFY,
     amount: 17.0,
     day: 28,
     type: TRANSACTION_TYPE.EXPENSE,
