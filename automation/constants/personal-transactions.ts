@@ -84,6 +84,13 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     transactionCountKey: 'trashBill',
     isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.TRASH_BILL),
   },
+  SPOTIFY: {
+    wallet account name: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
+    template: 'Spotify',
+    type: TRANSACTION_TYPE.DEBIT,
+    transactionCountKey: 'spotifyBill',
+    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.SPOTIFY),
+  },
   MARRIOTT_BONVOY: {
     walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
     template: 'Marriott Bonvoy',
