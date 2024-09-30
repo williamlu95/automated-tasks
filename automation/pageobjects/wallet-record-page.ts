@@ -98,7 +98,7 @@ class WalletRecordPage extends Page {
       carInsuranceBill: payeeTexts.filter((pt) => pt.includes('Car Insurance')).length,
       internetBill: payeeTexts.filter((pt) => pt.includes('Internet')).length,
       trashBill: payeeTexts.filter((pt) => pt.includes('Trash')).length,
-
+      spotifyBill: payeeTexts.filter((pt) => pt.includes('Spotify')).length,
       citiDoublePayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CITI_DOUBLE_CASH)).length,
       citiCustomPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CITI_CUSTOM_CASH)).length,
       capitalOnePayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X)).length,
