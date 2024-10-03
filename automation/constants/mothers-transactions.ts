@@ -26,13 +26,6 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
-  HOME_WARRANTY: {
-    identifier: 'Home Warranty',
-    name: 'NOT KNOWN YET',
-    amount: 60.0,
-    day: 1,
-    type: TRANSACTION_TYPE.EXPENSE,
-  },
   UTILITIES: {
     identifier: 'Utilities',
     name: 'City Of North Las Vegas',
@@ -75,13 +68,6 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     day: 15,
     type: TRANSACTION_TYPE.EXPENSE,
   },
-  IRS: {
-    identifier: 'IRS',
-    name: 'Irs',
-    amount: 170.0,
-    day: 15,
-    type: TRANSACTION_TYPE.EXPENSE,
-  },
   CAR_INSURANCE: {
     identifier: 'GEICO',
     name: 'Geico',
@@ -103,17 +89,24 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     day: 18,
     type: TRANSACTION_TYPE.EXPENSE,
   },
-  CAR_LOAN: {
-    identifier: 'Nissan',
-    name: 'Nissan',
-    amount: 525.0,
-    day: 27,
+  HOME_WARRANTY: {
+    identifier: 'Home Warranty',
+    name: 'Choice Home Warranty',
+    amount: 60.0,
+    day: 1,
+    type: TRANSACTION_TYPE.EXPENSE,
+  },
+  HOME_EQUITY_LOAN: {
+    identifier: 'Home Equity Loan',
+    name: 'NOT_KNOWN_YET',
+    amount: 409.0,
+    day: 28,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   SAVINGS: {
     identifier: 'Savings',
     name: 'American Express',
-    amount: 0.0,
+    amount: 200.0,
     day: 28,
     type: TRANSACTION_TYPE.EXPENSE,
   },
