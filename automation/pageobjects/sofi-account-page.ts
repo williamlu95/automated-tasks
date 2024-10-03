@@ -23,7 +23,7 @@ class SofiLoginPage extends Page {
   }
 
   get rows() {
-    return $$('tr.sc-gVJvzJ.hLIGYV > td.col6 > button.sc-feUZmu.fsFLGe.sc-fUnMCh.hPzlQb > span.visually-hidden');
+    return $$('tr > td.col6 > button.sc-feUZmu.fsFLGe.sc-fUnMCh.hPzlQb > span.visually-hidden');
   }
 
   get accountRows() {
@@ -58,6 +58,7 @@ class SofiLoginPage extends Page {
 
     const rows = await this.rows;
     const rowsText = await Promise.all(rows.map((row) => row.getText()));
+
     const rowObj = rowsText.map((text) => ({
       date: DateTime.fromFormat(text.match(/Transaction. Date: (.+). Description/)?.[1] || 'January 1, 2024', 'DDD'),
       name: text.match(/Description: (.+). Amount/)?.[1] || '',
@@ -121,6 +122,11 @@ class SofiLoginPage extends Page {
     await this.transferSubmit.click();
     await browser.waitUntil(() => this.transferConfirm && this.transferConfirm.isClickable());
     await this.transferConfirm.click();
+
+    await browser.waitUntil(async () => {
+      const url = await browser.getUrl();
+      return !url.endsWith('/transfer/confirm');
+    });
   }
 
   open() {
