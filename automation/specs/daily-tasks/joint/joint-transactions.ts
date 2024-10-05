@@ -59,13 +59,8 @@ export class JointTransactions extends BaseTransactions {
     console.log('Grocery Spend: ', this.grocerySpend);
   }
 
-  private filterExpenses = (e: ExpectedJointTransaction) => {
-    if (e.day === '09/01/2024' && e.identifier === 'SIDs') {
-      return false;
-    }
-
-    return true;
-  };
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private filterExpenses = (_e: ExpectedJointTransaction) => true;
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected calculateFutureExpenses(_expenseTemplate: Record<string, ExpectedTransaction>): ExpectedJointTransaction[] {
