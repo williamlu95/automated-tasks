@@ -185,10 +185,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     amount: 348.0,
     day: 28,
     type: TRANSACTION_TYPE.DEBIT,
-    validateTransaction: (t) => {
-      console.log('DateTime.fromISO(t.Date).day :>> ', DateTime.fromISO(t.Date).day);
-      return DateTime.fromISO(t.Date).day < 28;
-    },
+    validateTransaction: (t) => DateTime.fromISO(t.Date).day >= 28,
   },
   NETFLIX: {
     identifier: 'Netflix',
