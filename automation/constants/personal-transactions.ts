@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import { ExpectedJointTransaction, ExpectedTransaction, Transaction } from '../types/transaction';
 import { getSemiMonthylPayDaysForMonths } from '../utils/date-formatters';
 import { includesName } from '../utils/includes-name';
@@ -184,6 +185,10 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     amount: 348.0,
     day: 28,
     type: TRANSACTION_TYPE.DEBIT,
+    validateTransaction: (t) => {
+      console.log('DateTime.fromISO(t.Date).day :>> ', DateTime.fromISO(t.Date).day);
+      return DateTime.fromISO(t.Date).day < 28;
+    },
   },
   NETFLIX: {
     identifier: 'Netflix',
