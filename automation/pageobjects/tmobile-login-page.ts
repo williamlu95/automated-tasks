@@ -44,7 +44,7 @@ class TmobileLoginPage extends Page {
     await browser.waitUntil(() => this.nextButton && this.nextButton.isClickable());
     await this.nextButton.click();
 
-    await browser.waitUntil(() => this.passwordInput && this.passwordInput.isExisting());
+    await browser.waitUntil(() => this.passwordInput && this.passwordInput.isClickable());
     await this.passwordInput.setValue(TMOBILE_PASSWORD);
     await browser.waitUntil(() => this.loginButton && this.loginButton.isClickable());
     await this.loginButton.click();
