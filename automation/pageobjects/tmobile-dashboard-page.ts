@@ -17,6 +17,10 @@ class TmobileDashboardPage extends Page {
     return $('p[data-testid="otp-confirmation-pageDescription"]');
   }
 
+  get agreeAndSubmitButton() {
+    return $('button[tmo-layout="last@md first"]');
+  }
+
   async payBill() {
     await browser.waitUntil(() => this.balanceContent && this.balanceContent.isExisting());
 
@@ -36,11 +40,8 @@ class TmobileDashboardPage extends Page {
 
     await totalBalance?.click();
 
-    const buttons = await this.buttons;
-    const agreeAndSubmitButton = buttons
-      .find(async (c) => (await c.getText()).includes('Agree & submit'));
-
-    agreeAndSubmitButton?.click();
+    await browser.waitUntil(() => this.agreeAndSubmitButton && this.agreeAndSubmitButton.isExisting());
+    await this.agreeAndSubmitButton.click();
     await browser.waitUntil(() => this.oneTimePayment && this.oneTimePayment.isExisting());
   }
 
