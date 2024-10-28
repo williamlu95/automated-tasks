@@ -39,18 +39,18 @@ class TmobileLoginPage extends Page {
   }
 
   async login() {
-    await browser.waitUntil(() => this.usernameInput && this.usernameInput.isClickable());
+    await browser.waitUntil(async () => this.usernameInput && this.usernameInput.isExisting());
     await this.usernameInput.setValue(TMOBILE_LOGIN);
     await browser.waitUntil(() => this.nextButton && this.nextButton.isClickable());
     await this.nextButton.click();
 
-    await browser.waitUntil(() => this.passwordInput && this.passwordInput.isClickable());
+    await browser.waitUntil(() => this.passwordInput && this.passwordInput.isExisting());
     await this.passwordInput.setValue(TMOBILE_PASSWORD);
     await browser.waitUntil(() => this.loginButton && this.loginButton.isClickable());
     await this.loginButton.click();
 
     await browser.pause(5000);
-    const isCodeVerification = await (await this.continueButton).isExisting();
+    const isCodeVerification = await this.continueButton.isExisting();
 
     if (!isCodeVerification) {
       return;
