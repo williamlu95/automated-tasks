@@ -29,7 +29,6 @@ class TmobileDashboardPage extends Page {
     await super.open('https://www.t-mobile.com/payments/onetimepayment');
     await browser.pause(5000);
 
-    await browser.debug();
     await browser.waitUntil(async () => (await this.radioButtons.length) > 0);
     const radioButtons = await this.radioButtons;
     const totalBalance = radioButtons
