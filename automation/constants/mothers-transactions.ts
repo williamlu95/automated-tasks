@@ -98,7 +98,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   },
   HOME_EQUITY_LOAN: {
     identifier: 'Home Equity Loan',
-    name: 'NOT_KNOWN_YET',
+    name: 'U.s. Bank',
     amount: 409.0,
     day: 28,
     type: TRANSACTION_TYPE.EXPENSE,
