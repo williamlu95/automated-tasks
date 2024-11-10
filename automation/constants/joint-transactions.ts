@@ -77,7 +77,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
   CAR_INSURANCE: {
     identifier: 'Car Insurance',
     name: CREDIT_CARD_BILL.CAR_INSURANCE_BILL,
-    amount: date.month === 10 ? 406.0 : 286.0,
+    amount: 215.0,
     day: 9,
     type: TRANSACTION_TYPE.EXPENSE,
   },
