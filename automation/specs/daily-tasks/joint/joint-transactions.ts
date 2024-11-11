@@ -89,6 +89,7 @@ export class JointTransactions extends BaseTransactions {
     const today = new Date();
     return [
       ['Joint Account Balance', this.actualBalances[JOINT_SOFI]],
+      ['Pending Transactions', this.expectedBalances['Pending Transactions']],
       ['Misc Balance (Marriott Boundless)', this.expectedBalances[WALLET_ACCOUNT.MARRIOTT_BOUNDLESS]],
       ['Current Food Balance (AMEX Gold)', this.expectedBalances[WALLET_ACCOUNT.AMEX_GOLD]],
     ].map(([name, balance], index) => [name,
