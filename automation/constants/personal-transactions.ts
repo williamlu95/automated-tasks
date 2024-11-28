@@ -11,7 +11,6 @@ const {
   CITI_DOUBLE_CASH = '',
   CHASE_FREEDOM_FLEX = '',
   CHASE_AMAZON = '',
-  WELLS_FARGO_ACTIVE_CASH = '',
   WELLS_FARGO_PLATINUM = '',
   AMEX_GOLD = '',
 } = process.env;
@@ -140,11 +139,6 @@ export const AUTO_PAY = Object.freeze({
     paymentCountKey: 'discoverPayments',
     isTransactionIncluded: isAutoPayTransaction('Discover Bank'),
     transfers: () => WALLET_ACCOUNT.DISCOVER_IT,
-  },
-  WELLS_FARGO_ACTIVE: {
-    paymentCountKey: 'wellsFargoActivePayments',
-    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', WELLS_FARGO_ACTIVE_CASH),
-    transfers: () => WALLET_ACCOUNT.WF_ACTIVE_CASH,
   },
   WELLS_FARGO_PLATINUM: {
     paymentCountKey: 'wellsFargoPlatinumPayments',
