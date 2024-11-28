@@ -35,7 +35,7 @@ class TmobileLoginPage extends Page {
   }
 
   get rememberMeBox() {
-    return $('span.remember-this-device-text');
+    return $('span.tdds-checkbox__label-text');
   }
 
   async login() {
