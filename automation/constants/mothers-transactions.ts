@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import { ExpectedJointTransaction, ExpectedTransaction } from '../types/transaction';
 import { getBiweeklyPayDaysForMonths, getSecondWednesday, getSecondWednesdayForMonths } from '../utils/date-formatters';
 
@@ -109,5 +110,6 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     amount: 200.0,
     day: 28,
     type: TRANSACTION_TYPE.EXPENSE,
+    validateTransaction: (t) => DateTime.fromISO(t.Date).day >= 28,
   },
 });
