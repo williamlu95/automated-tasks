@@ -20,6 +20,7 @@ export const FOOD_BUDGET = 600;
 export const CREDIT_CARD_BILL = {
   WATER_BILL: 'Las Vegas Valley Water District',
   SEWER_BILL: 'City Of Las Vegas',
+  UFC_FIT: 'Ufc Fit',
   CAR_INSURANCE_BILL: 'Geico',
   INTERNET_BILL: 'Cox Communications',
   TRASH_BILL: 'Republic Services',
@@ -72,6 +73,13 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     name: CREDIT_CARD_BILL.SEWER_BILL,
     amount: calculateSewerTotalAmount(80.0, date),
     day: 1,
+    type: TRANSACTION_TYPE.EXPENSE,
+  },
+  UFC_FIT: {
+    identifier: 'UFC Fit',
+    name: CREDIT_CARD_BILL.UFC_FIT,
+    amount: 60,
+    day: 4,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   CAR_INSURANCE: {

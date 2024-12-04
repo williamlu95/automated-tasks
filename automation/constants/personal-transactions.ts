@@ -63,6 +63,13 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     transactionCountKey: 'sewerBill',
     isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.SEWER_BILL),
   },
+  UFC_FIT_BILL: {
+    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
+    template: 'UFC Fit Bill',
+    type: TRANSACTION_TYPE.DEBIT,
+    transactionCountKey: 'ufcFitBill',
+    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.UFC_FIT),
+  },
   CAR_INSURANCE_BILL: {
     walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
     template: 'Car Insurance Bill',

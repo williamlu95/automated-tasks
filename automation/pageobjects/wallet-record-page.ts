@@ -95,6 +95,7 @@ class WalletRecordPage extends Page {
 
       waterBill: payeeTexts.filter((pt) => pt.includes('Water')).length,
       sewerBill: payeeTexts.filter((pt) => pt.includes('Sewer')).length,
+      ufcFitBill: payeeTexts.filter((pt) => pt.includes('UFC Fit')).length,
       carInsuranceBill: payeeTexts.filter((pt) => pt.includes('Car Insurance')).length,
       internetBill: payeeTexts.filter((pt) => pt.includes('Internet')).length,
       trashBill: payeeTexts.filter((pt) => pt.includes('Trash')).length,
