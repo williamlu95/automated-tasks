@@ -39,6 +39,10 @@ class EmpowerTransactionPage extends Page {
       transactionPath,
     );
 
+    if (transactions.length === 0) {
+      throw new Error('Downloaded transaction list is empty');
+    }
+
     browser.sharedStore.set(this.transactionKey, transactions);
     return transactions;
   }
