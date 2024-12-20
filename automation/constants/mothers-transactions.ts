@@ -107,7 +107,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   SAVINGS: {
     identifier: 'Savings',
     name: 'American Express',
-    amount: 200.0,
+    amount: 0,
     day: 28,
     type: TRANSACTION_TYPE.EXPENSE,
     validateTransaction: (t) => DateTime.fromISO(t.Date).day >= 28,
