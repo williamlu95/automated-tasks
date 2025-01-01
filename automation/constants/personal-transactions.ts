@@ -166,6 +166,13 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
+  DIGITAL_OCEAN: {
+    identifier: 'DigitalOcean',
+    name: 'DigitalOcean',
+    amount: 6.0,
+    day: 1,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
   HULU: {
     identifier: 'Hulu',
     name: 'Hulu',
@@ -186,7 +193,10 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     amount: 348.0,
     day: 28,
     type: TRANSACTION_TYPE.DEBIT,
-    validateTransaction: (t) => DateTime.fromISO(t.Date).day >= 28,
+    validateTransaction: (t) => {
+      const date = DateTime.fromISO(t.Date);
+      return date.day >= 28 && date.month === DateTime.now().month;
+    },
   },
   NETFLIX: {
     identifier: 'Netflix',
