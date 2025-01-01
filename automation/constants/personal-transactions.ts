@@ -186,6 +186,10 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     amount: 207.0,
     day: 25,
     type: TRANSACTION_TYPE.DEBIT,
+    validateTransaction: (t) => {
+      const date = DateTime.fromISO(t.Date);
+      return date.day >= 25 && date.month === DateTime.now().month;
+    },
   },
   STUDENT_LOAN: {
     identifier: 'Student Loan',
