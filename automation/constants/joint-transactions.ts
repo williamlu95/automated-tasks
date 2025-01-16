@@ -20,7 +20,7 @@ export const FOOD_BUDGET = 600;
 export const CREDIT_CARD_BILL = {
   WATER_BILL: 'Las Vegas Valley Water District',
   SEWER_BILL: 'City Of Las Vegas',
-  UFC_FIT: 'Ufc Fit',
+  UFC_FIT: 'Ufc Gym',
   CAR_INSURANCE_BILL: 'Geico',
   INTERNET_BILL: 'Cox Communications',
   TRASH_BILL: 'Republic Services',
@@ -109,7 +109,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     amount: 465.0,
     day: 15,
     type: TRANSACTION_TYPE.EXPENSE,
-    validateTransaction: (t) => Math.abs(parseInt(t.Amount, 10)) === 465,
+    validateTransaction: () => date.day >= 15,
   },
   HOA: {
     identifier: 'HOA',
