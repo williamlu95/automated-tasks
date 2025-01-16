@@ -16,6 +16,7 @@ import { OVERALL_FORMULA } from '../../../utils/balance';
 import { WALLET_ACCOUNT } from '../../../constants/personal-transactions';
 import { BaseTransactions } from '../../../utils/base-transaction';
 import WalletRecordPage from '../../../pageobjects/wallet-record-page';
+import SofiAccountPage from '../../../pageobjects/sofi-account-page';
 
 const {
   JOINT_SOFI = '', JOINT_FOOD = '', JOINT_MISC = '',
@@ -38,7 +39,8 @@ export class JointTransactions extends BaseTransactions {
   }
 
   async initializeTransactions() {
-    const transactions = await EmpowerTransactionPage.downloadTransactions();
+    const sofiInfo = await SofiAccountPage.downloadAllSofiInfo();
+    const transactions = [...await EmpowerTransactionPage.downloadTransactions(), ...sofiInfo.transactions].sort((a, b) => a.Date.localeCompare(b.Date));
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);
@@ -50,6 +52,7 @@ export class JointTransactions extends BaseTransactions {
     console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
 
     this.actualBalances = await EmpowerTransactionPage.getAllAccountBalances();
+    this.actualBalances[JOINT_SOFI] = sofiInfo.balance;
     console.log(`Actual Balances: ${JSON.stringify(this.actualBalances, null, 4)}`);
 
     this.expectedBalances = await WalletDashboardPage.loginAndGetAllAccountBalances();
