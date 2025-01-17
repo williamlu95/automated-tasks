@@ -2,13 +2,6 @@ import { DateTime } from 'luxon';
 import Page from './page';
 import { INCOME } from '../constants/joint-transactions';
 import { formatFromDollars } from '../utils/currency-formatter';
-import SofiLoginPage from './sofi-login-page';
-import { Transaction } from '../types/transaction';
-
-const {
-  JOINT_SOFI = '',
-  SOFI_ACCOUNT = '',
-} = process.env;
 
 const NAME = Object.freeze({
   SUNRISE: 'Sunrise Hospital',
@@ -20,16 +13,7 @@ const ACCOUNT = Object.freeze({
   TO: 'Lisa\'s PTO',
 });
 
-type SofiInfo = {
-  transactions: Transaction[];
-  balance: string;
-}
-
-class SofiAccountPage extends Page {
-  private transactionKey = 'sofi-transactions';
-
-  private balanceKey = 'sofi-balance';
-
+class SofiLoginPage extends Page {
   get transferSubmit() {
     return $('button#transferSubmit');
   }
@@ -44,10 +28,6 @@ class SofiAccountPage extends Page {
 
   get accountRows() {
     return $$('span[data-qa="txt-account-name"]');
-  }
-
-  get accountBalance() {
-    return $(`a[data-qa="lnk-${SOFI_ACCOUNT}-detail"]`);
   }
 
   get accountRadio() {
@@ -70,40 +50,7 @@ class SofiAccountPage extends Page {
     return $('button[data-qa="btn-account-select-to"]');
   }
 
-  async downloadAllSofiInfo(): Promise<SofiInfo> {
-    await SofiLoginPage.open();
-    await SofiLoginPage.acceptCookes();
-    await SofiLoginPage.login();
-    await this.open();
-
-    const transactions = await this.getAllTransactions();
-    const accountCardText = (await this.accountBalance.getText());
-    const balance = accountCardText.match(/Checking\n(.+)\n/)?.[1] || '';
-    return { transactions, balance };
-  }
-
-  async getAllTransactions(): Promise<Transaction[]> {
-    await browser.waitUntil(async () => {
-      const rows = await this.rows;
-      return !!rows.length;
-    });
-
-    const rows = await this.rows;
-    const rowsText = await Promise.all(rows.map((row) => row.getText()));
-
-    return rowsText.map((text) => ({
-      Date: DateTime.fromFormat(text.match(/Transaction. Date: (.+). Description/)?.[1] || 'January 1, 2024', 'DDD'),
-      Account: JOINT_SOFI,
-      Description: text.match(/Description: (.+). Amount/)?.[1] || '',
-      Amount: text.match(/Amount: (.+)./)?.[1] || '',
-      Category: '',
-      Tags: '',
-    }))
-      .filter((row) => row.Date.hasSame(DateTime.now(), 'month'))
-      .map((row) => ({ ...row, Date: row.Date.toISO() || '' }));
-  }
-
-  async getFilteredTransactions() {
+  async getAllTransactions() {
     await browser.waitUntil(async () => {
       const rows = await this.rows;
       return !!rows.length;
@@ -147,7 +94,7 @@ class SofiAccountPage extends Page {
   }
 
   async moveExcessToPTO() {
-    const [transaction] = await this.getFilteredTransactions();
+    const [transaction] = await this.getAllTransactions();
     const isAlreadyMoved = transaction?.name === NAME.PTO;
     const excessAmount = this.round(formatFromDollars(transaction.amount) - INCOME.LISA_SALARY.amount);
 
@@ -155,7 +102,7 @@ class SofiAccountPage extends Page {
       return;
     }
 
-    super.open(`https://www.sofi.com/my/money/account/${SOFI_ACCOUNT}/transfer`);
+    super.open(`https://www.sofi.com/my/money/account/${process.env.SOFI_ACCOUNT}/transfer`);
     await browser.waitUntil(() => this.amountInput && this.amountInput.isClickable());
     await this.amountInput.setValue(excessAmount);
     await this.fromButton.click();
@@ -187,4 +134,4 @@ class SofiAccountPage extends Page {
   }
 }
 
-export default new SofiAccountPage();
+export default new SofiLoginPage();
