@@ -102,6 +102,7 @@ class WalletRecordPage extends Page {
       spotifyBill: payeeTexts.filter((pt) => pt.includes('Spotify')).length,
       citiDoublePayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CITI_DOUBLE_CASH)).length,
       citiCustomPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CITI_CUSTOM_CASH)).length,
+      citiPremierPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CITI_PREMIER)).length,
       capitalOnePayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X)).length,
       chaseAmazonPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_AMAZON)).length,
       chaseFlexPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_FREEDOM_FLEX)).length,

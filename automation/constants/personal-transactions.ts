@@ -9,6 +9,7 @@ const {
   MARRIOTT_BOUNDLESS = '',
   CITI_CUSTOM_CASH = '',
   CITI_DOUBLE_CASH = '',
+  CITI_PREMIER = '',
   CHASE_FREEDOM_FLEX = '',
   CHASE_AMAZON = '',
   WELLS_FARGO_PLATINUM = '',
@@ -28,6 +29,7 @@ export const WALLET_ACCOUNT = Object.freeze({
   WF_PLATINUM: 'Wells Fargo Platinum',
   WF_ACTIVE_CASH: 'Wells Fargo Active Cash',
   CITI_DOUBLE_CASH: 'Citi Double Cash',
+  CITI_PREMIER: 'Citi Strata Premier',
 });
 
 export const TRANSACTION_TYPE = Object.freeze({
@@ -135,6 +137,11 @@ export const AUTO_PAY = Object.freeze({
   CITI_CUSTOM: {
     paymentCountKey: 'citiCustomPayments',
     isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_CUSTOM_CASH),
+    transfers: () => WALLET_ACCOUNT.CITI_CUSTOM_CASH,
+  },
+  CITI_PREMIER: {
+    paymentCountKey: 'citiPremierPayments',
+    isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_PREMIER),
     transfers: () => WALLET_ACCOUNT.CITI_CUSTOM_CASH,
   },
   CAPITAL_ONE: {
