@@ -209,11 +209,4 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
       return date.day >= 28 && date.month === DateTime.now().month;
     },
   },
-  NETFLIX: {
-    identifier: 'Netflix',
-    name: 'Netflix',
-    amount: 7.0,
-    day: 28,
-    type: TRANSACTION_TYPE.DEBIT,
-  },
 });
