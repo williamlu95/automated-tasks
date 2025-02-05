@@ -23,7 +23,7 @@ class SofiLoginPage extends Page {
   }
 
   get rows() {
-    return $$('tr > td.col6 > button.sc-feUZmu.fsFLGe.sc-fUnMCh.hPzlQb > span.visually-hidden');
+    return $$('tr > td.col6 > button > span.visually-hidden');
   }
 
   get accountRows() {
