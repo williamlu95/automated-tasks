@@ -148,7 +148,7 @@ export const AUTO_PAY = Object.freeze({
   CITI_PREMIER: {
     paymentCountKey: 'citiPremierPayments',
     isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_PREMIER),
-    transfers: () => WALLET_ACCOUNT.CITI_CUSTOM_CASH,
+    transfers: () => WALLET_ACCOUNT.CITI_PREMIER,
   },
   CAPITAL_ONE: {
     paymentCountKey: 'capitalOnePayments',
