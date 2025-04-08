@@ -8,10 +8,8 @@ const {
   CHASE_CHECKING = '',
   MARRIOTT_BOUNDLESS = '',
   CITI_CUSTOM_CASH = '',
-  CITI_DOUBLE_CASH = '',
   CITI_PREMIER = '',
   CHASE_FREEDOM_FLEX = '',
-  CHASE_FREEDOM_UNLIMITED = '',
   CHASE_AMAZON = '',
   WELLS_FARGO_PLATINUM = '',
   AMEX_GOLD = '',
@@ -129,16 +127,6 @@ export const AUTO_PAY = Object.freeze({
     paymentCountKey: 'chaseFlexPayments',
     isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_FREEDOM_FLEX),
     transfers: () => WALLET_ACCOUNT.CHASE_FREEDOM_FLEX,
-  },
-  CHASE_FREEDOM_UNLIMITED: {
-    paymentCountKey: 'chaseUnlimitedPayments',
-    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_FREEDOM_UNLIMITED),
-    transfers: () => WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED,
-  },
-  CITI_DOUBLE: {
-    paymentCountKey: 'citiDoublePayments',
-    isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_DOUBLE_CASH),
-    transfers: () => WALLET_ACCOUNT.CITI_DOUBLE_CASH,
   },
   CITI_CUSTOM: {
     paymentCountKey: 'citiCustomPayments',
