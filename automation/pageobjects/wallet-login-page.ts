@@ -19,7 +19,7 @@ class WalletLoginPage extends Page {
   }
 
   get noThankYouButton() {
-    return $('div.feedback-actions < button');
+    return $('div.feedback-actions > button');
   }
 
   async login() {
