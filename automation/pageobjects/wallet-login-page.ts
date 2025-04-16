@@ -18,8 +18,22 @@ class WalletLoginPage extends Page {
     return $('button[type="submit"]');
   }
 
+  get noThankYouButton() {
+    return $('div.feedback-actions < button');
+  }
+
   async login() {
-    await browser.waitUntil(() => this.usernameInput && this.usernameInput.isClickable());
+    await browser.waitUntil(async () => { 
+        const hasUserInput = await this.usernameInput?.isClickable();
+        const hasNoThankYou = await this.noThankYouButton?.isClickable();
+        return hasUserInput || hasNoThankYou;
+    });
+
+    if (await this.noThankYouButton?.isClickable())
+    {
+        await this.noThankYouButton.click();
+    }
+
     await this.usernameInput.setValue(WALLET_LOGIN);
     await this.passwordInput.setValue(WALLET_PASSWORD);
     await this.signInButton.click();
