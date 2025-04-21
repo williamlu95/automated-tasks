@@ -107,6 +107,7 @@ class WalletRecordPage extends Page {
       chaseAmazonPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_AMAZON)).length,
       chaseFlexPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_FREEDOM_FLEX)).length,
       chaseUnlimitedPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED)).length,
+      chaseSapphirePayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_SAPPHIRE_PREFERRED)).length,
       discoverPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.DISCOVER_IT)).length,
       wellsFargoPlatinumPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.WF_PLATINUM)).length,
     };

@@ -11,6 +11,7 @@ const {
   CITI_PREMIER = '',
   CHASE_FREEDOM_FLEX = '',
   CHASE_AMAZON = '',
+  CHASE_SAPPHIRE_PREFERRED = '',
   WELLS_FARGO_PLATINUM = '',
   AMEX_GOLD = '',
 } = process.env;
@@ -29,6 +30,7 @@ export const WALLET_ACCOUNT = Object.freeze({
   WF_ACTIVE_CASH: 'Wells Fargo Active Cash',
   CITI_DOUBLE_CASH: 'Citi Double Cash',
   CITI_PREMIER: 'Citi Strata Premier',
+  CHASE_SAPPHIRE_PREFERRED: 'Chase Sapphire Preferred',
 });
 
 export const TRANSACTION_TYPE = Object.freeze({
@@ -128,6 +130,11 @@ export const AUTO_PAY = Object.freeze({
     isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_FREEDOM_FLEX),
     transfers: () => WALLET_ACCOUNT.CHASE_FREEDOM_FLEX,
   },
+  CHASE_SAPPHIRE_PREFERRED: {
+    paymentCountKey: 'chaseSapphirePayments',
+    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_SAPPHIRE_PREFERRED),
+    transfers: () => WALLET_ACCOUNT.CHASE_SAPPHIRE_PREFERRED,
+  },
   CITI_CUSTOM: {
     paymentCountKey: 'citiCustomPayments',
     isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_CUSTOM_CASH),
@@ -167,11 +174,25 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
+  DIGITAL_OCEAN: {
+    identifier: 'DigitalOcean',
+    name: 'DigitalOcean',
+    amount: 6.0,
+    day: 1,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
   HULU: {
     identifier: 'Hulu',
     name: 'Hulu',
     amount: 23.0,
     day: 21,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
+  NVIDIA_GEFORCE: {
+    identifier: 'Nvidia GeForce Now',
+    name: 'Nvidia',
+    amount: 20.0,
+    day: 20,
     type: TRANSACTION_TYPE.DEBIT,
   },
   TMOBILE: {
