@@ -24,6 +24,10 @@ class EmpowerTransactionPage extends Page {
     return $$('div.qa-sidebar-account-header');
   }
 
+  get tableRows() {
+    return $$('div.pc-transactions-grid-cell--date');
+  }
+
   private async download(count: number = 0): Promise<Transaction[]> {
     if (count >= this.retryCount) {
       return this.download(count + 1);
@@ -31,6 +35,12 @@ class EmpowerTransactionPage extends Page {
 
     await this.cleanFiles();
     await browser.waitUntil(() => this.downloadCsvButton && this.downloadCsvButton.isClickable());
+    await browser.waitUntil(async () => {
+      const items = await this.tableRows;
+      return items.length > 0;
+    });
+
+    await browser.pause(3000);
     await this.downloadCsvButton.click();
     const transactionFile = await this.getTransactionFile();
     const transactionPath = path.join(downloadDir, transactionFile);
