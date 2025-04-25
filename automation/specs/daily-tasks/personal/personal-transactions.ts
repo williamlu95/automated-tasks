@@ -213,7 +213,8 @@ export class PersonalTransactions extends BaseTransactions {
       ['WF Autograph Balance', this.balances[WELLS_FARGO_AUTOGRAPH]],
       ['Amex Blue Balance', this.balances[AMEX_BLUE]],
       ['WF Active Cash Balance', this.balances[WELLS_FARGO_ACTIVE_CASH]],
-      ['Citi Double Cash', this.balances[CITI_DOUBLE_CASH]],
+      ['Chase Freedom Unlimited', this.balances[CHASE_FREEDOM_UNLIMITED]],
+      // ['Citi Double Cash', this.balances[CITI_DOUBLE_CASH]], // Used as flex loan for now
     ].map(([name, balance], index) => [name,
       format(today, 'P'),
       balance,

@@ -10,7 +10,6 @@ const {
   CITI_CUSTOM_CASH = '',
   CITI_PREMIER = '',
   CHASE_FREEDOM_FLEX = '',
-  CHASE_FREEDOM_UNLIMITED = '',
   CHASE_AMAZON = '',
   CHASE_SAPPHIRE_PREFERRED = '',
   WELLS_FARGO_PLATINUM = '',
@@ -131,11 +130,6 @@ export const AUTO_PAY = Object.freeze({
     isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_FREEDOM_FLEX),
     transfers: () => WALLET_ACCOUNT.CHASE_FREEDOM_FLEX,
   },
-  CHASE_FREEDOM_UNLIMITED: {
-    paymentCountKey: 'chaseUnlimitedPayments',
-    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_FREEDOM_UNLIMITED),
-    transfers: () => WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED,
-  },
   CHASE_SAPPHIRE_PREFERRED: {
     paymentCountKey: 'chaseSapphirePayments',
     isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_SAPPHIRE_PREFERRED),
@@ -185,6 +179,13 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     name: 'DigitalOcean',
     amount: 6.0,
     day: 1,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
+  FLEX_LOAN: {
+    identifier: 'Citi Flex Loan',
+    name: 'Citibank',
+    amount: 265.0,
+    day: 7,
     type: TRANSACTION_TYPE.DEBIT,
   },
   HULU: {
