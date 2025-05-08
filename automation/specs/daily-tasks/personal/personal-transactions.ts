@@ -102,12 +102,14 @@ export class PersonalTransactions extends BaseTransactions {
     this.autoPayTransactions = Object.values(AUTO_PAY).flatMap((p) => this.getTransactionsForAutoPay(p));
     console.log(`AutoPay Transactions: ${JSON.stringify(this.autoPayTransactions, null, 4)}`);
 
-    this.outstandingExpenses = this.calculateOutstandingExpenses(EXPENSE);
+    this.outstandingExpenses = this.calculateOutstandingExpenses(EXPENSE).filter(this.filterExpenses);
     console.log(`Outstanding Expenses: ${JSON.stringify(this.outstandingExpenses, null, 4)}`);
 
     this.outstandingIncome = this.calculateOutstandingIncome();
     console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
   }
+
+  private filterExpenses = (e: ExpectedJointTransaction) => e.day !== '05/07/2025' && e.identifier !== EXPENSE.FLEX_LOAN.identifier;
 
   protected calculateOutstandingIncome(): ExpectedJointTransaction[] {
     const income: ExpectedJointTransaction[] = [];
