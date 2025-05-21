@@ -19,10 +19,10 @@ import { BaseTransactions } from '../../../utils/base-transaction';
 import WalletRecordPage from '../../../pageobjects/wallet-record-page';
 
 const {
-  JOINT_SOFI = '', JOINT_FOOD = '', JOINT_MISC = '',
+  JOINT_SOFI = '', JOINT_FOOD = '', JOINT_MISC = '', CHASE_SAPPHIRE_PREFERRED = '',
 } = process.env;
 
-const INCLUDED_TRANSACTIONS = [JOINT_SOFI, JOINT_FOOD, JOINT_MISC];
+const INCLUDED_TRANSACTIONS = [JOINT_SOFI, JOINT_FOOD, JOINT_MISC, CHASE_SAPPHIRE_PREFERRED];
 
 export class JointTransactions extends BaseTransactions {
   private actualBalances: Record<string, string>;
