@@ -1,7 +1,7 @@
 import { WALLET_ACCOUNT } from '../../../constants/personal-transactions';
-import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
 import { notifyOfNegativeBalance } from '../../../utils/balance';
 import { replaceSheetData } from '../../../utils/google-sheets';
+import { DailyTaskData } from '../daily-task-data';
 
 const {
   CHASE_CHECKING,
@@ -42,7 +42,7 @@ export const verifyAccountBalance = async (
   actualBalances: Record<string, string>,
   balanceSheet: string[][],
 ): Promise<void> => {
-  const expectedBalances = await WalletDashboardPage.getAllAccountBalances();
+  const expectedBalances = DailyTaskData.getExpectedBalances();
   await notifyOfNegativeBalance(balanceSheet, 'Personal');
 
   const accountBalance = Object.entries(ACCOUNTS).map(([name, number = '']) => {

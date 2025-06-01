@@ -8,10 +8,6 @@ import EmpowerLoginPage from './empower-login-page';
 import { Transaction } from '../types/transaction';
 
 class EmpowerTransactionPage extends Page {
-  private transactionKey = 'transactions';
-
-  private balanceKey = 'empower-balance';
-
   private fileName = 'transactions.csv';
 
   private retryCount = 5;
@@ -53,17 +49,10 @@ class EmpowerTransactionPage extends Page {
       throw new Error('Downloaded transaction list is empty');
     }
 
-    browser.sharedStore.set(this.transactionKey, transactions);
     return transactions;
   }
 
   async downloadTransactions(): Promise<Transaction[]> {
-    const cachedTransactions = await browser.sharedStore.get(this.transactionKey);
-
-    if (cachedTransactions) {
-      return cachedTransactions;
-    }
-
     await EmpowerLoginPage.open();
     await EmpowerLoginPage.loginToPersonal();
     await this.open();
@@ -93,12 +82,6 @@ class EmpowerTransactionPage extends Page {
   }
 
   async getAllAccountBalances() {
-    const cachedBalances = await browser.sharedStore.get(this.balanceKey);
-
-    if (cachedBalances) {
-      return cachedBalances;
-    }
-
     await browser.waitUntil(async () => (await this.sideBarAccount.length) > 0);
 
     const accountList = await this.sideBarAccount;
@@ -118,7 +101,6 @@ class EmpowerTransactionPage extends Page {
     });
 
     const balances = Object.fromEntries(accountBalanceEntries);
-    browser.sharedStore.set(this.balanceKey, balances);
     return balances;
   }
 

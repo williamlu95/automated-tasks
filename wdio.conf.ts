@@ -15,9 +15,7 @@ export const config: WebdriverIO.Config = {
   specs: ['./automation/specs/**/*.e2e.ts'],
   suites: {
     daily: [
-      './automation/specs/daily-tasks/personal/personal-daily-tasks.e2e.ts',
-      './automation/specs/daily-tasks/joint/joint-daily-tasks.e2e.ts',
-      './automation/specs/daily-tasks/mother/mother-daily-tasks.e2e.ts',
+      './automation/specs/daily-tasks/run.e2e.ts',
     ],
     weekly: [
       './automation/specs/weekly-tasks/move-excess-to-pto.e2e.ts',
@@ -55,7 +53,7 @@ export const config: WebdriverIO.Config = {
   waitforTimeout: 240000,
   connectionRetryTimeout: 240000,
   connectionRetryCount: 3,
-  services: ['chromedriver', 'shared-store'],
+  services: ['chromedriver'],
   framework: 'mocha',
   reporters: ['spec'],
   mochaOpts: {

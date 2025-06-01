@@ -1,7 +1,5 @@
 import { DateTime } from 'luxon';
 import { format } from 'date-fns';
-import WalletLoginPage from '../../../pageobjects/wallet-login-page';
-import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import {
   AUTO_PAY,
   EXPENSE,
@@ -19,8 +17,8 @@ import {
 import { includesName } from '../../../utils/includes-name';
 import { formatToDollars } from '../../../utils/currency-formatter';
 import { OVERALL_FORMULA } from '../../../utils/balance';
-import WalletRecordPage from '../../../pageobjects/wallet-record-page';
 import { BaseTransactions } from '../../../utils/base-transaction';
+import { DailyTaskData } from '../daily-task-data';
 
 const {
   CHASE_CHECKING = '',
@@ -85,14 +83,11 @@ export class PersonalTransactions extends BaseTransactions {
     this.balances = {};
   }
 
-  async initializeTransactions() {
-    await WalletLoginPage.open();
-    await WalletLoginPage.login();
-    this.transactionCounts = await WalletRecordPage.getTransactionCounts();
-    console.log(`Transaction Counts: ${JSON.stringify(this.transactionCounts, null, 4)}`);
+  initializeTransactions() {
+    this.transactionCounts = DailyTaskData.getTransactionCounts();
 
-    const transactions = await EmpowerTransactionPage.downloadTransactions();
-    this.balances = await EmpowerTransactionPage.getAllAccountBalances();
+    const transactions = DailyTaskData.getTransactions();
+    this.balances = DailyTaskData.getActualBalances();
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);
@@ -223,7 +218,7 @@ export class PersonalTransactions extends BaseTransactions {
       index === 0 ? balance : OVERALL_FORMULA]);
   }
 
-  async getBalanceSheet() {
+  getBalanceSheet() {
     const balanceSheet = this.getInitialBalanceSheet();
 
     const allTransactions = this.outstandingExpenses

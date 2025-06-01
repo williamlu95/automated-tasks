@@ -3,8 +3,6 @@ import Page from './page';
 import LoginPage from './wallet-login-page';
 
 class WalletDashboardPage extends Page {
-  private balanceKey = 'wallet-balance';
-
   get buttons() {
     return $$('button[type="button"]');
   }
@@ -49,12 +47,6 @@ class WalletDashboardPage extends Page {
   }
 
   async getAllAccountBalances() {
-    const cachedBalances = await browser.sharedStore.get(this.balanceKey);
-
-    if (cachedBalances) {
-      return cachedBalances;
-    }
-
     await browser.waitUntil(async () => (await this.accountBalances.length) > 0);
     const accountBalances = await this.accountBalances;
     const balances = await Promise.all(accountBalances.map((b) => b.getText()));
@@ -66,12 +58,6 @@ class WalletDashboardPage extends Page {
   }
 
   async loginAndGetAllAccountBalances() {
-    const cachedBalances = await browser.sharedStore.get(this.balanceKey);
-
-    if (cachedBalances) {
-      return cachedBalances;
-    }
-
     await LoginPage.open();
     await LoginPage.login();
 

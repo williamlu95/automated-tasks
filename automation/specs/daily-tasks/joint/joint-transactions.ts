@@ -11,12 +11,10 @@ import {
   generateExpenseForDate,
 } from '../../../constants/joint-transactions';
 import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
-import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
-import WalletDashboardPage from '../../../pageobjects/wallet-dashboard-page';
 import { OVERALL_FORMULA } from '../../../utils/balance';
 import { WALLET_ACCOUNT } from '../../../constants/personal-transactions';
 import { BaseTransactions } from '../../../utils/base-transaction';
-import WalletRecordPage from '../../../pageobjects/wallet-record-page';
+import { DailyTaskData } from '../daily-task-data';
 
 const {
   JOINT_SOFI = '', JOINT_FOOD = '', JOINT_MISC = '', CHASE_SAPPHIRE_PREFERRED = '',
@@ -38,8 +36,8 @@ export class JointTransactions extends BaseTransactions {
     this.grocerySpend = 0;
   }
 
-  async initializeTransactions() {
-    const transactions = await EmpowerTransactionPage.downloadTransactions();
+  initializeTransactions() {
+    const transactions = DailyTaskData.getTransactions();
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);
@@ -50,13 +48,13 @@ export class JointTransactions extends BaseTransactions {
     this.outstandingIncome = this.calculateOutstandingIncome(INCOME);
     console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
 
-    this.actualBalances = await EmpowerTransactionPage.getAllAccountBalances();
+    this.actualBalances = DailyTaskData.getActualBalances();
     console.log(`Actual Balances: ${JSON.stringify(this.actualBalances, null, 4)}`);
 
-    this.expectedBalances = await WalletDashboardPage.loginAndGetAllAccountBalances();
+    this.expectedBalances = DailyTaskData.getExpectedBalances();
     console.log(`Expected Balances: ${JSON.stringify(this.expectedBalances, null, 4)}`);
 
-    this.grocerySpend = await WalletRecordPage.getGrocerySpend();
+    this.grocerySpend = DailyTaskData.getJointGrocerySpend();
     console.log('Grocery Spend: ', this.grocerySpend);
   }
 
@@ -98,7 +96,7 @@ export class JointTransactions extends BaseTransactions {
       index === 0 ? balance : OVERALL_FORMULA]);
   }
 
-  async getBalanceSheet() {
+  getBalanceSheet() {
     const today = new Date();
     const balanceSheet = this.getInitialBalanceSheet();
 

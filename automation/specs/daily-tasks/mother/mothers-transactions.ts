@@ -1,9 +1,9 @@
 import { format } from 'date-fns';
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/mothers-transactions';
 import { formatToDollars } from '../../../utils/currency-formatter';
-import EmpowerTransactionPage from '../../../pageobjects/empower-transaction-page';
 import { OVERALL_FORMULA } from '../../../utils/balance';
 import { BaseTransactions } from '../../../utils/base-transaction';
+import { DailyTaskData } from '../daily-task-data';
 
 const { MOTHERS_WF = '', MOTHERS_CITI = '' } = process.env;
 
@@ -17,8 +17,8 @@ export class MothersTransactions extends BaseTransactions {
     this.balances = {};
   }
 
-  async initializeTransactions() {
-    const transactions = await EmpowerTransactionPage.downloadTransactions();
+  initializeTransactions() {
+    const transactions = DailyTaskData.getTransactions();
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
     console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);
@@ -29,7 +29,7 @@ export class MothersTransactions extends BaseTransactions {
     this.outstandingIncome = this.calculateOutstandingIncome(INCOME);
     console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
 
-    this.balances = await EmpowerTransactionPage.getAllAccountBalances();
+    this.balances = DailyTaskData.getActualBalances();
     console.log(`Balances: ${JSON.stringify(this.balances, null, 4)}`);
   }
 
@@ -44,7 +44,7 @@ export class MothersTransactions extends BaseTransactions {
       index === 0 ? balance : OVERALL_FORMULA]);
   }
 
-  async getBalanceSheet(): Promise<string[][]> {
+  getBalanceSheet(): string[][] {
     const balanceSheet = this.getInitialBalanceSheet();
 
     const allTransactions = this.outstandingExpenses

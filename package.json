@@ -11,7 +11,6 @@
         "@wdio/cli": "^7.16.15",
         "@wdio/local-runner": "^7.16.15",
         "@wdio/mocha-framework": "^7.16.15",
-        "@wdio/shared-store-service": "^6.11.0",
         "@wdio/spec-reporter": "^7.16.14",
         "eslint": "^8.48.0",
         "eslint-config-airbnb-base": "^15.0.0",
@@ -29,7 +28,7 @@
         "wdio:monthly": "wdio run wdio.conf.ts --suite monthly"
     },
     "dependencies": {
-        "chromedriver": "^135.0.0",
+        "chromedriver": "^137.0.0",
         "csvtojson": "^2.0.10",
         "date-fns": "^2.28.0",
         "dotenv": "^16.0.0",

@@ -13,8 +13,8 @@ export const verifyMothersBalances = async () => {
   readPersonalEmails(false);
 
   const transactions = new MothersTransactions();
-  await transactions.initializeTransactions();
-  const balanceSheet = await transactions.getBalanceSheet();
+  transactions.initializeTransactions();
+  const balanceSheet = transactions.getBalanceSheet();
   await notifyOfNegativeBalance(balanceSheet, "Mother's");
   await replaceSheetData("Mother's Balance", balanceSheet);
 };

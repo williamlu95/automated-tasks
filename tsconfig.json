@@ -7,8 +7,7 @@
             "node",
             "webdriverio/async",
             "expect-webdriverio",
-            "@wdio/mocha-framework",
-            "@wdio/shared-store-service"
+            "@wdio/mocha-framework"
         ],
         "skipLibCheck": true,
         "noEmit": true,
