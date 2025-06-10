@@ -198,7 +198,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   NVIDIA_GEFORCE: {
     identifier: 'Nvidia GeForce Now',
     name: 'Nvidia',
-    amount: 20.0,
+    amount: 0.0,
     day: 20,
     type: TRANSACTION_TYPE.DEBIT,
   },
