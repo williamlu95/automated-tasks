@@ -181,25 +181,11 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     day: 1,
     type: TRANSACTION_TYPE.DEBIT,
   },
-  FLEX_LOAN: {
-    identifier: 'Citi Flex Loan',
-    name: 'Citibank',
-    amount: 265.0,
-    day: 7,
-    type: TRANSACTION_TYPE.DEBIT,
-  },
   HULU: {
     identifier: 'Hulu',
     name: 'Hulu',
     amount: 23.0,
     day: 21,
-    type: TRANSACTION_TYPE.DEBIT,
-  },
-  NVIDIA_GEFORCE: {
-    identifier: 'Nvidia GeForce Now',
-    name: 'Nvidia',
-    amount: 0.0,
-    day: 20,
     type: TRANSACTION_TYPE.DEBIT,
   },
   TMOBILE: {
