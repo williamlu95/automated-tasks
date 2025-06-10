@@ -8,11 +8,13 @@ const {
   CHASE_CHECKING = '',
   MARRIOTT_BOUNDLESS = '',
   CITI_CUSTOM_CASH = '',
+  CITI_DOUBLE_CASH = '',
   CITI_PREMIER = '',
   CHASE_FREEDOM_FLEX = '',
   CHASE_AMAZON = '',
   CHASE_SAPPHIRE_PREFERRED = '',
   WELLS_FARGO_PLATINUM = '',
+  WELLS_FARGO_ACTIVE_CASH = '',
   AMEX_GOLD = '',
 } = process.env;
 
@@ -140,6 +142,11 @@ export const AUTO_PAY = Object.freeze({
     isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_CUSTOM_CASH),
     transfers: () => WALLET_ACCOUNT.CITI_CUSTOM_CASH,
   },
+  CITI_DOUBLE: {
+    paymentCountKey: 'citiDoublePayments',
+    isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_DOUBLE_CASH),
+    transfers: () => WALLET_ACCOUNT.CITI_DOUBLE_CASH,
+  },
   CITI_PREMIER: {
     paymentCountKey: 'citiPremierPayments',
     isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_PREMIER),
@@ -154,6 +161,11 @@ export const AUTO_PAY = Object.freeze({
     paymentCountKey: 'discoverPayments',
     isTransactionIncluded: isAutoPayTransaction('Discover Bank'),
     transfers: () => WALLET_ACCOUNT.DISCOVER_IT,
+  },
+  WELLS_FARGO_ACTIVE_CASH: {
+    paymentCountKey: 'wellsFargoActiveCashPayments',
+    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', WELLS_FARGO_ACTIVE_CASH),
+    transfers: () => WALLET_ACCOUNT.WF_ACTIVE_CASH,
   },
   WELLS_FARGO_PLATINUM: {
     paymentCountKey: 'wellsFargoPlatinumPayments',
