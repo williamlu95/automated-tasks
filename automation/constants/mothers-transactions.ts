@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon';
 import { ExpectedJointTransaction, ExpectedTransaction } from '../types/transaction';
 import { getBiweeklyPayDaysForMonths, getSecondWednesday, getSecondWednesdayForMonths } from '../utils/date-formatters';
+import { formatFromDollars } from '../utils/currency-formatter';
 
 export const TRANSACTION_TYPE = {
   INCOME: 'income',
@@ -64,10 +65,11 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   },
   MORTGAGE: {
     identifier: 'Mortgage',
-    name: 'Us Bank',
+    name: 'U.s. Bank',
     amount: 1540.0,
     day: 15,
     type: TRANSACTION_TYPE.EXPENSE,
+    validateTransaction: (t) => Math.abs(formatFromDollars(t.Amount)) >= 1540.0,
   },
   CAR_INSURANCE: {
     identifier: 'GEICO',
