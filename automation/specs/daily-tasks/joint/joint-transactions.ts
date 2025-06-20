@@ -60,6 +60,37 @@ export class JointTransactions extends BaseTransactions {
 
   private filterExpenses = (e: ExpectedJointTransaction) => !(['05/09/2025', '06/09/2025', '07/09/2025', '08/09/2025', '09/09/2025', '10/09/2025'].includes(e.day) && e.name === CREDIT_CARD_BILL.CAR_INSURANCE_BILL);
 
+  protected calculateOutstandingExpenses(expenseTemplate: Record<string, ExpectedTransaction>): ExpectedJointTransaction[] {
+    const expenseMaxes = new Map<string, number[]>();
+
+    const expenses = super.calculateOutstandingExpenses(expenseTemplate);
+
+    expenses.forEach((expense) => {
+      const maxes = expenseMaxes.get(expense.identifier) || [0];
+      const max = maxes[maxes.length - 1];
+
+      if (expense.amount > max) {
+        maxes[maxes.length - 1] = expense.amount;
+      } else {
+        maxes.push(expense.amount);
+      }
+
+      expenseMaxes.set(expense.identifier, maxes);
+    });
+
+    return expenses.filter((expense) => {
+      const maxes = expenseMaxes.get(expense.identifier) || [];
+      const [max] = maxes;
+
+      if (expense.amount < max) {
+        return false;
+      }
+
+      expenseMaxes.set(expense.identifier, maxes.slice(1));
+      return true;
+    });
+  }
+
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   protected calculateFutureExpenses(_expenseTemplate: Record<string, ExpectedTransaction>): ExpectedJointTransaction[] {
     const futureDates: DateTime[] = Array(ADDITIONAL_MONTHS)
