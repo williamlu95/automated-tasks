@@ -178,7 +178,7 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
   WILL_SALARY: {
     identifier: "William's Salary",
     name: 'Betterlesson',
-    amount: 250.0,
+    amount: 300.0,
     day: '0',
     days: getSemiMonthylPayDaysForMonths(),
     type: TRANSACTION_TYPE.CREDIT,
@@ -186,13 +186,6 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
-  JOINT_SAVINGS: {
-    identifier: 'Joint Savings',
-    name: 'NOT KNOWN YET',
-    amount: 250.0,
-    day: 1,
-    type: TRANSACTION_TYPE.DEBIT,
-  },
   DIGITAL_OCEAN: {
     identifier: 'DigitalOcean',
     name: 'DigitalOcean',
@@ -216,6 +209,17 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     validateTransaction: (t) => {
       const date = DateTime.fromISO(t.Date);
       return date.day >= 25 && date.month === DateTime.now().month;
+    },
+  },
+  STUDENT_LOAN: {
+    identifier: 'Student Loan',
+    name: 'Us Department Of Education',
+    amount: 348.0,
+    day: 28,
+    type: TRANSACTION_TYPE.DEBIT,
+    validateTransaction: (t) => {
+      const transactionDate = DateTime.fromISO(t.Date);
+      return transactionDate.day >= 28 && transactionDate.month === DateTime.now().month;
     },
   },
 });

@@ -146,17 +146,6 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     day: 28,
     type: TRANSACTION_TYPE.EXPENSE,
   },
-  STUDENT_LOAN: {
-    identifier: 'Student Loan',
-    name: 'Us Department Of Education',
-    amount: 348.0,
-    day: 28,
-    type: TRANSACTION_TYPE.EXPENSE,
-    validateTransaction: (t) => {
-      const transactionDate = DateTime.fromISO(t.Date);
-      return transactionDate.day >= 28 && transactionDate.month === DateTime.now().month;
-    },
-  },
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = generateExpenseForDate(DateTime.now());
