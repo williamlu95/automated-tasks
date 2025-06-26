@@ -186,13 +186,6 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
-  JOINT_SAVINGS: {
-    identifier: 'Joint Savings',
-    name: 'NOT KNOWN YET',
-    amount: 250.0,
-    day: 1,
-    type: TRANSACTION_TYPE.DEBIT,
-  },
   DIGITAL_OCEAN: {
     identifier: 'DigitalOcean',
     name: 'DigitalOcean',
