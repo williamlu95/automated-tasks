@@ -69,7 +69,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     amount: 1540.0,
     day: 15,
     type: TRANSACTION_TYPE.EXPENSE,
-    validateTransaction: (t) => Math.abs(formatFromDollars(t.Amount)) >= 1500.0,
+    validateTransaction: (t) => Math.abs(formatFromDollars(t.amount)) >= 1500.0,
   },
   CAR_INSURANCE: {
     identifier: 'GEICO',
@@ -105,7 +105,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     amount: 409.0,
     day: 28,
     type: TRANSACTION_TYPE.EXPENSE,
-    validateTransaction: (t) => Math.abs(formatFromDollars(t.Amount)) < 1500.0,
+    validateTransaction: (t) => Math.abs(formatFromDollars(t.amount)) < 1500.0,
   },
   NETFLIX: {
     identifier: 'Netflix',
@@ -120,6 +120,6 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     amount: 0,
     day: 28,
     type: TRANSACTION_TYPE.EXPENSE,
-    validateTransaction: (t) => DateTime.fromISO(t.Date).day >= 28,
+    validateTransaction: (t) => DateTime.fromISO(t.date).day >= 28,
   },
 });

@@ -7,6 +7,15 @@ import { TRANSACTION_HEADERS } from '../constants/transaction';
 import EmpowerLoginPage from './empower-login-page';
 import { Transaction } from '../types/transaction';
 
+export type EmpowerTransaction = {
+  Date: string;
+  Account: string;
+  Description: string;
+  Category: string;
+  Tags: string;
+  Amount: string;
+};
+
 class EmpowerTransactionPage extends Page {
   private fileName = 'transactions.csv';
 
@@ -41,7 +50,7 @@ class EmpowerTransactionPage extends Page {
     const transactionFile = await this.getTransactionFile();
     const transactionPath = path.join(downloadDir, transactionFile);
 
-    const transactions: Transaction[] = await csv({ headers: TRANSACTION_HEADERS }).fromFile(
+    const transactions: EmpowerTransaction[] = await csv({ headers: TRANSACTION_HEADERS }).fromFile(
       transactionPath,
     );
 
@@ -49,7 +58,12 @@ class EmpowerTransactionPage extends Page {
       throw new Error('Downloaded transaction list is empty');
     }
 
-    return transactions;
+    return transactions.map((t) => ({
+      date: t.Date,
+      account: t.Account,
+      description: t.Description,
+      amount: t.Amount,
+    }));
   }
 
   async downloadTransactions(): Promise<Transaction[]> {

@@ -22,9 +22,9 @@ export class BaseTransactions {
 
   protected getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
     const transactionsForCurrentMonth = transactions
-      .filter((t) => this.includedTransactions.some((it) => t.Account?.endsWith(it)))
+      .filter((t) => this.includedTransactions.some((it) => t.account?.endsWith(it)))
       .filter((t) => {
-        const transactionDate = DateTime.fromISO(t.Date);
+        const transactionDate = DateTime.fromISO(t.date);
         const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');
 
         if (isSameMonth) {
@@ -43,7 +43,7 @@ export class BaseTransactions {
 
     Object.values(expenseTemplate).forEach((e) => {
       const isNotOustandingExpense = this.transactionsForCurrentMonth.some(
-        (t) => includesName(t.Description, e.name)
+        (t) => includesName(t.description, e.name)
                   && (!e.validateTransaction || e.validateTransaction(t)),
       );
 
@@ -75,7 +75,7 @@ export class BaseTransactions {
     const income: ExpectedJointTransaction[] = [];
 
     Object.values(incomeTemplate).forEach((value) => {
-      const paidSalary = this.transactionsForCurrentMonth.filter((t) => includesName(t.Description, value.name));
+      const paidSalary = this.transactionsForCurrentMonth.filter((t) => includesName(t.description, value.name));
 
       const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map((day) => ({
         ...value,

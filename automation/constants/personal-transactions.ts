@@ -2,11 +2,10 @@ import { DateTime } from 'luxon';
 import { ExpectedJointTransaction, ExpectedTransaction, Transaction } from '../types/transaction';
 import { getSemiMonthylPayDaysForMonths } from '../utils/date-formatters';
 import { includesName } from '../utils/includes-name';
-import { CREDIT_CARD_BILL } from './joint-transactions';
 
 const {
   CHASE_CHECKING = '',
-  MARRIOTT_BOUNDLESS = '',
+  CAPITAL_ONE_VENTURE_X = '',
   CITI_CUSTOM_CASH = '',
   CITI_DOUBLE_CASH = '',
   CITI_PREMIER = '',
@@ -52,74 +51,25 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     template: 'Chase Income',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'chaseIncome',
-    isTransactionIncluded: (t: Transaction) => includesName(t.Description, INCOME_NAME) && t.Account?.endsWith(CHASE_CHECKING),
+    isTransactionIncluded: (t: Transaction) => includesName(t.description, INCOME_NAME) && t.account?.endsWith(CHASE_CHECKING),
   },
-  WATER_BILL: {
-    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
-    template: 'Water Bill',
-    type: TRANSACTION_TYPE.DEBIT,
-    transactionCountKey: 'waterBill',
-    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.WATER_BILL),
-  },
-  SEWER_BILL: {
-    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
-    template: 'Sewer Bill',
-    type: TRANSACTION_TYPE.DEBIT,
-    transactionCountKey: 'sewerBill',
-    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.SEWER_BILL),
-  },
-  UFC_FIT_BILL: {
-    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
-    template: 'UFC Fit Bill',
-    type: TRANSACTION_TYPE.DEBIT,
-    transactionCountKey: 'ufcFitBill',
-    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.UFC_FIT),
-  },
-  CAR_INSURANCE_BILL: {
-    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
-    template: 'Car Insurance Bill',
-    type: TRANSACTION_TYPE.DEBIT,
-    transactionCountKey: 'carInsuranceBill',
-    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.CAR_INSURANCE_BILL),
-  },
-  INTERNET_BILL: {
-    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
-    template: 'Internet Bill',
-    type: TRANSACTION_TYPE.DEBIT,
-    transactionCountKey: 'internetBill',
-    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.INTERNET_BILL),
-  },
-  TRASH_BILL: {
-    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
-    template: 'Trash Bill',
-    type: TRANSACTION_TYPE.DEBIT,
-    transactionCountKey: 'trashBill',
-    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.TRASH_BILL),
-  },
-  SPOTIFY: {
-    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
-    template: 'Spotify',
-    type: TRANSACTION_TYPE.DEBIT,
-    transactionCountKey: 'spotifyBill',
-    isTransactionIncluded: (t: Transaction) => includesName(t.Description, CREDIT_CARD_BILL.SPOTIFY),
-  },
-  MARRIOTT_BONVOY: {
-    walletAccountName: WALLET_ACCOUNT.MARRIOTT_BOUNDLESS,
-    template: 'Marriott Bonvoy',
+  VENTURE_X: {
+    walletAccountName: WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X,
+    template: 'Venture X',
     type: TRANSACTION_TYPE.CREDIT,
-    transactionCountKey: 'marriottBonvoy',
-    isTransactionIncluded: (t: Transaction) => includesName(t.Description, 'Automatic Payment') && t.Account.includes(MARRIOTT_BOUNDLESS),
+    transactionCountKey: 'capitalOnePayments',
+    isTransactionIncluded: (t: Transaction) => includesName(t.description, 'Capital One') && t.account.includes(CAPITAL_ONE_VENTURE_X),
   },
   AMEX_GOLD: {
     walletAccountName: WALLET_ACCOUNT.AMEX_GOLD,
     template: 'Amex Gold',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'amexGold',
-    isTransactionIncluded: (t: Transaction) => includesName(t.Description, 'Autopay Payment') && t.Account.includes(AMEX_GOLD),
+    isTransactionIncluded: (t: Transaction) => includesName(t.description, 'Autopay Payment') && t.account.includes(AMEX_GOLD),
   },
 });
 
-const isAutoPayTransaction = (autoPayName: string, accountName: string = CHASE_CHECKING) => (t: Transaction): boolean => includesName(t.Description, autoPayName) && t.Account.includes(accountName);
+const isAutoPayTransaction = (autoPayName: string, accountName: string = CHASE_CHECKING) => (t: Transaction): boolean => includesName(t.description, autoPayName) && t.account.includes(accountName);
 
 export const AUTO_PAY = Object.freeze({
   CHASE_AMAZON: {
@@ -151,11 +101,6 @@ export const AUTO_PAY = Object.freeze({
     paymentCountKey: 'citiPremierPayments',
     isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_PREMIER),
     transfers: () => WALLET_ACCOUNT.CITI_PREMIER,
-  },
-  CAPITAL_ONE: {
-    paymentCountKey: 'capitalOnePayments',
-    isTransactionIncluded: isAutoPayTransaction('Capital One'),
-    transfers: () => WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X,
   },
   DISCOVER: {
     paymentCountKey: 'discoverPayments',
@@ -207,7 +152,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     day: 25,
     type: TRANSACTION_TYPE.DEBIT,
     validateTransaction: (t) => {
-      const date = DateTime.fromISO(t.Date);
+      const date = DateTime.fromISO(t.date);
       return date.day >= 25 && date.month === DateTime.now().month;
     },
   },
@@ -218,7 +163,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     day: 28,
     type: TRANSACTION_TYPE.DEBIT,
     validateTransaction: (t) => {
-      const transactionDate = DateTime.fromISO(t.Date);
+      const transactionDate = DateTime.fromISO(t.date);
       return transactionDate.day >= 28 && transactionDate.month === DateTime.now().month;
     },
   },

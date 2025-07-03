@@ -1,10 +1,8 @@
 export type Transaction = {
-  Date: string;
-  Account: string;
-  Description: string;
-  Category: string;
-  Tags: string;
-  Amount: string;
+  date: string;
+  account: string;
+  description: string;
+  amount: string;
 };
 
 export type Balance = {

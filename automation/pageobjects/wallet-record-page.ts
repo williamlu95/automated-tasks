@@ -85,25 +85,14 @@ class WalletRecordPage extends Page {
       (tnt) => !tnt.includes('Chase Checking'),
     );
 
-    const payees = await this.payees;
-    const payeeTexts = (await Promise.all(payees.map((tt) => tt.getText())));
-
     return {
       chaseIncome: transactionTypeTexts.filter((tt) => tt.includes('Income')).length,
-      marriottBonvoy: rowsText.filter((r) => r.includes('Autopay')).filter((r) => r.includes(WALLET_ACCOUNT.MARRIOTT_BOUNDLESS)).length,
+      capitalOnePayments: rowsText.filter((r) => r.includes('Autopay')).filter((r) => r.includes(WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X)).length,
       amexGold: rowsText.filter((r) => r.includes('Autopay')).filter((r) => r.includes(WALLET_ACCOUNT.AMEX_GOLD)).length,
 
-      waterBill: payeeTexts.filter((pt) => pt.includes('Water')).length,
-      sewerBill: payeeTexts.filter((pt) => pt.includes('Sewer')).length,
-      ufcFitBill: payeeTexts.filter((pt) => pt.includes('UFC Fit')).length,
-      carInsuranceBill: payeeTexts.filter((pt) => pt.includes('Car Insurance')).length,
-      internetBill: payeeTexts.filter((pt) => pt.includes('Internet')).length,
-      trashBill: payeeTexts.filter((pt) => pt.includes('Trash')).length,
-      spotifyBill: payeeTexts.filter((pt) => pt.includes('Spotify')).length,
       citiDoublePayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CITI_DOUBLE_CASH)).length,
       citiCustomPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CITI_CUSTOM_CASH)).length,
       citiPremierPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CITI_PREMIER)).length,
-      capitalOnePayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X)).length,
       chaseAmazonPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_AMAZON)).length,
       chaseFlexPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_FREEDOM_FLEX)).length,
       chaseUnlimitedPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED)).length,

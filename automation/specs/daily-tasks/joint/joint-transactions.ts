@@ -17,10 +17,18 @@ import { BaseTransactions } from '../../../utils/base-transaction';
 import { DailyTaskData } from '../daily-task-data';
 
 const {
-  JOINT_SOFI = '', JOINT_FOOD = '', JOINT_MISC = '', CHASE_SAPPHIRE_PREFERRED = '',
+  JOINT_SOFI = '',
+  JOINT_FOOD = '',
+  JOINT_BILL = '',
+  JOINT_MISC = '',
 } = process.env;
 
-const INCLUDED_TRANSACTIONS = [JOINT_SOFI, JOINT_FOOD, JOINT_MISC, CHASE_SAPPHIRE_PREFERRED];
+const INCLUDED_TRANSACTIONS = [
+  JOINT_SOFI,
+  JOINT_FOOD,
+  JOINT_BILL,
+  JOINT_MISC,
+];
 
 export class JointTransactions extends BaseTransactions {
   private actualBalances: Record<string, string>;
@@ -119,7 +127,8 @@ export class JointTransactions extends BaseTransactions {
     return [
       ['Joint Account Balance', this.actualBalances[JOINT_SOFI]],
       ['Pending Transactions', this.expectedBalances['Pending Transactions']],
-      ['Misc Balance (Marriott Boundless)', this.expectedBalances[WALLET_ACCOUNT.MARRIOTT_BOUNDLESS]],
+      ['Bill Balance (Marriott Bold)', this.actualBalances[JOINT_BILL]],
+      ['Misc Balance (Venture X)', this.expectedBalances[WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X]],
       ['Current Food Balance (AMEX Gold)', this.expectedBalances[WALLET_ACCOUNT.AMEX_GOLD]],
     ].map(([name, balance], index) => [name,
       format(today, 'P'),

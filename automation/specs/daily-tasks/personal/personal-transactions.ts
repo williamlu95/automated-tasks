@@ -35,9 +35,7 @@ const {
   WELLS_FARGO_ACTIVE_CASH = '',
   WELLS_FARGO_PLATINUM = '',
   AMEX_BLUE = '',
-  AMEX_GOLD = '',
   WELLS_FARGO_AUTOGRAPH = '',
-  MARRIOTT_BOUNDLESS = '',
 } = process.env;
 
 const INCLUDED_TRANSACTIONS = [
@@ -55,9 +53,7 @@ const INCLUDED_TRANSACTIONS = [
   WELLS_FARGO_ACTIVE_CASH,
   WELLS_FARGO_PLATINUM,
   AMEX_BLUE,
-  AMEX_GOLD,
   WELLS_FARGO_AUTOGRAPH,
-  MARRIOTT_BOUNDLESS,
 ];
 
 export type Template = Omit<
@@ -104,16 +100,17 @@ export class PersonalTransactions extends BaseTransactions {
     console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
   }
 
-  private filterExpenses = (e: ExpectedJointTransaction) => !(e.day === '06/01/2025' && e.identifier === EXPENSE.JOINT_SAVINGS.identifier);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  private filterExpenses = (_e: ExpectedJointTransaction) => true;
 
   protected calculateOutstandingIncome(): ExpectedJointTransaction[] {
     const income: ExpectedJointTransaction[] = [];
 
     Object.values(INCOME).forEach((value) => {
       const paidSalary = this.transactionsForCurrentMonth.filter(
-        (t) => includesName(t.Description, value.name)
-          && t.Account?.endsWith(WELLS_FARGO_CHECKING)
-          && DateTime.fromISO(t.Date).hasSame(DateTime.now(), 'month'),
+        (t) => includesName(t.description, value.name)
+          && t.account?.endsWith(WELLS_FARGO_CHECKING)
+          && DateTime.fromISO(t.date).hasSame(DateTime.now(), 'month'),
       );
 
       const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map((day) => ({
@@ -138,15 +135,15 @@ export class PersonalTransactions extends BaseTransactions {
 
     return transactions.map((t) => ({
       ...restOfTemplate,
-      amount: t.Amount,
+      amount: t.amount,
     }));
   }
 
   protected getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
     const transactionsForCurrentMonth = transactions
-      .filter((t) => INCLUDED_TRANSACTIONS.some((it) => t.Account?.endsWith(it)))
+      .filter((t) => INCLUDED_TRANSACTIONS.some((it) => t.account?.endsWith(it)))
       .filter((t) => {
-        const transactionDate = DateTime.fromISO(t.Date);
+        const transactionDate = DateTime.fromISO(t.date);
         const isSameMonth = transactionDate.hasSame(DateTime.now(), 'month');
 
         if (isSameMonth) {
@@ -180,7 +177,7 @@ export class PersonalTransactions extends BaseTransactions {
         return {
           fromAccount: WALLET_ACCOUNT.CHASE_CHECKING as string,
           toAccount: transfers(i),
-          amount: t.Amount,
+          amount: t.amount,
         };
       });
 
