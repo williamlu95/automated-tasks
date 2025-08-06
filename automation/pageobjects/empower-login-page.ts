@@ -4,10 +4,6 @@ import Page from './page';
 const {
   EMPOWER_LOGIN = '',
   EMPOWER_PASSWORD = '',
-  MOTHER_EMPOWER_LOGIN = '',
-  MOTHER_EMPOWER_PASSWORD = '',
-  JOINT_EMPOWER_LOGIN = '',
-  JOINT_EMPOWER_PASSWORD = '',
 } = process.env;
 
 class EmpowerLoginPage extends Page {
@@ -100,7 +96,7 @@ class EmpowerLoginPage extends Page {
   }
 
   private async acceptCookie() {
-    await browser.pause(10000);
+    await browser.pause(5000);
     const cookiesButtonExists = await this.acceptCookiesButton.isExisting();
 
     if (cookiesButtonExists) {
@@ -109,29 +105,26 @@ class EmpowerLoginPage extends Page {
   }
 
   private async login(username: string, password: string, readEmails: () => Promise<void>) {
-    await browser.waitUntil(() => this.usernameInput && this.usernameInput.isClickable());
-    await this.acceptCookie();
-    await this.usernameInput.setValue(username);
-    await this.continueButton.click();
-    await this.completeVerification(readEmails);
-    await browser.waitUntil(() => this.rememberMeCheckbox.isClickable());
-    await this.rememberMeCheckbox.click();
+    await browser.pause(5000);
+
+    if (await this.usernameInput.isExisting() && await this.usernameInput.isClickable()) {
+      await browser.waitUntil(() => this.usernameInput && this.usernameInput.isClickable());
+      await this.acceptCookie();
+      await this.usernameInput.setValue(username);
+      await this.continueButton.click();
+      await this.completeVerification(readEmails);
+    }
+
+    // await browser.waitUntil(() => this.rememberMeCheckbox.isClickable());
+    // await this.rememberMeCheckbox.click();
     await browser.waitUntil(() => this.passwordInput.isClickable());
     await this.passwordInput.setValue(password);
     await this.signInButton.click();
     await browser.waitUntil(() => this.userLink && this.userLink.isDisplayed());
   }
 
-  async loginToPersonal() {
+  async loginToAccount() {
     await this.login(EMPOWER_LOGIN, EMPOWER_PASSWORD, readPersonalEmails);
-  }
-
-  async loginToJoint() {
-    await this.login(JOINT_EMPOWER_LOGIN, JOINT_EMPOWER_PASSWORD, readPersonalEmails);
-  }
-
-  async loginToMother() {
-    await this.login(MOTHER_EMPOWER_LOGIN, MOTHER_EMPOWER_PASSWORD, readPersonalEmails);
   }
 
   open() {

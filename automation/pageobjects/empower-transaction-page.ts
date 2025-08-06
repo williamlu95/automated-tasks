@@ -68,7 +68,7 @@ class EmpowerTransactionPage extends Page {
 
   async downloadTransactions(): Promise<Transaction[]> {
     await EmpowerLoginPage.open();
-    await EmpowerLoginPage.loginToPersonal();
+    await EmpowerLoginPage.loginToAccount();
     await this.open();
     return this.download();
   }

@@ -23,15 +23,20 @@ class WalletLoginPage extends Page {
   }
 
   async login() {
-    await browser.waitUntil(async () => { 
-        const hasUserInput = await this.usernameInput?.isClickable();
-        const hasNoThankYou = await this.noThankYouButton?.isClickable();
-        return hasUserInput || hasNoThankYou;
+    await browser.pause(10000);
+    const currentUrl = await browser.getUrl();
+    if (currentUrl.includes('https://web.budgetbakers.com/dashboard')) {
+      return;
+    }
+
+    await browser.waitUntil(async () => {
+      const hasUserInput = await this.usernameInput?.isClickable();
+      const hasNoThankYou = await this.noThankYouButton?.isClickable();
+      return hasUserInput || hasNoThankYou;
     });
 
-    if (await this.noThankYouButton?.isClickable())
-    {
-        await this.noThankYouButton.click();
+    if (await this.noThankYouButton?.isExisting() && await this.noThankYouButton?.isClickable()) {
+      await this.noThankYouButton.click();
     }
 
     await this.usernameInput.setValue(WALLET_LOGIN);

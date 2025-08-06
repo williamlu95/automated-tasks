@@ -4,3 +4,4 @@ node_modules
 counts.json
 package-lock.json
 
+chrome_profile
