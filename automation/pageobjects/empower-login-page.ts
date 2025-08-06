@@ -122,8 +122,10 @@ class EmpowerLoginPage extends Page {
     await browser.waitUntil(() => this.passwordInput.isClickable());
     await this.passwordInput.setValue(password);
 
-    await browser.waitUntil(() => this.deviceInput.isClickable());
-    await this.deviceInput.setValue('Automated Scripts');
+    if (await this.deviceInput.isExisting() && await this.deviceInput.isClickable()) {
+      await browser.waitUntil(() => this.deviceInput.isClickable());
+      await this.deviceInput.setValue('Automated Scripts');
+    }
 
     await this.signInButton.click();
 
