@@ -9,8 +9,6 @@ const { LOG_LEVEL } = process.env;
 
 type WebdriverLogTypes = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'silent';
 
-const FAILED_ATTEMPT_LIMIT = 3;
-
 export const config: WebdriverIO.Config = {
   specs: ['./automation/specs/**/*.e2e.ts'],
   suites: {
@@ -62,23 +60,8 @@ export const config: WebdriverIO.Config = {
     retries: 5,
   },
 
-  onComplete: async (_exitCode, _config, _capabilities, results) => {
+  onComplete: async () => {
     rmdir(downloadDir);
-
-    if (results.failed > 0) {
-      ErrorCounts.addToFailedCount(1);
-    } else {
-      ErrorCounts.setFailedCount(0);
-    }
-    const failedAttempts = ErrorCounts.getFailedCount();
-
-    if (failedAttempts >= FAILED_ATTEMPT_LIMIT) {
-      return sendEmail({
-        subject: 'ACTION REQUIRED: Automation Script Failure',
-        html: `<h1><strong>Failed Attempt Count: </strong><span style="color: red;">${failedAttempts}</span></h1>`,
-      });
-    }
-
     return null;
   },
 
@@ -87,10 +70,10 @@ export const config: WebdriverIO.Config = {
   },
 
   after: async (result, _capabilities, spec) => {
-    if (result > 0 && spec.some((s) => s.includes('pay-tmobile-bill.e2e.ts'))) {
+    if (result > 0) {
       await sendEmail({
-        subject: 'ACTION REQUIRED: Pay T-Mobile Script Failure',
-        html: '<h1><strong>Failed to pay T-Mobile bill please pay manually.</strong></h1>',
+        subject: 'ACTION REQUIRED: Automation Script Failure',
+        html: `<h1><strong>Script Failed to Complete: </strong><span style="color: red;">${spec}</span></h1>`,
       });
     }
 
