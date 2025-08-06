@@ -69,6 +69,10 @@ class EmpowerLoginPage extends Page {
     return $('input[type="password"]');
   }
 
+  get deviceInput() {
+    return $('input[type="deviceName"]');
+  }
+
   get signInButton() {
     return $('button[name="sign-in"]');
   }
@@ -115,11 +119,14 @@ class EmpowerLoginPage extends Page {
       await this.completeVerification(readEmails);
     }
 
-    // await browser.waitUntil(() => this.rememberMeCheckbox.isClickable());
-    // await this.rememberMeCheckbox.click();
     await browser.waitUntil(() => this.passwordInput.isClickable());
     await this.passwordInput.setValue(password);
+
+    await browser.waitUntil(() => this.deviceInput.isClickable());
+    await this.deviceInput.setValue('Automated Scripts');
+
     await this.signInButton.click();
+
     await browser.waitUntil(() => this.userLink && this.userLink.isDisplayed());
   }
 
