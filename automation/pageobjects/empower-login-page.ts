@@ -70,7 +70,7 @@ class EmpowerLoginPage extends Page {
   }
 
   get deviceInput() {
-    return $('input[type="deviceName"]');
+    return $('input[name="deviceName"]');
   }
 
   get signInButton() {
