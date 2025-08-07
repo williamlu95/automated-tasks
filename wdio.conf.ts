@@ -17,12 +17,6 @@ export const config: WebdriverIO.Config = {
     daily: [
       './automation/specs/daily-tasks/run.e2e.ts',
     ],
-    weekly: [
-      './automation/specs/weekly-tasks/move-excess-to-pto.e2e.ts',
-    ],
-    monthly: [
-      './automation/specs/monthly-tasks/pay-tmobile-bill.e2e.ts',
-    ],
   },
   exclude: [],
   autoCompileOpts: {

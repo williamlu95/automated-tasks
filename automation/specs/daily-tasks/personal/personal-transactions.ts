@@ -100,8 +100,7 @@ export class PersonalTransactions extends BaseTransactions {
     console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  private filterExpenses = (_e: ExpectedJointTransaction) => true;
+  private filterExpenses = (e: ExpectedJointTransaction) => !(['08/14/2025'].includes(e.day) && e.name === EXPENSE.FLEX_LOAN.name);
 
   protected calculateOutstandingIncome(): ExpectedJointTransaction[] {
     const income: ExpectedJointTransaction[] = [];
