@@ -17,6 +17,8 @@ export const TRANSACTION_TYPE = {
 
 export const FOOD_BUDGET = 600;
 
+export const ADDITIONAL_SAVINGS = 125.0;
+
 export const CREDIT_CARD_BILL = {
   WATER_BILL: 'Las Vegas Valley Water District',
   SEWER_BILL: 'City Of Las Vegas',
@@ -31,7 +33,7 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
   LISA_SALARY: {
     identifier: "Lisa's Salary",
     name: 'Sunrise Hospital',
-    amount: 950.0,
+    amount: 950.0 - ADDITIONAL_SAVINGS,
     day: '0',
     days: getBiweeklyPayDaysForMonths(new Date('11/15/23')),
     type: TRANSACTION_TYPE.INCOME,
@@ -39,7 +41,7 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
   WILL_SALARY: {
     identifier: "William's Salary",
     name: 'Betterlesson',
-    amount: 2250.0,
+    amount: 2500.0 - ADDITIONAL_SAVINGS,
     day: '0',
     days: getSemiMonthylPayDaysForMonths(),
     type: TRANSACTION_TYPE.INCOME,
