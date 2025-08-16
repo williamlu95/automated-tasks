@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import { DateTime } from 'luxon';
 import { ExpectedJointTransaction, ExpectedTransaction } from '../../../types/transaction';
-import { formatToDollars } from '../../../utils/currency-formatter';
+import { formatFromDollars, formatToDollars } from '../../../utils/currency-formatter';
 import {
   CREDIT_CARD_BILL,
   EXPENSE,
@@ -64,6 +64,17 @@ export class JointTransactions extends BaseTransactions {
 
     this.grocerySpend = DailyTaskData.getJointGrocerySpend();
     console.log('Grocery Spend: ', this.grocerySpend);
+  }
+
+  isPresent(date: string, amount: number): boolean {
+    const datetime = DateTime.fromFormat(date, 'MM/dd/yyyy').toMillis();
+
+    return this.transactionsForCurrentMonth
+      .some((t) => {
+        const tDatetime = DateTime.fromISO(t.date).toMillis();
+        const tAmount = formatFromDollars(t.amount);
+        return tDatetime >= datetime && Math.abs(amount) === Math.abs(tAmount);
+      });
   }
 
   private filterExpenses = (e: ExpectedJointTransaction) => !(['05/09/2025', '06/09/2025', '07/09/2025', '08/09/2025', '09/09/2025', '10/09/2025'].includes(e.day) && e.name === CREDIT_CARD_BILL.CAR_INSURANCE_BILL);

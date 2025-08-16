@@ -1,5 +1,6 @@
 import { WALLET_ACCOUNT } from '../constants/personal-transactions';
 import { formatFromDollars } from '../utils/currency-formatter';
+import AddRecordModal from './add-record-modal';
 import Page from './page';
 
 class WalletRecordPage extends Page {
@@ -37,6 +38,14 @@ class WalletRecordPage extends Page {
 
   get rows() {
     return $$('div._3oJhqSCX8H5S0i6pA59f9k');
+  }
+
+  get ellipsis() {
+    return $$('i.ellipsis');
+  }
+
+  get confirmButton() {
+    return $('button.ui.red.circular.fluid.button');
   }
 
   async selectOption(optionText: string): Promise<void> {
@@ -119,6 +128,41 @@ class WalletRecordPage extends Page {
     const amounts = await this.amounts;
     const amountsText = await Promise.all(amounts.map((a) => a.getText()));
     return amountsText.reduce((total, amount) => total + formatFromDollars(amount), 0);
+  }
+
+  async getPendingTransactions() {
+    await this.open();
+
+    await browser.waitUntil(async () => (await this.dateRangeDropdown).isClickable());
+    await this.dateRangeDropdown.click();
+    await this.selectCheckbox('This month');
+
+    await browser.waitUntil(async () => (await this.filterDropdown).isClickable());
+    await this.filterDropdown.click();
+    await browser.waitUntil(async () => (await this.options.length) > 0);
+    await this.selectOption('Pending');
+    await browser.pause(3000);
+
+    const amounts = await this.amounts;
+    const datesText = [];
+    const amountsText = await Promise.all(amounts.map((a) => a.getText()));
+
+    for (let i = 0; i < amounts.length; i += 1) {
+      await amounts[i].click();
+      const date = await AddRecordModal.getDateAndClose();
+      datesText.push(date);
+    }
+
+    return datesText.map((date, index) => ({ date, amount: formatFromDollars(amountsText[index]) }));
+  }
+
+  async removeRecord(index: number) {
+    const ellipsis = await this.ellipsis;
+    await ellipsis[index].click();
+    await this.selectOption('Delete');
+    await browser.waitUntil(async () => (await this.confirmButton).isClickable());
+    await this.confirmButton.click();
+    await browser.pause(3000);
   }
 
   open() {

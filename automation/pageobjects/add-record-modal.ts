@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon';
 import Page from './page';
 
 class AddRecordModal extends Page {
@@ -25,8 +26,23 @@ class AddRecordModal extends Page {
     return $('input[name="fromAmount"]');
   }
 
+  get dateInput() {
+    return $('div.react-datepicker__input-container > input[type="text"]');
+  }
+
+  get close() {
+    return $('span.add-record-close');
+  }
+
   get items() {
     return $$('a.item');
+  }
+
+  async getDateAndClose() {
+    await browser.waitUntil(() => this.dateInput.isExisting());
+    const date = await this.dateInput.getValue();
+    await this.close.click();
+    return DateTime.fromFormat(date, 'MMM dd, yyyy').toFormat('MM/dd/yyyy');
   }
 
   async getTransferItem() {
@@ -101,7 +117,7 @@ class AddRecordModal extends Page {
     await this.waitAndClick(transferItem);
 
     await browser.waitUntil(
-      () => this.fromAccountDropdown && this.fromAccountDropdown.isClickable()
+      () => this.fromAccountDropdown && this.fromAccountDropdown.isClickable(),
     );
 
     await this.fromAccountDropdown.click();
