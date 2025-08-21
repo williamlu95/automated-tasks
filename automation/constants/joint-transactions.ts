@@ -94,7 +94,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
   ELECTRICITY: {
     identifier: 'Electric',
     name: 'Nv Energy',
-    amount: 142.0,
+    amount: 118.0,
     day: 10,
     type: TRANSACTION_TYPE.EXPENSE,
   },
