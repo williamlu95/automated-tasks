@@ -44,6 +44,11 @@ class WalletDashboardPage extends Page {
 
   async getAllAccountBalances() {
     await browser.waitUntil(async () => (await this.accountBalances.length) > 0);
+    await browser.waitUntil(async () => {
+      const accountBalances = await this.accountBalances;
+      const balances = await Promise.all(accountBalances.map((b) => b.getText()));
+      return balances.some((b) => b !== '$0.00');
+    });
     const accountBalances = await this.accountBalances;
     const balances = await Promise.all(accountBalances.map((b) => b.getText()));
 
