@@ -14,6 +14,7 @@ export default class Page {
   }
 
   async getElementFromList(elements: WebdriverIO.ElementArray, text: string) {
+    await browser.pause(3000);
     const elementTexts = await Promise.all(elements.map((e) => e.getText()));
     const elementIndex = elementTexts.findIndex((e) => e.includes(text));
 

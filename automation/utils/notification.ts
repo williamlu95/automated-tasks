@@ -21,8 +21,7 @@ const emailer = nodemailer.createTransport({
 
 export const verificationCodes = {
   empower: '',
-  tmobile: '',
-  sofi: '',
+  wallet: '',
 };
 
 export const errorNotification = async (errorMessage: string) => {
@@ -74,11 +73,8 @@ const readEmails = (config: imaps.ImapSimpleOptions) => (setVerificationCodes = 
               const empowerVerificationCode = text.match(/4-digitcodebelow.(\d+)/)?.[1];
               verificationCodes.empower = empowerVerificationCode;
 
-              const tmobileVerificationCode = text.match(/Your account verification code is: (\d+)./)?.[1];
-              verificationCodes.tmobile = tmobileVerificationCode;
-
-              const sofiVerificationCode = text.match(/LoginCode:(\d+)/)?.[1];
-              verificationCodes.sofi = sofiVerificationCode;
+              const wallet = partData?.match(/href="https:\/\/web\.budgetbakers\.com\/sso\?ssoToken=(.+)"/)?.[1];
+              verificationCodes.wallet = wallet;
             }
 
             connection.addFlags(message.attributes.uid, 'Deleted', (err) => {

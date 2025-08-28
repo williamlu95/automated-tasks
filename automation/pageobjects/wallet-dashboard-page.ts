@@ -7,16 +7,12 @@ class WalletDashboardPage extends Page {
     return $$('button[type="button"]');
   }
 
-  get records() {
-    return $$('li._3wwqabSSUyshePYhPywONa');
-  }
-
   get accountNames() {
-    return $$('div._3UlH-xKQJweod8d_ZaUvH9');
+    return $$('div.overflow-hidden.text-ellipsis > p:first-child');
   }
 
   get accountBalances() {
-    return $$('div.SyMiivK1mSUOBri3EYnVo');
+    return $$('div.overflow-hidden.text-ellipsis > p:nth-child(2)');
   }
 
   async getAccountBalanceByName(name: string) {

@@ -2,89 +2,63 @@ import { DateTime } from 'luxon';
 import Page from './page';
 
 class AddRecordModal extends Page {
-  get buttons() {
-    return $$('button[type="button"]');
+  get templateDropdown() {
+    return $('input[placeholder="Select template"]');
   }
 
-  get dropdowns() {
-    return $$('div[role="listbox"]');
-  }
-
-  get labelDropdown() {
-    return $('div[name="labels"]');
-  }
-
-  get options() {
-    return $$('div[role="option"]');
+  get addButton() {
+    return $('button[type="submit"]');
   }
 
   get amountInput() {
-    return $('input[name="amount"]');
+    return $('input[data-path="amount"]');
   }
 
-  get fromAmountInput() {
-    return $('input[name="fromAmount"]');
+  get options() {
+    return $$('div.mantine-Select-option');
+  }
+
+  get multiOptions() {
+    return $$('div.mantine-Group-root');
   }
 
   get dateInput() {
-    return $('div.react-datepicker__input-container > input[type="text"]');
+    return $('button[data-path="recordDate"]');
   }
 
   get close() {
-    return $('span.add-record-close');
+    return $('button.mantine-CloseButton-root');
+  }
+
+  get labelDropdown() {
+    return $('input[data-path="labels"]');
   }
 
   get items() {
-    return $$('a.item');
+    return $$('span.mantine-SegmentedControl-innerLabel');
+  }
+
+  get transferCategory() {
+    return $('div.mantine-SegmentedControl-root > div:nth-child(4) > label');
   }
 
   async getDateAndClose() {
     await browser.waitUntil(() => this.dateInput.isExisting());
     const date = await this.dateInput.getValue();
     await this.close.click();
-    return DateTime.fromFormat(date, 'MMM dd, yyyy').toFormat('MM/dd/yyyy');
-  }
-
-  async getTransferItem() {
-    await browser.waitUntil(async () => {
-      const items = await this.items;
-      return !!items.length;
-    });
-
-    const items = await this.items;
-    return this.getElementFromList(items, 'Transfer');
-  }
-
-  async getAddRecordButton() {
-    await browser.waitUntil(async () => {
-      const buttons = await this.buttons;
-      return !!buttons.length;
-    });
-
-    const dropdowns = await this.buttons;
-    return this.getElementFromList(dropdowns, 'Add record');
-  }
-
-  async getSelectTemplateDropdown() {
-    await browser.waitUntil(async () => {
-      const dropdowns = await this.dropdowns;
-      return !!dropdowns.length;
-    });
-
-    const dropdowns = await this.dropdowns;
-    return this.getElementFromList(dropdowns, 'Select template');
+    return DateTime.fromFormat(date, 'dd/LL/yyyy HH:mm').toFormat('MM/dd/yyyy');
   }
 
   get fromAccountDropdown() {
-    return $('div[name="fromAccountId"]');
+    return $('input[data-path="accountId"]');
   }
 
   get toAccountDropdown() {
-    return $('div[name="toAccountId"]');
+    return $('input[data-path="transferAccountId"]');
   }
 
   get noteInput() {
-    return $('textarea[name="note"]');
+    return $('textarea[data-path="note"]');
   }
 
   async selectOption(optionText: string): Promise<void> {
@@ -98,23 +72,42 @@ class AddRecordModal extends Page {
     await this.waitAndClick(option);
   }
 
+  async selectMultiOption(optionText: string): Promise<void> {
+    await browser.waitUntil(async () => {
+      const options = await this.multiOptions;
+      return !!options.length;
+    });
+
+    const options = await this.options;
+    const option = await this.getElementFromList(options, optionText);
+    await this.waitAndClick(option);
+  }
+
   async addRecord(template: string, amount: string) {
-    const dropdown = await this.getSelectTemplateDropdown();
+    const dropdown = await this.templateDropdown;
     await this.waitAndClick(dropdown);
     await this.selectOption(template);
     await this.amountInput.setValue(amount);
-    const addRecordButton = await this.getAddRecordButton();
+    const addRecordButton = await this.addButton;
     await this.waitAndClick(addRecordButton);
   }
 
-  async selectLabel(label: string) {
+  async selectLabel() {
     await this.labelDropdown.click();
-    await this.selectOption(label);
+    await browser.pause(3000);
+    await this.multiOptions[0].click();
   }
 
   async addTransfer(fromAccount: string, toAccount: string, amount: number) {
-    const transferItem = await this.getTransferItem();
-    await this.waitAndClick(transferItem);
+    await browser.waitUntil(
+      async () => {
+        const transfer = await this.transferCategory;
+        const isClickable = await transfer.isClickable();
+        return isClickable;
+      },
+    );
+
+    await this.transferCategory.click();
 
     await browser.waitUntil(
       () => this.fromAccountDropdown && this.fromAccountDropdown.isClickable(),
@@ -125,10 +118,9 @@ class AddRecordModal extends Page {
     await browser.waitUntil(() => this.toAccountDropdown && this.toAccountDropdown.isClickable());
     await this.toAccountDropdown.click();
     await this.selectOption(toAccount);
-    await this.fromAmountInput.setValue(amount);
-    await this.noteInput.setValue('Added by automated script');
-    await this.selectLabel('Automation');
-    const addRecordButton = await this.getAddRecordButton();
+    await this.amountInput.setValue(amount);
+    await this.selectLabel();
+    const addRecordButton = await this.addButton;
     await this.waitAndClick(addRecordButton);
   }
 }

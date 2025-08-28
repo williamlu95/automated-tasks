@@ -1,13 +1,13 @@
+import { readPersonalEmails, verificationCodes } from '../utils/notification';
 import Page from './page';
 
 const {
   WALLET_LOGIN = '',
-  WALLET_PASSWORD = '',
 } = process.env;
 
 class WalletLoginPage extends Page {
   get usernameInput() {
-    return $('input[type="email"]');
+    return $('input[data-path="email"]');
   }
 
   get passwordInput() {
@@ -39,9 +39,18 @@ class WalletLoginPage extends Page {
       await this.noThankYouButton.click();
     }
 
+    await this.usernameInput.click();
+    await this.usernameInput.clearValue();
     await this.usernameInput.setValue(WALLET_LOGIN);
-    await this.passwordInput.setValue(WALLET_PASSWORD);
     await this.signInButton.click();
+
+    await browser.waitUntil(async () => {
+      await readPersonalEmails();
+      return !!verificationCodes.wallet;
+    });
+
+    await super.open(`https://web.budgetbakers.com/sso?ssoToken=${verificationCodes.wallet}`);
+
     await browser.waitUntil(async () => {
       const url = await browser.getUrl();
       return url.includes('https://web.budgetbakers.com/dashboard');
