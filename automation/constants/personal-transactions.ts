@@ -165,7 +165,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     type: TRANSACTION_TYPE.DEBIT,
     validateTransaction: (t) => {
       const transactionDate = DateTime.fromISO(t.date);
-      return transactionDate.day >= 28 && transactionDate.month === DateTime.now().month;
+      return transactionDate.day >= 20 && transactionDate.month === DateTime.now().month;
     },
   },
 });
