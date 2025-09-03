@@ -25,7 +25,7 @@ class WalletLoginPage extends Page {
   async login() {
     await browser.pause(10000);
     const currentUrl = await browser.getUrl();
-    if (currentUrl.includes('https://web.budgetbakers.com/dashboard')) {
+    if (currentUrl.includes('dashboard')) {
       return;
     }
 
@@ -58,7 +58,7 @@ class WalletLoginPage extends Page {
   }
 
   open() {
-    return super.open('https://web.budgetbakers.com/login');
+    return super.open('https://web.budgetbakers.com/sign-in');
   }
 }
 
