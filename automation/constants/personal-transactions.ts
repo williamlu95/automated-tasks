@@ -97,11 +97,11 @@ export const AUTO_PAY = Object.freeze({
     isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_DOUBLE_CASH),
     transfers: () => WALLET_ACCOUNT.CITI_DOUBLE_CASH,
   },
-  CITI_PREMIER: {
-    paymentCountKey: 'citiPremierPayments',
-    isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_PREMIER),
-    transfers: () => WALLET_ACCOUNT.CITI_PREMIER,
-  },
+  // CITI_PREMIER: {
+  //   paymentCountKey: 'citiPremierPayments',
+  //   isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_PREMIER),
+  //   transfers: () => WALLET_ACCOUNT.CITI_PREMIER,
+  // },
   DISCOVER: {
     paymentCountKey: 'discoverPayments',
     isTransactionIncluded: isAutoPayTransaction('Discover Bank'),
@@ -123,7 +123,7 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
   WILL_SALARY: {
     identifier: "William's Salary",
     name: 'Betterlesson',
-    amount: 300.0,
+    amount: 425.0,
     day: '0',
     days: getSemiMonthylPayDaysForMonths(),
     type: TRANSACTION_TYPE.CREDIT,
@@ -131,6 +131,14 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
+  FLEX_LOAN: {
+    identifier: 'Citi Flex Loan',
+    name: 'Citibank',
+    amount: 280.0,
+    day: 14,
+    type: TRANSACTION_TYPE.DEBIT,
+    validateTransaction: isAutoPayTransaction('Autopay', CITI_PREMIER),
+  },
   HULU: {
     identifier: 'Hulu',
     name: 'Hulu',
