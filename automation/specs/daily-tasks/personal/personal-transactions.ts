@@ -102,7 +102,7 @@ export class PersonalTransactions extends BaseTransactions {
     console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
   }
 
-  private filterExpenses = (e: ExpectedJointTransaction) => !(['08/14/2025'].includes(e.day) && e.name === EXPENSE.FLEX_LOAN.name);
+  private filterExpenses = (e: ExpectedJointTransaction) => !(['09/14/2025'].includes(e.day) && e.name === EXPENSE.FLEX_LOAN.name);
 
   protected calculateOutstandingIncome(): ExpectedJointTransaction[] {
     const income: ExpectedJointTransaction[] = [];
