@@ -52,7 +52,7 @@ export const calculateSemiYearlyTotalAmountDue = (total: number, today: DateTime
 const calculateMonthsSinceYearlyDue = (today: DateTime, originalDueDate: DateTime): number => {
   const potentialDueDate = originalDueDate.set({ year: today.year });
   const actualDueDate = potentialDueDate.toMillis() >= today.toMillis() ? potentialDueDate : potentialDueDate.plus({ year: 1 })
-  return Math.ceil(today.diff(actualDueDate, ['months']).toObject().months || 1);
+  return Math.ceil(actualDueDate.diff(today, ['months']).toObject().months || 1);
 };
 
 export const calculateYearlyTotalAmountDue = (total: number, today: DateTime, originalDueDate: DateTime): number => {
