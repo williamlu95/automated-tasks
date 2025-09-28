@@ -25,6 +25,7 @@ export const calculateQuarterlyTotalAmountDue = (total: number, today: DateTime)
 };
 
 const MONTHS_IN_SEMI_YEAR = 6;
+const MONTHS_IN_YEAR = 12;
 
 const calculateMonthsSinceLastSemiYear = (today: DateTime): number => {
   const start = DateTime.fromObject({ month: 4 });
@@ -46,4 +47,16 @@ export const calculateSemiYearlyTotalAmountDue = (total: number, today: DateTime
   const monthsSinceSemiYear = calculateMonthsSinceLastSemiYear(today);
   const monthlyAmount = total / MONTHS_IN_SEMI_YEAR;
   return monthlyAmount * monthsSinceSemiYear;
+};
+
+const calculateMonthsSinceYearlyDue = (today: DateTime, originalDueDate: DateTime): number => {
+  const potentialDueDate = originalDueDate.set({ year: today.year });
+  const actualDueDate = potentialDueDate.toMillis() >= today.toMillis() ? potentialDueDate : potentialDueDate.plus({ year: 1 })
+  return Math.ceil(today.diff(actualDueDate, ['months']).toObject().months || 1);
+};
+
+export const calculateYearlyTotalAmountDue = (total: number, today: DateTime, originalDueDate: DateTime): number => {
+  const monthsSinceYear = calculateMonthsSinceYearlyDue(today, originalDueDate);
+  const monthlyAmount = total / MONTHS_IN_YEAR;
+  return monthlyAmount * monthsSinceYear;
 };

@@ -4,6 +4,7 @@ import {
   calculateSemiYearlyTotalAmountDue,
   calculateQuarterlyTotalAmountDue,
   calculateSewerTotalAmount,
+  calculateYearlyTotalAmountDue,
 } from '../utils/calculator';
 import {
   getBiweeklyPayDaysForMonths,
@@ -80,7 +81,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
   UFC_FIT: {
     identifier: 'UFC Fit',
     name: CREDIT_CARD_BILL.UFC_FIT,
-    amount: 60,
+    amount: calculateYearlyTotalAmountDue(59, date, DateTime.fromISO('2025-11-26')),
     day: 4,
     type: TRANSACTION_TYPE.EXPENSE,
   },
