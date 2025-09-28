@@ -82,7 +82,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     identifier: 'UFC Fit',
     name: CREDIT_CARD_BILL.UFC_FIT,
     amount: calculateYearlyTotalAmountDue(59, date, DateTime.fromISO('2025-11-26')),
-    day: 4,
+    day: 26,
     type: TRANSACTION_TYPE.EXPENSE,
   },
   CAR_INSURANCE: {
