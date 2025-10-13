@@ -119,7 +119,17 @@ class EmpowerLoginPage extends Page {
       await this.completeVerification(readEmails);
     }
 
-    await browser.waitUntil(() => this.passwordInput.isClickable());
+    await browser.waitUntil(async () => {
+      const isPassword = await this.passwordInput.isClickable();
+      const isUsername = await this.usernameInput.isClickable();
+      return isPassword || isUsername;
+    });
+
+    if (await this.usernameInput.isClickable()) {
+      await this.login(username, password, readEmails);
+      return;
+    }
+
     await this.passwordInput.setValue(password);
 
     if (await this.deviceInput.isExisting() && await this.deviceInput.isClickable()) {
