@@ -110,6 +110,10 @@ class EmpowerLoginPage extends Page {
 
   private async login(username: string, password: string, readEmails: () => Promise<void>) {
     await browser.pause(5000);
+    const currentUrl = await browser.getUrl();
+    if (currentUrl.includes('dashboard')) {
+      return;
+    }
 
     if (await this.usernameInput.isExisting() && await this.usernameInput.isClickable()) {
       await browser.waitUntil(() => this.usernameInput && this.usernameInput.isClickable());
