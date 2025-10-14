@@ -110,8 +110,7 @@ class EmpowerLoginPage extends Page {
 
   private async login(username: string, password: string, readEmails: () => Promise<void>) {
     await browser.pause(5000);
-    const currentUrl = await browser.getUrl();
-    if (currentUrl.includes('dashboard')) {
+    if (!(await this.usernameInput.isExisting()) && !(await this.passwordInput.isExisting())) {
       return;
     }
 
@@ -125,17 +124,10 @@ class EmpowerLoginPage extends Page {
 
     await browser.waitUntil(async () => {
       const isPassword = await this.passwordInput.isClickable();
-      const isUsername = await this.usernameInput.isClickable();
-      return isPassword || isUsername;
+      return isPassword;
     });
 
-    if (await this.usernameInput.isClickable()) {
-      await this.login(username, password, readEmails);
-      return;
-    }
-
     await this.passwordInput.setValue(password);
-
     if (await this.deviceInput.isExisting() && await this.deviceInput.isClickable()) {
       await browser.waitUntil(() => this.deviceInput.isClickable());
       await this.deviceInput.setValue('Automated Scripts');
