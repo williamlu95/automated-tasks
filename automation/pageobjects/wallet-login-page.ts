@@ -58,7 +58,7 @@ class WalletLoginPage extends Page {
   }
 
   open() {
-    return super.open('https://web.budgetbakers.com/sign-in');
+    return super.open('https://web.budgetbakers.com/dashboard');
   }
 }
 
