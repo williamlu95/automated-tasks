@@ -135,18 +135,18 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     day: 20,
     type: TRANSACTION_TYPE.EXPENSE,
   },
+  SPOTIFY: {
+    identifier: 'Spotify',
+    name: CREDIT_CARD_BILL.SPOTIFY,
+    amount: 20.0,
+    day: 20,
+    type: TRANSACTION_TYPE.EXPENSE,
+  },
   TUNDRA: {
     identifier: 'Tundra',
     name: 'Toyota',
     amount: 823.0,
     day: 20,
-    type: TRANSACTION_TYPE.EXPENSE,
-  },
-  SPOTIFY: {
-    identifier: 'Spotify',
-    name: CREDIT_CARD_BILL.SPOTIFY,
-    amount: 17.0,
-    day: 28,
     type: TRANSACTION_TYPE.EXPENSE,
   },
 });
