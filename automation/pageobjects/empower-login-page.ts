@@ -12,23 +12,15 @@ class EmpowerLoginPage extends Page {
   }
 
   get usernameInput() {
-    return $('input[name="username"]');
+    return $('input[name="usernameInput"]');
   }
-
-  get continueButton() {
-    return $('button[name="continue"]');
-  }
-
-  get emailMeButton() {
-    return $('button[value="challengeEmail"]');
-  }
-
+  
   get textMeButton() {
-    return $('button[value="challengeSMS"]');
+    return $('button.button-container');
   }
 
   get codeInput() {
-    return $('input[name="code"]');
+    return $('input[name="smsCode"]');
   }
 
   get codeInputs() {
@@ -45,16 +37,6 @@ class EmpowerLoginPage extends Page {
 
   get userLink() {
     return $('a#userId');
-  }
-
-  async getSubmitCodeButton() {
-    await browser.waitUntil(async () => {
-      const items = await this.submitButtons;
-      return !!items.length;
-    });
-
-    const items = await this.submitButtons;
-    return this.getElementFromList(items, 'continue');
   }
 
   get submitCodeButton() {
@@ -74,7 +56,7 @@ class EmpowerLoginPage extends Page {
   }
 
   get signInButton() {
-    return $('button[name="sign-in"]');
+    return $('button[data-fired="Signing In"]');
   }
 
   get submitUsernameButton() {
@@ -86,8 +68,8 @@ class EmpowerLoginPage extends Page {
   }
 
   private async completeVerification(readEmails: () => Promise<void>) {
-    await browser.waitUntil(() => this.emailMeButton && this.emailMeButton.isClickable());
-    await this.emailMeButton.click();
+    await browser.waitUntil(() => this.textMeButton && this.textMeButton.isClickable());
+    await this.textMeButton.click();
 
     await browser.waitUntil(async () => {
       await readEmails();
@@ -95,8 +77,19 @@ class EmpowerLoginPage extends Page {
     });
 
     await this.codeInput.setValue(verificationCodes.empower);
-    const button = await this.getSubmitCodeButton();
-    await button.click();
+    await this.submitButton.click();
+
+    const currentUrl = await browser.getUrl();
+    if (currentUrl.includes('/user/home')) {
+      return;
+    }
+
+    await browser.waitUntil(
+      async () => {
+        const currentUrl = await browser.getUrl();
+        return currentUrl.includes('/user/home');
+      },
+    );
   }
 
   private async acceptCookie() {
@@ -114,28 +107,18 @@ class EmpowerLoginPage extends Page {
       return;
     }
 
-    if (await this.usernameInput.isExisting() && await this.usernameInput.isClickable()) {
-      await browser.waitUntil(() => this.usernameInput && this.usernameInput.isClickable());
-      await this.acceptCookie();
-      await this.usernameInput.setValue(username);
-      await this.continueButton.click();
-      await this.completeVerification(readEmails);
-    }
-
-    await browser.waitUntil(async () => {
-      const isPassword = await this.passwordInput.isClickable();
-      return isPassword;
-    });
-
+    await this.acceptCookie();
+    await this.usernameInput.setValue(username);
     await this.passwordInput.setValue(password);
-    if (await this.deviceInput.isExisting() && await this.deviceInput.isClickable()) {
-      await browser.waitUntil(() => this.deviceInput.isClickable());
-      await this.deviceInput.setValue('Automated Scripts');
-    }
-
     await this.signInButton.click();
 
-    await browser.waitUntil(() => this.userLink && this.userLink.isDisplayed());
+    await browser.pause(10000);
+    const currentUrl = await browser.getUrl();
+    if (currentUrl.includes('/user/home')) {
+      return;
+    }
+
+    await this.completeVerification(readEmails);
   }
 
   async loginToAccount() {
@@ -143,7 +126,7 @@ class EmpowerLoginPage extends Page {
   }
 
   open() {
-    return super.open('https://home.personalcapital.com/page/login/app#/all-transactions');
+    return super.open('https://ira.empower-retirement.com/participant/#/sfd-login');
   }
 }
 

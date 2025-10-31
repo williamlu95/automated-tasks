@@ -26,7 +26,7 @@ class EmpowerTransactionPage extends Page {
   }
 
   get sideBarAccount() {
-    return $$('div.qa-sidebar-account-header');
+    return $$('tr.pc-datagrid__row');
   }
 
   get tableRows() {
@@ -96,6 +96,7 @@ class EmpowerTransactionPage extends Page {
   }
 
   async getAllAccountBalances() {
+    await this.openNetWorth();
     await browser.waitUntil(async () => (await this.sideBarAccount.length) > 0);
 
     const accountList = await this.sideBarAccount;
@@ -119,7 +120,11 @@ class EmpowerTransactionPage extends Page {
   }
 
   open() {
-    return super.open('https://home.personalcapital.com/page/login/app#/all-transactions');
+    return super.open('https://ira.empower-retirement.com/dashboard/#/all-transactions');
+  }
+
+  openNetWorth() {
+    return super.open('https://ira.empower-retirement.com/dashboard/#/net-worth');
   }
 }
 

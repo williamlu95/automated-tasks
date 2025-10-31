@@ -70,7 +70,7 @@ const readEmails = (config: imaps.ImapSimpleOptions) => (setVerificationCodes = 
             if (part.disposition == null && setVerificationCodes) {
               const text = part.encoding === 'BASE64' ? (Buffer.from(partData, 'base64').toString('ascii')) : partData.replace(/<[^>]*>?/gm, '').replace(/\s/g, '');
 
-              const empowerVerificationCode = text.match(/4-digitcodebelow.(\d+)/)?.[1];
+              const empowerVerificationCode = text.match(/device authentication code is (.+)\./)?.[1];            
               verificationCodes.empower = empowerVerificationCode;
 
               const wallet = partData?.match(/href="https:\/\/web\.budgetbakers\.com\/sso\?ssoToken=(.+)"/)?.[1];
