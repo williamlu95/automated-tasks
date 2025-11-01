@@ -147,7 +147,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
   TUNDRA: {
     identifier: 'Tundra',
     name: 'Toyota',
-    amount: 823.0,
+    amount: 2823.0,
     day: 20,
     type: TRANSACTION_TYPE.EXPENSE,
   },
