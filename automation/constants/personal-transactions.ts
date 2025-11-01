@@ -131,23 +131,23 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
+  TMOBILE: {
+    identifier: 'T-Mobile',
+    name: 'T-mobile',
+    amount: 195.0,
+    day: 15,
+    type: TRANSACTION_TYPE.DEBIT,
+    validateTransaction: (t) => {
+      const date = DateTime.fromISO(t.date);
+      return date.day >= 15 && date.month === DateTime.now().month;
+    },
+  },
   HULU: {
     identifier: 'Hulu',
     name: 'Hulu',
     amount: 26.0,
     day: 21,
     type: TRANSACTION_TYPE.DEBIT,
-  },
-  TMOBILE: {
-    identifier: 'T-Mobile',
-    name: 'T-mobile',
-    amount: 195.0,
-    day: 25,
-    type: TRANSACTION_TYPE.DEBIT,
-    validateTransaction: (t) => {
-      const date = DateTime.fromISO(t.date);
-      return date.day >= 25 && date.month === DateTime.now().month;
-    },
   },
   STUDENT_LOAN: {
     identifier: 'Student Loan',
