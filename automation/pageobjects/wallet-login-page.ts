@@ -25,7 +25,7 @@ class WalletLoginPage extends Page {
   async login() {
     await browser.pause(10000);
     const currentUrl = await browser.getUrl();
-    if (currentUrl.includes('dashboard')) {
+    if (currentUrl.includes('/dashboard')) {
       return;
     }
 
