@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 import { EXPENSE, INCOME, TRANSACTION_TYPE } from '../../../constants/mothers-transactions';
 import { formatToDollars } from '../../../utils/currency-formatter';
-import { OVERALL_FORMULA } from '../../../utils/balance';
+import { INITIAL_FORMULA, OVERALL_FORMULA } from '../../../utils/balance';
 import { BaseTransactions } from '../../../utils/base-transaction';
 import { DailyTaskData } from '../daily-task-data';
 
@@ -41,7 +41,7 @@ export class MothersTransactions extends BaseTransactions {
     ].map(([name, balance], index) => [name,
       format(today, 'P'),
       balance,
-      index === 0 ? balance : OVERALL_FORMULA]);
+      index === 0 ? INITIAL_FORMULA : OVERALL_FORMULA]);
   }
 
   getBalanceSheet(): string[][] {

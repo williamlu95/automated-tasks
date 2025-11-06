@@ -2,6 +2,7 @@ import { formatFromDollars, formatToDollars } from './currency-formatter';
 import { sendEmail } from './notification';
 
 export const OVERALL_FORMULA = '=INDIRECT("C" & ROW()) + INDIRECT("D" & ROW() - 1)';
+export const INITIAL_FORMULA = '=INDIRECT("C" & ROW())';
 
 export const notifyOfNegativeBalance = async (balanceSheet: string[][], account: string) => {
   if (!balanceSheet.length) {
