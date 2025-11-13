@@ -6,10 +6,7 @@ import {
   calculateSewerTotalAmount,
   calculateYearlyTotalAmountDue,
 } from '../utils/calculator';
-import {
-  getBiweeklyPayDaysForMonths,
-  getSemiMonthylPayDaysForMonths,
-} from '../utils/date-formatters';
+import { getSemiMonthylPayDaysForMonths } from '../utils/date-formatters';
 
 export const TRANSACTION_TYPE = {
   INCOME: 'income',
@@ -19,8 +16,6 @@ export const TRANSACTION_TYPE = {
 export const FOOD_BUDGET = 600;
 
 export const ADDITIONAL_SAVINGS = 0.0;
-
-export const ADDITIONAL_WILL_SALARY = 1000.0;
 
 export const CREDIT_CARD_BILL = {
   WATER_BILL: 'Las Vegas Valley Water District',
@@ -33,18 +28,18 @@ export const CREDIT_CARD_BILL = {
 };
 
 export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
-  LISA_SALARY: {
-    identifier: "Lisa's Salary",
-    name: 'Sunrise Hospital',
-    amount: 950.0 - ADDITIONAL_SAVINGS,
-    day: '0',
-    days: getBiweeklyPayDaysForMonths(new Date('11/15/23')),
-    type: TRANSACTION_TYPE.INCOME,
-  },
+  // LISA_SALARY: {
+  //   identifier: "Lisa's Salary",
+  //   name: 'Sunrise Hospital',
+  //   amount: 950.0 - ADDITIONAL_SAVINGS,
+  //   day: '0',
+  //   days: getBiweeklyPayDaysForMonths(new Date('11/15/23')),
+  //   type: TRANSACTION_TYPE.INCOME,
+  // },
   WILL_SALARY: {
     identifier: "William's Salary",
     name: 'Betterlesson',
-    amount: 2500.0 - ADDITIONAL_SAVINGS + ADDITIONAL_WILL_SALARY,
+    amount: 4000.0,
     day: '0',
     days: getSemiMonthylPayDaysForMonths(),
     type: TRANSACTION_TYPE.INCOME,
