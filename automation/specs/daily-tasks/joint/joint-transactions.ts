@@ -11,7 +11,7 @@ import {
   generateExpenseForDate,
 } from '../../../constants/joint-transactions';
 import { ADDITIONAL_MONTHS } from '../../../utils/date-formatters';
-import { OVERALL_FORMULA } from '../../../utils/balance';
+import { INITIAL_FORMULA, OVERALL_FORMULA } from '../../../utils/balance';
 import { WALLET_ACCOUNT } from '../../../constants/personal-transactions';
 import { BaseTransactions } from '../../../utils/base-transaction';
 import { DailyTaskData } from '../daily-task-data';
@@ -144,7 +144,7 @@ export class JointTransactions extends BaseTransactions {
     ].map(([name, balance], index) => [name,
       format(today, 'P'),
       balance,
-      index === 0 ? balance : OVERALL_FORMULA]);
+      index === 0 ? INITIAL_FORMULA : OVERALL_FORMULA]);
   }
 
   getBalanceSheet() {
