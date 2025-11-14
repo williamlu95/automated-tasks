@@ -19,15 +19,27 @@ import { DailyTaskData } from '../daily-task-data';
 const {
   JOINT_SOFI = '',
   JOINT_FOOD = '',
-  JOINT_BILL = '',
   JOINT_MISC = '',
+  JOINT_BILL = '',
+  CHASE_SAPPHIRE_PREFERRED = '',
+  WELLS_FARGO_ACTIVE_CASH = '',
+  CITI_DOUBLE_CASH = '',
+  CITI_PREMIER = '',
+  CHASE_FREEDOM_UNLIMITED = '',
+  WELLS_FARGO_AUTOGRAPH = '',
 } = process.env;
 
 const INCLUDED_TRANSACTIONS = [
   JOINT_SOFI,
   JOINT_FOOD,
-  JOINT_BILL,
   JOINT_MISC,
+  JOINT_BILL,
+  CHASE_SAPPHIRE_PREFERRED,
+  WELLS_FARGO_ACTIVE_CASH,
+  CITI_DOUBLE_CASH,
+  CITI_PREMIER,
+  CHASE_FREEDOM_UNLIMITED,
+  WELLS_FARGO_AUTOGRAPH,
 ];
 
 export class JointTransactions extends BaseTransactions {
@@ -139,6 +151,12 @@ export class JointTransactions extends BaseTransactions {
       ['Joint Account Balance', this.actualBalances[JOINT_SOFI]],
       ['Pending Transactions', this.expectedBalances['Pending Transactions']],
       ['Bill Balance (Marriott Bold)', this.actualBalances[JOINT_BILL]],
+      ['Bill Balance (Chase Sapphire Preferred)', this.actualBalances[CHASE_SAPPHIRE_PREFERRED]],
+      ['Bill Balance (Chase Freedom Unlimited)', this.actualBalances[CHASE_FREEDOM_UNLIMITED]],
+      ['Bill Balance (Citi Double Cash)', this.actualBalances[CITI_DOUBLE_CASH]],
+      ['Bill Balance (Citi Premier)', this.actualBalances[CITI_PREMIER]],
+      ['Bill Balance (WF Active Cash)', this.actualBalances[WELLS_FARGO_ACTIVE_CASH]],
+      ['Bill Balance (WF Autograph)', this.actualBalances[WELLS_FARGO_AUTOGRAPH]],
       ['Misc Balance (Venture X)', this.expectedBalances[WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X]],
       ['Current Food Balance (AMEX Gold)', this.expectedBalances[WALLET_ACCOUNT.AMEX_GOLD]],
     ].map(([name, balance], index) => [name,

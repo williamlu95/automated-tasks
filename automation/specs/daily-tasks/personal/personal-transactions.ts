@@ -24,38 +24,26 @@ const {
   CHASE_CHECKING = '',
   CAPITAL_ONE_VENTURE_X = '',
   CITI_CUSTOM_CASH = '',
-  CITI_DOUBLE_CASH = '',
-  CITI_PREMIER = '',
   DISCOVER_IT = '',
   CHASE_FREEDOM_FLEX = '',
   CHASE_AMAZON = '',
-  CHASE_SAPPHIRE_PREFERRED = '',
-  CHASE_FREEDOM_UNLIMITED = '',
   WELLS_FARGO_CHECKING = '',
-  WELLS_FARGO_ACTIVE_CASH = '',
   WELLS_FARGO_PLATINUM = '',
   AMEX_BLUE = '',
   AMEX_GOLD = '',
-  WELLS_FARGO_AUTOGRAPH = '',
 } = process.env;
 
 const INCLUDED_TRANSACTIONS = [
   CHASE_CHECKING,
   CAPITAL_ONE_VENTURE_X,
   CITI_CUSTOM_CASH,
-  CITI_DOUBLE_CASH,
-  CITI_PREMIER,
   CHASE_FREEDOM_FLEX,
   DISCOVER_IT,
   CHASE_AMAZON,
-  CHASE_FREEDOM_UNLIMITED,
-  CHASE_SAPPHIRE_PREFERRED,
   WELLS_FARGO_CHECKING,
-  WELLS_FARGO_ACTIVE_CASH,
   WELLS_FARGO_PLATINUM,
   AMEX_BLUE,
   AMEX_GOLD,
-  WELLS_FARGO_AUTOGRAPH,
 ];
 
 export type Template = Omit<
@@ -205,9 +193,7 @@ export class PersonalTransactions extends BaseTransactions {
     const today = new Date();
     return [
       ['WF Checking Balance', this.balances[WELLS_FARGO_CHECKING]],
-      ['WF Autograph Balance', this.balances[WELLS_FARGO_AUTOGRAPH]],
       ['Amex Blue Balance', this.balances[AMEX_BLUE]],
-      ['Chase Freedom Unlimited', this.balances[CHASE_FREEDOM_UNLIMITED]],
     ].map(([name, balance], index) => [name,
       format(today, 'P'),
       balance,
