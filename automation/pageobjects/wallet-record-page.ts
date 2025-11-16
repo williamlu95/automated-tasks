@@ -12,6 +12,10 @@ class WalletRecordPage extends Page {
     return $$('div.mantine-Select-option');
   }
 
+  get rows() {
+    return $$('div.grid-cols-record-row-withCheckbox');
+  }
+
   get transactionTypes() {
     return $$('div.grid-cols-record-row-withCheckbox > div.flex.items-center.gap-3');
   }
@@ -53,6 +57,16 @@ class WalletRecordPage extends Page {
     await this.waitAndClick(option);
   }
 
+  private truncateAccountName(accountName: string): string {
+    const maxLength = 18;
+
+    if (accountName.length <= maxLength) {
+      return accountName;
+    }
+
+    return `${accountName.slice(0, maxLength)}...`;
+  }
+
   async getTransactionCounts() {
     await this.navigateToRecords();
 
@@ -62,29 +76,19 @@ class WalletRecordPage extends Page {
     await this.selectOption('Automated Script Filter');
     await browser.pause(3000);
 
-    const transactionTypes = await this.transactionTypes;
-    const transactionTypeTexts = await Promise.all(transactionTypes.map((tt) => tt.getText()));
-
-    const transferNames = await this.transferNames;
-    const transferNameTexts = (await Promise.all(transferNames.map((tt) => tt.getText()))).filter(
-      (tnt) => !tnt.includes('Chase Checking'),
-    );
+    const rows = await this.rows;
+    const rowTexts = await Promise.all(rows.map((r) => r.getText()));
 
     return {
-      chaseIncome: transactionTypeTexts.filter((tt) => tt.includes('Income')).length,
-      capitalOnePayments: transactionTypeTexts.filter((r) => r.includes('Autopay')).filter((r) => r.includes(WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X)).length,
-      amexGold: transactionTypeTexts.filter((r) => r.includes('Autopay')).filter((r) => r.includes(WALLET_ACCOUNT.AMEX_GOLD)).length,
+      chaseIncome: rowTexts.filter((r) => r.includes('Income')).length,
+      capitalOnePayments: rowTexts.filter((r) => r.includes('Autopay')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X))).length,
+      amexGold: rowTexts.filter((r) => r.includes('Autopay')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.AMEX_GOLD))).length,
 
-      citiDoublePayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CITI_DOUBLE_CASH)).length,
-      citiCustomPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CITI_CUSTOM_CASH)).length,
-      citiPremierPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CITI_PREMIER)).length,
-      chaseAmazonPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_AMAZON)).length,
-      chaseFlexPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_FREEDOM_FLEX)).length,
-      chaseUnlimitedPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_FREEDOM_UNLIMITED)).length,
-      chaseSapphirePayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.CHASE_SAPPHIRE_PREFERRED)).length,
-      discoverPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.DISCOVER_IT)).length,
-      wellsFargoActiveCashPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.WF_ACTIVE_CASH)).length,
-      wellsFargoPlatinumPayments: transferNameTexts.filter((tt) => tt.includes(WALLET_ACCOUNT.WF_PLATINUM)).length,
+      citiCustomPayments: rowTexts.filter((r) => r.includes('Transfer, withdraw')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CITI_CUSTOM_CASH))).length,
+      chaseAmazonPayments: rowTexts.filter((r) => r.includes('Transfer, withdraw')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CHASE_AMAZON))).length,
+      chaseFlexPayments: rowTexts.filter((r) => r.includes('Transfer, withdraw')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CHASE_FREEDOM_FLEX))).length,
+      discoverPayments: rowTexts.filter((r) => r.includes('Transfer, withdraw')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.DISCOVER_IT))).length,
+      wellsFargoPlatinumPayments: rowTexts.filter((r) => r.includes('Transfer, withdraw')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.WF_PLATINUM))).length,
     };
   }
 
