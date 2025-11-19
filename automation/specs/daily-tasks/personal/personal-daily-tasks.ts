@@ -1,9 +1,9 @@
-// import { addTransactionToWallet } from './add-transaction-to-wallet';
-// import { addPaymentsToWallet } from './add-payments-to-wallet';
+import { addTransactionToWallet } from './add-transaction-to-wallet';
+import { addPaymentsToWallet } from './add-payments-to-wallet';
 import { PersonalTransactions } from './personal-transactions';
 import { readPersonalEmails } from '../../../utils/notification';
 import { verifyAccountBalance } from './verify-account-balances';
-// import { DailyTaskData } from '../daily-task-data';
+import { DailyTaskData } from '../daily-task-data';
 
 export const runPersonalDailyTask = async () => {
   readPersonalEmails(false);
@@ -15,15 +15,14 @@ export const runPersonalDailyTask = async () => {
   const paymentTransactions = transactions.getPaymentTransactions();
   console.log(`Payment Transactions: ${JSON.stringify(paymentTransactions, null, 4)}`);
 
-  // TODO: add back in once script is updated
-  // if (templateTransactions.length) {
-  //   await addTransactionToWallet(templateTransactions);
-  // }
+  if (templateTransactions.length) {
+    await addTransactionToWallet(templateTransactions);
+  }
 
-  // if (paymentTransactions.length) {
-  //   await addPaymentsToWallet(paymentTransactions);
-  // }
+  if (paymentTransactions.length) {
+    await addPaymentsToWallet(paymentTransactions);
+  }
 
-  // await DailyTaskData.refreshExpectedBalance();
+  await DailyTaskData.refreshExpectedBalance();
   await verifyAccountBalance(transactions.getBalances(), transactions.getBalanceSheet());
 };
