@@ -96,7 +96,6 @@ class AddRecordModal extends Page {
     await this.labelDropdown.click();
     await browser.pause(3000);
     await this.multiOptions[0].click();
-    await this.amountInput.click();
     await browser.pause(3000);
   }
 
@@ -120,8 +119,8 @@ class AddRecordModal extends Page {
     await browser.waitUntil(() => this.toAccountDropdown && this.toAccountDropdown.isClickable());
     await this.toAccountDropdown.click();
     await this.selectOption(toAccount);
-    await this.amountInput.setValue(amount);
     await this.selectLabel();
+    await this.amountInput.setValue(amount);
     const addRecordButton = await this.addButton;
     await this.waitAndClick(addRecordButton);
   }
