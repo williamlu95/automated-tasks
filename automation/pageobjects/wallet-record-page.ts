@@ -67,6 +67,10 @@ class WalletRecordPage extends Page {
     return `${accountName.slice(0, maxLength)}...`;
   }
 
+  private isTransfer(text: string): boolean {
+    return text.includes('Transfer, withdraw') || text.includes('Unknown');
+  }
+
   async getTransactionCounts() {
     await this.navigateToRecords();
 
@@ -84,11 +88,11 @@ class WalletRecordPage extends Page {
       capitalOnePayments: rowTexts.filter((r) => r.includes('Autopay')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X))).length,
       amexGold: rowTexts.filter((r) => r.includes('Autopay')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.AMEX_GOLD))).length,
 
-      citiCustomPayments: rowTexts.filter((r) => r.includes('Transfer, withdraw')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CITI_CUSTOM_CASH))).length,
-      chaseAmazonPayments: rowTexts.filter((r) => r.includes('Transfer, withdraw')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CHASE_AMAZON))).length,
-      chaseFlexPayments: rowTexts.filter((r) => r.includes('Transfer, withdraw')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CHASE_FREEDOM_FLEX))).length,
-      discoverPayments: rowTexts.filter((r) => r.includes('Transfer, withdraw')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.DISCOVER_IT))).length,
-      wellsFargoPlatinumPayments: rowTexts.filter((r) => r.includes('Transfer, withdraw')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.WF_PLATINUM))).length,
+      citiCustomPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CITI_CUSTOM_CASH))).length,
+      chaseAmazonPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CHASE_AMAZON))).length,
+      chaseFlexPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CHASE_FREEDOM_FLEX))).length,
+      discoverPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.DISCOVER_IT))).length,
+      wellsFargoPlatinumPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.WF_PLATINUM))).length,
     };
   }
 

@@ -97,6 +97,7 @@ class AddRecordModal extends Page {
     await browser.pause(3000);
     await this.multiOptions[0].click();
     await this.amountInput.click();
+    await browser.pause(3000);
   }
 
   async addTransfer(fromAccount: string, toAccount: string, amount: number) {
