@@ -89,11 +89,6 @@ export const AUTO_PAY = Object.freeze({
     isTransactionIncluded: isAutoPayTransaction('Directpay Full Balance', DISCOVER_IT),
     transfers: () => WALLET_ACCOUNT.DISCOVER_IT,
   },
-  WELLS_FARGO_PLATINUM: {
-    paymentCountKey: 'wellsFargoPlatinumPayments',
-    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', WELLS_FARGO_PLATINUM),
-    transfers: () => WALLET_ACCOUNT.WF_PLATINUM,
-  },
 });
 
 export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
@@ -125,6 +120,14 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     amount: 26.0,
     day: 21,
     type: TRANSACTION_TYPE.DEBIT,
+  },
+  AMAZON: {
+    identifier: 'Amazon',
+    name: 'Amazon',
+    amount: 7.0,
+    day: 22,
+    type: TRANSACTION_TYPE.DEBIT,
+    validateTransaction: (t) => t.account.includes(WELLS_FARGO_PLATINUM),
   },
   STUDENT_LOAN: {
     identifier: 'Student Loan',

@@ -92,7 +92,6 @@ class WalletRecordPage extends Page {
       chaseAmazonPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CHASE_AMAZON))).length,
       chaseFlexPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CHASE_FREEDOM_FLEX))).length,
       discoverPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.DISCOVER_IT))).length,
-      wellsFargoPlatinumPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.WF_PLATINUM))).length,
     };
   }
 

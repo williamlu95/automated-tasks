@@ -194,6 +194,7 @@ export class PersonalTransactions extends BaseTransactions {
     return [
       ['WF Checking Balance', this.balances[WELLS_FARGO_CHECKING]],
       ['Amex Blue Balance', this.balances[AMEX_BLUE]],
+      ['WF Platinum Balance', this.balances[WELLS_FARGO_PLATINUM]],
     ].map(([name, balance], index) => [name,
       format(today, 'P'),
       balance,
