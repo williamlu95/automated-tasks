@@ -14,7 +14,7 @@ class EmpowerLoginPage extends Page {
   get usernameInput() {
     return $('input[name="usernameInput"]');
   }
-  
+
   get textMeButton() {
     return $('button.button-container');
   }
@@ -67,6 +67,10 @@ class EmpowerLoginPage extends Page {
     return $('button[data-testid="passwordVerificationContinueButton"]');
   }
 
+  get dismissModal() {
+    return $('button[ng-click="bulletinDismiss(bulletin)"]');
+  }
+
   private async completeVerification(readEmails: () => Promise<void>) {
     await browser.waitUntil(() => this.textMeButton && this.textMeButton.isClickable());
     await this.textMeButton.click();
@@ -86,8 +90,8 @@ class EmpowerLoginPage extends Page {
 
     await browser.waitUntil(
       async () => {
-        const currentUrl = await browser.getUrl();
-        return currentUrl.includes('/user/home');
+        const url = await browser.getUrl();
+        return url.includes('/user/home');
       },
     );
   }
@@ -101,12 +105,22 @@ class EmpowerLoginPage extends Page {
     }
   }
 
+  private async dismissBanner() {
+    await browser.pause(5000);
+    const modalExists = await this.dismissModal.isExisting();
+
+    if (modalExists) {
+      await this.dismissModal.click();
+    }
+  }
+
   private async login(username: string, password: string, readEmails: () => Promise<void>) {
     await browser.pause(5000);
     if (!(await this.usernameInput.isExisting()) && !(await this.passwordInput.isExisting())) {
       return;
     }
 
+    await this.dismissBanner();
     await this.acceptCookie();
     await this.usernameInput.setValue(username);
     await this.passwordInput.setValue(password);
