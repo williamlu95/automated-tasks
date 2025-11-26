@@ -4,8 +4,7 @@ const MONTHS_IN_QUARTER = 3;
 
 export const calculateSewerTotalAmount = (total: number, today: DateTime): number => {
   const quarter = today.startOf('quarter').minus({ month: 1 });
-  const monthsSinceQuarter =
-    Math.ceil(today.diff(quarter, ['months']).toObject().months || 0) % MONTHS_IN_QUARTER;
+  const monthsSinceQuarter = Math.ceil(today.diff(quarter, ['months']).toObject().months || 0) % MONTHS_IN_QUARTER;
   const monthlyAmount = total / MONTHS_IN_QUARTER;
 
   if (monthsSinceQuarter === 0) {
@@ -17,7 +16,7 @@ export const calculateSewerTotalAmount = (total: number, today: DateTime): numbe
 
 export const calculateQuarterlyTotalAmountDue = (total: number, today: DateTime): number => {
   const monthsSinceQuarter = Math.ceil(
-    today.diff(today.startOf('quarter'), ['months']).toObject().months || 1
+    today.diff(today.startOf('quarter'), ['months']).toObject().months || 1,
   );
 
   const monthlyAmount = total / MONTHS_IN_QUARTER;
@@ -49,14 +48,19 @@ export const calculateSemiYearlyTotalAmountDue = (total: number, today: DateTime
   return monthlyAmount * monthsSinceSemiYear;
 };
 
-const calculateMonthsSinceYearlyDue = (today: DateTime, originalDueDate: DateTime): number => {
+const calculateMonthsUntilYearlyDue = (today: DateTime, originalDueDate: DateTime): number => {
   const potentialDueDate = originalDueDate.set({ year: today.year });
-  const actualDueDate = potentialDueDate.toMillis() >= today.toMillis() ? potentialDueDate : potentialDueDate.plus({ year: 1 })
+  const actualDueDate = potentialDueDate.toMillis() >= today.toMillis() ? potentialDueDate : potentialDueDate.plus({ year: 1 });
   return Math.ceil(actualDueDate.diff(today, ['months']).toObject().months || 1);
 };
 
 export const calculateYearlyTotalAmountDue = (total: number, today: DateTime, originalDueDate: DateTime): number => {
-  const monthsSinceYear = calculateMonthsSinceYearlyDue(today, originalDueDate);
+  const monthsUntilDueDate = MONTHS_IN_YEAR - calculateMonthsUntilYearlyDue(today, originalDueDate);
+
+  if (monthsUntilDueDate === 0) {
+    return total;
+  }
+
   const monthlyAmount = total / MONTHS_IN_YEAR;
-  return monthlyAmount * monthsSinceYear;
+  return monthlyAmount * monthsUntilDueDate;
 };
