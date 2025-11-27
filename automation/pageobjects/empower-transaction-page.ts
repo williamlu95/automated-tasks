@@ -3,7 +3,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import Page from './page';
 import { downloadDir } from '../utils/file';
-import { TRANSACTION_HEADERS } from '../constants/transaction';
+import { EMPOWER_TRANSACTION_HEADERS } from '../constants/transaction';
 import EmpowerLoginPage from './empower-login-page';
 import { Transaction } from '../types/transaction';
 
@@ -50,7 +50,7 @@ class EmpowerTransactionPage extends Page {
     const transactionFile = await this.getTransactionFile();
     const transactionPath = path.join(downloadDir, transactionFile);
 
-    const transactions: EmpowerTransaction[] = await csv({ headers: TRANSACTION_HEADERS }).fromFile(
+    const transactions: EmpowerTransaction[] = await csv({ headers: EMPOWER_TRANSACTION_HEADERS }).fromFile(
       transactionPath,
     );
 

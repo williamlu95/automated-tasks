@@ -1,7 +1,9 @@
+import { DateTime } from 'luxon';
 import { Transaction } from '../../types/transaction';
 import EmpowerTransactionPage from '../../pageobjects/empower-transaction-page';
 import WalletDashboardPage from '../../pageobjects/wallet-dashboard-page';
 import WalletRecordPage from '../../pageobjects/wallet-record-page';
+import SofiExportTransactionPage from '../../pageobjects/sofi-export-transaction-page';
 
 export class DailyTaskData {
   // eslint-disable-next-line no-use-before-define
@@ -18,10 +20,12 @@ export class DailyTaskData {
   private transactionCounts: Record<string, number> = {};
 
   static async initializeTransactions() {
-    DailyTaskData.instance.transactions = await EmpowerTransactionPage.downloadTransactions();
+    DailyTaskData.instance.transactions = [...await EmpowerTransactionPage.downloadTransactions(), ...await SofiExportTransactionPage.getTransactions()]
+      .sort((a, b) => DateTime.fromFormat(b.date, 'MM/dd/yyyy').toMillis() - DateTime.fromFormat(a.date, 'MM/dd/yyyy').toMillis());
+
     console.log(`Transactions: ${JSON.stringify(DailyTaskData.instance.transactions, null, 4)}`);
 
-    DailyTaskData.instance.actualBalances = await EmpowerTransactionPage.getAllAccountBalances();
+    DailyTaskData.instance.actualBalances = { ...await EmpowerTransactionPage.getAllAccountBalances(), ...await SofiExportTransactionPage.getBalance() };
     console.log(`Actual Balances: ${JSON.stringify(DailyTaskData.instance.actualBalances, null, 4)}`);
 
     DailyTaskData.instance.expectedBalances = await WalletDashboardPage.loginAndGetAllAccountBalances();

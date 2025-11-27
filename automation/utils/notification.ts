@@ -20,6 +20,7 @@ const emailer = nodemailer.createTransport({
 });
 
 export const verificationCodes = {
+  sofi: '',
   empower: '',
   wallet: '',
 };
@@ -69,8 +70,10 @@ const readEmails = (config: imaps.ImapSimpleOptions) => (setVerificationCodes = 
           parts.map((part) => connection.getPartData(message, part).then((partData) => {
             if (part.disposition == null && setVerificationCodes) {
               const text = part.encoding === 'BASE64' ? (Buffer.from(partData, 'base64').toString('ascii')) : partData.replace(/<[^>]*>?/gm, '').replace(/\s/g, '');
+              const sofiVerificationCode = text.match(/LoginCode:(\d+)/)?.[1];
+              verificationCodes.sofi = sofiVerificationCode;
 
-              const empowerVerificationCode = text.match(/device authentication code is (.+)\./)?.[1];            
+              const empowerVerificationCode = text.match(/device authentication code is (.+)\./)?.[1];
               verificationCodes.empower = empowerVerificationCode;
 
               const wallet = partData?.match(/href="https:\/\/web\.budgetbakers\.com\/sso\?ssoToken=(.+)"/)?.[1];

@@ -9,11 +9,15 @@ const { LOG_LEVEL } = process.env;
 
 type WebdriverLogTypes = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'silent';
 
-const DEFAULT_GOOGLE_ARGS = ['user-data-dir=chrome_profile/Default'];
+const DEFAULT_GOOGLE_ARGS: string[] = process.env.CHROME_PROFILE ? [`user-data-dir=${process.env.CHROME_PROFILE}`] : [];
+console.log('DEFAULT_GOOGLE_ARGS :>> ', DEFAULT_GOOGLE_ARGS);
 
 export const config: WebdriverIO.Config = {
   specs: ['./automation/specs/**/*.e2e.ts'],
   suites: {
+    dailyNoProfile: [
+      './automation/specs/daily-tasks/run-with-no-profile.e2e.ts',
+    ],
     daily: [
       './automation/specs/daily-tasks/run.e2e.ts',
     ],
@@ -32,7 +36,7 @@ export const config: WebdriverIO.Config = {
       browserName: 'chrome',
       acceptInsecureCerts: true,
       'goog:chromeOptions': {
-        args: process.env.HEADLESS === 'false' ? DEFAULT_GOOGLE_ARGS : [...DEFAULT_GOOGLE_ARGS, 'headless', '--no-sandbox', 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'],
+        args: process.env.HEADLESS === 'false' ? DEFAULT_GOOGLE_ARGS : [...DEFAULT_GOOGLE_ARGS, 'headless', '--no-sandbox', 'user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36'],
         prefs: {
           directory_upgrade: true,
           prompt_for_download: false,

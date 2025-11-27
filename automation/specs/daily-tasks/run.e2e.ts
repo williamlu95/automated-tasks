@@ -1,17 +1,8 @@
+import { timeFn } from '../../utils/fn-timer';
 import { DailyTaskData } from './daily-task-data';
 import { runJointDailyTasks } from './joint/joint-daily-tasks';
 import { runMotherDailyTasks } from './mother/mother-daily-tasks';
 import { runPersonalDailyTask } from './personal/personal-daily-tasks';
-
-const timeFn = async (fn: () => Promise<void>, name: string) => {
-  const startTime = Date.now();
-  console.log(name);
-
-  await fn();
-
-  const endTime = Date.now();
-  console.log(`${name} took ${(endTime - startTime) / 1000} seconds`);
-};
 
 describe('Run daily tasks', () => {
   before(async () => {
