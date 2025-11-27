@@ -10,7 +10,6 @@ const { LOG_LEVEL } = process.env;
 type WebdriverLogTypes = 'trace' | 'debug' | 'info' | 'warn' | 'error' | 'silent';
 
 const DEFAULT_GOOGLE_ARGS: string[] = process.env.CHROME_PROFILE ? [`user-data-dir=${process.env.CHROME_PROFILE}`] : [];
-console.log('DEFAULT_GOOGLE_ARGS :>> ', DEFAULT_GOOGLE_ARGS);
 
 export const config: WebdriverIO.Config = {
   specs: ['./automation/specs/**/*.e2e.ts'],
