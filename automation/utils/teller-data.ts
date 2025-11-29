@@ -89,7 +89,7 @@ export class TellerData {
       console.log(`Recieved ${transactions.length} transactions`);
       await this.wait(DEFAULT_WAIT_TIME);
       const isCheckingAccount = CHECKING_ACCOUNTS.includes(account);
-      const amount = balance.available || '0';
+      const amount = isCheckingAccount ? balance.available || '0' : balance.ledger || '0';
       const balanceAmount = isCheckingAccount ? amount : `-${amount}`;
       this.balances[account] = formatToDollars(balanceAmount);
       this.transactions = this.transactions.concat(transactions.map((t) => ({
