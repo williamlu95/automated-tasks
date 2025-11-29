@@ -1,4 +1,4 @@
-import * as csv from 'csvtojson';
+import csv from 'csvtojson';
 import * as fs from 'fs';
 import * as path from 'path';
 import { DateTime } from 'luxon';

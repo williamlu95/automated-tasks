@@ -19,6 +19,7 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "allowSyntheticDefaultImports":  true,
-        "allowJs": true
+        "allowJs": true,
+        "esModuleInterop": true
     }
 }

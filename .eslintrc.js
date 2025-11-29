@@ -49,5 +49,6 @@ module.exports = {
     'no-case-declarations': 'off',
     'implicit-arrow-line-break': 'off',
     'max-len': 'off',
+    'import/no-extraneous-dependencies': 'off',
   },
 };
