@@ -11,7 +11,7 @@ export const TRANSACTION_TYPE = {
 export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
   MOTHER_SALARY: {
     identifier: "Mother's Salary",
-    name: 'Unitedhealth Group',
+    name: 'United HealthCar',
     amount: 450.0,
     day: '0',
     days: getBiweeklyPayDaysForMonths(new Date('09/29/23')),
@@ -19,7 +19,7 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
   },
   FATHER_SSDI: {
     identifier: "Father's SSDI",
-    name: 'Social Security Administration',
+    name: 'SSA TREAS',
     amount: 2018.1,
     day: getSecondWednesday(),
     days: getSecondWednesdayForMonths(),
@@ -30,7 +30,7 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
 export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   UTILITIES: {
     identifier: 'Utilities',
-    name: 'City Of North Las Vegas',
+    name: 'CNLV UTILITIES',
     amount: 121.0,
     day: 2,
     type: TRANSACTION_TYPE.EXPENSE,
@@ -65,7 +65,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   },
   MORTGAGE: {
     identifier: 'Mortgage',
-    name: 'Us Bank',
+    name: 'US BANK HOME MTG',
     amount: 1540.0,
     day: 15,
     type: TRANSACTION_TYPE.EXPENSE,
@@ -87,7 +87,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   },
   INTERNET: {
     identifier: 'Cox Cable',
-    name: 'Cox Communications',
+    name: 'COX LAS VEGAS',
     amount: 107.0,
     day: 18,
     type: TRANSACTION_TYPE.EXPENSE,
@@ -101,7 +101,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   },
   HOME_EQUITY_LOAN: {
     identifier: 'Home Equity Loan',
-    name: 'Us Bank',
+    name: 'USBANK HOME MTG',
     amount: 409.0,
     day: 28,
     type: TRANSACTION_TYPE.EXPENSE,
