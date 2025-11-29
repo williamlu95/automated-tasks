@@ -47,8 +47,9 @@ export class TellerData {
 
       await this.wait(DEFAULT_WAIT_TIME);
       await this.initBalancesAndTransactions(token, accountToTellerAccount);
-      this.saveResults();
     }
+
+    this.saveResults();
   }
 
   async initializeFromLocal() {
