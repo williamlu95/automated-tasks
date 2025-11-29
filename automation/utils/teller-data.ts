@@ -86,7 +86,7 @@ export class TellerData {
       await this.wait(DEFAULT_WAIT_TIME);
       this.balances[account] = formatToDollars(balance.ledger || '0');
       this.transactions = this.transactions.concat(transactions.map((t) => ({
-        date: DateTime.fromISO(t.date).toFormat('MM/dd/yyyy'),
+        date: t.date,
         account,
         description: t.description,
         amount: t.amount,

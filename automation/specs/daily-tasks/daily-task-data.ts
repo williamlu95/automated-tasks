@@ -24,7 +24,7 @@ export class DailyTaskData {
     await tellerAggregator.initializeFromLocal();
 
     DailyTaskData.instance.transactions = [...tellerAggregator.getTransactions(), ...await SofiExportTransactionPage.getTransactions()]
-      .sort((a, b) => DateTime.fromFormat(b.date, 'MM/dd/yyyy').toMillis() - DateTime.fromFormat(a.date, 'MM/dd/yyyy').toMillis());
+      .sort((a, b) => DateTime.fromISO(b.date).toMillis() - DateTime.fromISO(a.date).toMillis());
     console.log(`Transactions: ${JSON.stringify(DailyTaskData.instance.transactions, null, 4)}`);
 
     DailyTaskData.instance.actualBalances = { ...tellerAggregator.getBalances(), ...await SofiExportTransactionPage.getBalance() };
