@@ -2,7 +2,11 @@ import csv from 'csvtojson';
 import fs from 'fs';
 import { DateTime } from 'luxon';
 import {
-  getAccountBalance, getAccounts, getTransactions, TOKEN_TO_ACCOUNTS,
+  CHECKING_ACCOUNTS,
+  getAccountBalance,
+  getAccounts,
+  getTransactions,
+  TOKEN_TO_ACCOUNTS,
 } from './teller';
 import { Transaction } from '../types/transaction';
 import { formatToDollars } from './currency-formatter';
@@ -84,7 +88,10 @@ export class TellerData {
       const transactions = await getTransactions(token, tellerAccount, DateTime.now().minus({ month: 1 }).set({ day: 1 }).toISODate());
       console.log(`Recieved ${transactions.length} transactions`);
       await this.wait(DEFAULT_WAIT_TIME);
-      this.balances[account] = formatToDollars(balance.ledger || '0');
+      const isCheckingAccount = CHECKING_ACCOUNTS.includes(account);
+      const amount = balance.ledger || '0';
+      const balanceAmount = isCheckingAccount ? amount : `-${amount}`;
+      this.balances[account] = formatToDollars(balanceAmount);
       this.transactions = this.transactions.concat(transactions.map((t) => ({
         date: t.date,
         account,

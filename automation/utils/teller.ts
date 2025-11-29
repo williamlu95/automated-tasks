@@ -77,3 +77,5 @@ export const TOKEN_TO_ACCOUNTS: Record<string, string[]> = Object.freeze({
   [MOTHER_WF_TOKEN]: [MOTHERS_WF],
   [MOTHER_CITI_TOKEN]: [MOTHERS_CITI],
 });
+
+export const CHECKING_ACCOUNTS = Object.freeze([CHASE_CHECKING, WELLS_FARGO_CHECKING, MOTHERS_WF]);

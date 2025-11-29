@@ -18,11 +18,11 @@ export const FOOD_BUDGET = 600;
 export const ADDITIONAL_SAVINGS = 0.0;
 
 export const CREDIT_CARD_BILL = {
-  WATER_BILL: 'Las Vegas Valley Water District',
+  WATER_BILL: 'LASVEGASVALLEYWATER',
   SEWER_BILL: 'City Of Las Vegas',
   UFC_FIT: 'Ufc Gym',
   CAR_INSURANCE_BILL: 'Geico',
-  INTERNET_BILL: 'Cox Communications',
+  INTERNET_BILL: 'Cox Las Vegas',
   TRASH_BILL: 'Republic Services',
   SPOTIFY: 'Spotify',
 };
