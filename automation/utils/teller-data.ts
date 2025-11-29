@@ -32,6 +32,12 @@ export class TellerData {
   }
 
   async initializeFromApi() {
+    try {
+      await this.initializeFromLocal();
+    } catch (err) {
+      console.warn('Could not initialize from local, starting from empty state.');
+    }
+
     const tokenEntries = Object.entries(TOKEN_TO_ACCOUNTS);
     for (const tokenEntry of tokenEntries) {
       const [token, accounts] = tokenEntry;
@@ -93,6 +99,7 @@ export class TellerData {
       const amount = isCheckingAccount ? balance.available || '0' : balance.ledger || '0';
       const balanceAmount = isCheckingAccount ? amount : `-${amount}`;
       this.balances[account] = formatToDollars(balanceAmount);
+      this.transactions = this.transactions.filter((t) => t.account !== account);
       this.transactions = this.transactions.concat(transactions.map((t) => ({
         date: t.date,
         account,

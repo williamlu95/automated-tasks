@@ -68,7 +68,7 @@ export const getTransactions = async (token: string, accountId: string, startDat
   }
 };
 
-export const TOKEN_TO_ACCOUNTS: Record<string, string[]> = Object.freeze({
+export const TOKEN_TO_ACCOUNTS: Record<string, string[]> = Object.fromEntries(Object.entries({
   [CHASE_TOKEN]: [CHASE_CHECKING, CHASE_FREEDOM_FLEX, CHASE_AMAZON, CHASE_FREEDOM_UNLIMITED, CHASE_SAPPHIRE_PREFERRED, JOINT_BILL],
   [CAPITAL_ONE_TOKEN]: [CAPITAL_ONE_VENTURE_X],
   [AMEX_TOKEN]: [AMEX_GOLD, AMEX_BLUE],
@@ -76,6 +76,6 @@ export const TOKEN_TO_ACCOUNTS: Record<string, string[]> = Object.freeze({
   [PERSONAL_CITI_TOKEN]: [CITI_CUSTOM_CASH, CITI_DOUBLE_CASH, CITI_PREMIER],
   [MOTHER_WF_TOKEN]: [MOTHERS_WF],
   [MOTHER_CITI_TOKEN]: [MOTHERS_CITI],
-});
+}).filter(([key]) => key));
 
 export const CHECKING_ACCOUNTS = Object.freeze([CHASE_CHECKING, WELLS_FARGO_CHECKING, MOTHERS_WF]);
