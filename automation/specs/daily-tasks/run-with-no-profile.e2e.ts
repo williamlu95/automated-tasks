@@ -2,7 +2,14 @@ import SofiExportTransactionPage from '../../pageobjects/sofi-export-transaction
 import { timeFn } from '../../utils/fn-timer';
 import { TellerData } from '../../utils/teller-data';
 
+const { SKIP_SOFI_SYNC } = process.env;
+
 const downloadSofiTransactions = async () => {
+  if (SKIP_SOFI_SYNC === 'true') {
+    console.log('Skipping Sofi sync');
+    return;
+  }
+
   await SofiExportTransactionPage.downloadTransactions();
 };
 
