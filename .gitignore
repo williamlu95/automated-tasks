@@ -8,3 +8,4 @@ chrome_profile
 sofi-transactions.csv
 teller-transactions.csv
 teller-balances.json
+last-sync.json

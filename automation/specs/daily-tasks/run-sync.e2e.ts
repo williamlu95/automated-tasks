@@ -1,5 +1,6 @@
 import SofiExportTransactionPage from '../../pageobjects/sofi-export-transaction-page';
 import { timeFn } from '../../utils/fn-timer';
+import { LastSync } from '../../utils/last-sync';
 import { TellerData } from '../../utils/teller-data';
 
 const { SKIP_SOFI_SYNC } = process.env;
@@ -11,10 +12,12 @@ const downloadSofiTransactions = async () => {
   }
 
   await SofiExportTransactionPage.downloadTransactions();
+  await LastSync.updateLastSyncDate('sofi', Date.now());
 };
 
 const downloadTellerData = async () => {
   await new TellerData().initializeFromApi();
+  await LastSync.updateLastSyncDate('teller', Date.now());
 };
 
 describe('Run daily tasks without chrome profile', () => {
