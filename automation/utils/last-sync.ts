@@ -5,6 +5,7 @@ import { replaceSheetData } from './google-sheets';
 type LastSyncDate = {
     sofi: number | null;
     teller: number |null;
+    wallet: number |null;
 }
 
 const formatDate = (value: null | number): string => {
@@ -28,11 +29,11 @@ export class LastSync {
       this.lastSyncDate = JSON.parse(fs.readFileSync(FILE_LOCATION).toString());
     } catch (err) {
       console.error('Could not read from permanent file starting from empty state', err);
-      this.lastSyncDate = { sofi: null, teller: null };
+      this.lastSyncDate = { sofi: null, teller: null, wallet: null };
     }
   }
 
-  public static async updateLastSyncDate(key: 'sofi' | 'teller', dateInMs: number) {
+  public static async updateLastSyncDate(key: 'sofi' | 'teller' | 'wallet', dateInMs: number) {
     this.instance.lastSyncDate[key] = dateInMs;
     fs.writeFileSync(FILE_LOCATION, JSON.stringify(this.instance.lastSyncDate, null, 4), 'utf8');
     await replaceSheetData('Last Sync', this.getLastSyncSheetData());
