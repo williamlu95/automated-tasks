@@ -24,7 +24,7 @@
     "scripts": {
         "wdio": "wdio run wdio.conf.ts",
         "wdio:daily": "CHROME_PROFILE=chrome_profile/Default wdio run wdio.conf.ts --suite daily",
-        "wdio:daily:no-profile": "wdio run wdio.conf.ts --suite dailyNoProfile"
+        "wdio:daily:sync": "wdio run wdio.conf.ts --suite dailySync"
     },
     "dependencies": {
         "axios": "^1.13.2",

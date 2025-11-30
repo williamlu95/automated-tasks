@@ -9,7 +9,6 @@ const {
   CITI_CUSTOM_CASH = '',
   CHASE_FREEDOM_FLEX = '',
   CHASE_AMAZON = '',
-  DISCOVER_IT = '',
   WELLS_FARGO_PLATINUM = '',
   AMEX_GOLD = '',
 } = process.env;
@@ -86,7 +85,7 @@ export const AUTO_PAY = Object.freeze({
   },
   DISCOVER: {
     paymentCountKey: 'discoverPayments',
-    isTransactionIncluded: isAutoPayTransaction('Directpay Full Balance', DISCOVER_IT),
+    isTransactionIncluded: isAutoPayTransaction('DISCOVER E-PAYMENT'),
     transfers: () => WALLET_ACCOUNT.DISCOVER_IT,
   },
 });

@@ -14,9 +14,11 @@ const DEFAULT_GOOGLE_ARGS: string[] = process.env.CHROME_PROFILE ? [`user-data-d
 export const config: WebdriverIO.Config = {
   specs: ['./automation/specs/**/*.e2e.ts'],
   suites: {
-    dailyNoProfile: [
-      './automation/specs/daily-tasks/run-with-no-profile.e2e.ts',
+    // Tasks to sync data with external sources
+    dailySync: [
+      './automation/specs/daily-tasks/run-sync.e2e.ts',
     ],
+    // Tasks to do things that would've been done manually
     daily: [
       './automation/specs/daily-tasks/run.e2e.ts',
     ],
