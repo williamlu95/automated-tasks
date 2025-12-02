@@ -139,4 +139,11 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
       return transactionDate.day >= 20 && transactionDate.month === DateTime.now().month;
     },
   },
+  ATLAS_COFFEE: {
+    identifier: 'Atlas Coffee',
+    name: 'Atlas Coffee',
+    amount: 37.0,
+    day: 28,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
 });
