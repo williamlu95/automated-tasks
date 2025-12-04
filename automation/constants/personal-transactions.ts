@@ -54,7 +54,7 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     template: 'Venture X',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'capitalOnePayments',
-    isTransactionIncluded: (t: Transaction) => includesName(t.description, 'Capital One') && t.account.includes(CAPITAL_ONE_VENTURE_X),
+    isTransactionIncluded: (t: Transaction) => includesName(t.description, 'Capital One Mobile') && t.account.includes(CAPITAL_ONE_VENTURE_X),
   },
   AMEX_GOLD: {
     walletAccountName: WALLET_ACCOUNT.AMEX_GOLD,
