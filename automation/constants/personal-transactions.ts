@@ -58,7 +58,7 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
   },
   AMEX_GOLD: {
     walletAccountName: WALLET_ACCOUNT.AMEX_GOLD,
-    template: 'Amex Gold',
+    template: 'AUTOPAY PAYMENT',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'amexGold',
     isTransactionIncluded: (t: Transaction) => includesName(t.description, 'Autopay Payment') && t.account.includes(AMEX_GOLD),
