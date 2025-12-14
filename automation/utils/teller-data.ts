@@ -7,6 +7,7 @@ import {
   getAccounts,
   getTransactions,
   TOKEN_TO_ACCOUNTS,
+  TOKEN_TO_BANK,
 } from './teller';
 import { Transaction } from '../types/transaction';
 import { formatToDollars } from './currency-formatter';
@@ -20,9 +21,13 @@ export class TellerData {
 
   private static BALANCE_FILE_LOCATION = './teller-balances.json';
 
+  private static ENROLLMENT_FILE_LOCATION = './teller-enrollments.json';
+
   private balances: Record<string, string> = {};
 
   private transactions: Transaction[] = [];
+
+  private enrollments: Record<string, string> = {};
 
   // We want to add waits because Teller is secretive with rate limiting. To avoid 429's we just make requests very slowly
   private wait(milliseconds: number): Promise<void> {
@@ -51,6 +56,10 @@ export class TellerData {
         throw Error(`The following accounts are missing from the teller accounts API: ${isMissingTellerAccount.join(', ')}`);
       }
 
+      const [firstAccount] = tellerAccounts;
+      const enrollmentId = firstAccount?.enrollment_id || '';
+      const bankName = TOKEN_TO_BANK[token];
+      this.enrollments[bankName] = enrollmentId;
       await this.wait(DEFAULT_WAIT_TIME);
       await this.initBalancesAndTransactions(token, accountToTellerAccount);
     }
@@ -72,6 +81,7 @@ export class TellerData {
 
   private saveResults() {
     fs.writeFileSync(TellerData.BALANCE_FILE_LOCATION, JSON.stringify(this.balances, null, 4), 'utf8');
+    fs.writeFileSync(TellerData.ENROLLMENT_FILE_LOCATION, JSON.stringify(this.enrollments, null, 4), 'utf8');
 
     const csvContent = [`${CSV_HEADERS.join(',')}`];
 

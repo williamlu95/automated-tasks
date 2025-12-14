@@ -78,4 +78,14 @@ export const TOKEN_TO_ACCOUNTS: Record<string, string[]> = Object.fromEntries(Ob
   [MOTHER_CITI_TOKEN]: [MOTHERS_CITI],
 }).filter(([key]) => key));
 
+export const TOKEN_TO_BANK: Record<string, string> = Object.freeze({
+  [CHASE_TOKEN]: 'Chase (Personal)',
+  [CAPITAL_ONE_TOKEN]: 'Capital One (Personal)',
+  [AMEX_TOKEN]: 'American Express (Personal)',
+  [PERSONAL_WF_TOKEN]: 'Wells Fargo (Personal)',
+  [PERSONAL_CITI_TOKEN]: 'Citi (Personal)',
+  [MOTHER_WF_TOKEN]: 'Wells Fargo (Mother)',
+  [MOTHER_CITI_TOKEN]: 'Citi (Mother)',
+});
+
 export const CHECKING_ACCOUNTS = Object.freeze([CHASE_CHECKING, WELLS_FARGO_CHECKING, MOTHERS_WF]);
