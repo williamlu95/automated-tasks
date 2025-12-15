@@ -50,5 +50,6 @@ module.exports = {
     'implicit-arrow-line-break': 'off',
     'max-len': 'off',
     'import/no-extraneous-dependencies': 'off',
+    'no-shadow': 'off',
   },
 };

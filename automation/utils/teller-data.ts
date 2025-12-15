@@ -11,10 +11,16 @@ import {
 } from './teller';
 import { Transaction } from '../types/transaction';
 import { formatToDollars } from './currency-formatter';
+import { sendEmail } from './notification';
 
 const DEFAULT_WAIT_TIME = 5000;
 
 const CSV_HEADERS = ['date', 'account', 'description', 'amount'];
+
+enum EnrollmentStatus {
+  OK = 'ok',
+  UNHEALTHY = 'unhealthy'
+}
 
 export class TellerData {
   private static TRANSACTION_FILE_LOCATION = './teller-transactions.csv';
@@ -27,7 +33,7 @@ export class TellerData {
 
   private transactions: Transaction[] = [];
 
-  private enrollments: Record<string, string> = {};
+  private enrollments: Record<string, {id: string, status: EnrollmentStatus }> = {};
 
   // We want to add waits because Teller is secretive with rate limiting. To avoid 429's we just make requests very slowly
   private wait(milliseconds: number): Promise<void> {
@@ -46,30 +52,48 @@ export class TellerData {
     const tokenEntries = Object.entries(TOKEN_TO_ACCOUNTS);
     for (const tokenEntry of tokenEntries) {
       const [token, accounts] = tokenEntry;
-      console.log(`Fetching accounts for token: ${token}`);
-      const tellerAccounts = await getAccounts(token);
-      const accountToTellerAccount = Object.fromEntries(tellerAccounts.map((ta) => [ta.last_four, ta.id]));
-      console.log(`Receieved Accounts: ${tellerAccounts.map((ta) => ta.last_four).join(', ')}`);
-      const isMissingTellerAccount = accounts.filter((account) => !accountToTellerAccount[account]);
+      try {
+        console.log(`Fetching accounts for token: ${token}`);
+        const tellerAccounts = await getAccounts(token);
+        const accountToTellerAccount = Object.fromEntries(tellerAccounts.map((ta) => [ta.last_four, ta.id]));
+        console.log(`Receieved Accounts: ${tellerAccounts.map((ta) => ta.last_four).join(', ')}`);
+        const isMissingTellerAccount = accounts.filter((account) => !accountToTellerAccount[account]);
 
-      if (isMissingTellerAccount.length > 0) {
-        throw Error(`The following accounts are missing from the teller accounts API: ${isMissingTellerAccount.join(', ')}`);
+        if (isMissingTellerAccount.length > 0) {
+          throw Error(`The following accounts are missing from the teller accounts API: ${isMissingTellerAccount.join(', ')}`);
+        }
+
+        await this.wait(DEFAULT_WAIT_TIME);
+        await this.initBalancesAndTransactions(token, accountToTellerAccount);
+
+        const [firstAccount] = tellerAccounts;
+        const enrollmentId = firstAccount?.enrollment_id || '';
+        const bankName = TOKEN_TO_BANK[token];
+        this.enrollments[bankName] = { id: enrollmentId, status: EnrollmentStatus.OK };
+      } catch (err) {
+        console.error(`Intialization failed for token ${token}`, err);
+        const bankName = TOKEN_TO_BANK[token];
+        if (this.enrollments[bankName]) {
+          this.enrollments[bankName].status = EnrollmentStatus.UNHEALTHY;
+        }
       }
-
-      const [firstAccount] = tellerAccounts;
-      const enrollmentId = firstAccount?.enrollment_id || '';
-      const bankName = TOKEN_TO_BANK[token];
-      this.enrollments[bankName] = enrollmentId;
-      await this.wait(DEFAULT_WAIT_TIME);
-      await this.initBalancesAndTransactions(token, accountToTellerAccount);
     }
 
     this.saveResults();
+
+    const failedAccounts = Object.entries(this.enrollments).filter((e) => e[1].status === EnrollmentStatus.UNHEALTHY).map((e) => e[0]);
+    if (failedAccounts.length > 0) {
+      await sendEmail({
+        subject: 'ACTION REQUIRED: Fix Unhealthy Accounts',
+        html: `<h1><strong>The following accounts are unhealthy, please fix the connection in the Teller Console: </strong><ul>${failedAccounts.map((a) => `<li>${a}</li>`).join('')}</ul></h1>`,
+      });
+    }
   }
 
   async initializeFromLocal() {
     try {
       this.balances = JSON.parse(fs.readFileSync(TellerData.BALANCE_FILE_LOCATION).toString());
+      this.enrollments = JSON.parse(fs.readFileSync(TellerData.ENROLLMENT_FILE_LOCATION).toString());
       this.transactions = await csv({ headers: CSV_HEADERS }).fromFile(
         TellerData.TRANSACTION_FILE_LOCATION,
       );
