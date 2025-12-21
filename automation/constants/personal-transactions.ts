@@ -7,7 +7,6 @@ const {
   CHASE_CHECKING = '',
   CAPITAL_ONE_VENTURE_X = '',
   CITI_CUSTOM_CASH = '',
-  CHASE_FREEDOM_FLEX = '',
   CHASE_AMAZON = '',
   WELLS_FARGO_PLATINUM = '',
   AMEX_GOLD = '',
