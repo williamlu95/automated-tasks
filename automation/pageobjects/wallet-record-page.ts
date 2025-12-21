@@ -90,7 +90,6 @@ class WalletRecordPage extends Page {
 
       citiCustomPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CITI_CUSTOM_CASH))).length,
       chaseAmazonPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CHASE_AMAZON))).length,
-      chaseFlexPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CHASE_FREEDOM_FLEX))).length,
       discoverPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.DISCOVER_IT))).length,
     };
   }

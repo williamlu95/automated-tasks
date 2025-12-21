@@ -73,11 +73,6 @@ export const AUTO_PAY = Object.freeze({
     isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_AMAZON),
     transfers: () => WALLET_ACCOUNT.CHASE_AMAZON,
   },
-  CHASE_FREEDOM_FLEX: {
-    paymentCountKey: 'chaseFlexPayments',
-    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_FREEDOM_FLEX),
-    transfers: () => WALLET_ACCOUNT.CHASE_FREEDOM_FLEX,
-  },
   CITI_CUSTOM: {
     paymentCountKey: 'citiCustomPayments',
     isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_CUSTOM_CASH),
