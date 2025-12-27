@@ -99,7 +99,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   TMOBILE: {
     identifier: 'T-Mobile',
     name: 'T-mobile',
-    amount: 241.0,
+    amount: 227.0,
     day: 15,
     type: TRANSACTION_TYPE.DEBIT,
     validateTransaction: (t) => {
