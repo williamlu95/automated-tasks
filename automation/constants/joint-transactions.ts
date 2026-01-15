@@ -146,6 +146,13 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     day: 20,
     type: TRANSACTION_TYPE.EXPENSE,
   },
+  HULU: {
+    identifier: 'Hulu',
+    name: 'Hulu',
+    amount: 26.0,
+    day: 21,
+    type: TRANSACTION_TYPE.EXPENSE,
+  },
 });
 
 export const EXPENSE: Record<string, ExpectedTransaction> = generateExpenseForDate(DateTime.now());

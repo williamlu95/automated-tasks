@@ -107,13 +107,6 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
       return date.day >= 15 && date.month === DateTime.now().month;
     },
   },
-  HULU: {
-    identifier: 'Hulu',
-    name: 'Hulu',
-    amount: 26.0,
-    day: 21,
-    type: TRANSACTION_TYPE.DEBIT,
-  },
   AMAZON: {
     identifier: 'Amazon',
     name: 'Amazon',
@@ -132,12 +125,5 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
       const transactionDate = DateTime.fromISO(t.date);
       return transactionDate.day >= 20 && transactionDate.month === DateTime.now().month;
     },
-  },
-  ATLAS_COFFEE: {
-    identifier: 'Atlas Coffee',
-    name: 'Atlas Coffee',
-    amount: 37.0,
-    day: 28,
-    type: TRANSACTION_TYPE.DEBIT,
   },
 });

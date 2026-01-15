@@ -29,7 +29,6 @@ const {
   CHASE_AMAZON = '',
   WELLS_FARGO_CHECKING = '',
   WELLS_FARGO_PLATINUM = '',
-  AMEX_BLUE = '',
   AMEX_GOLD = '',
 } = process.env;
 
@@ -42,7 +41,6 @@ const INCLUDED_TRANSACTIONS = [
   CHASE_AMAZON,
   WELLS_FARGO_CHECKING,
   WELLS_FARGO_PLATINUM,
-  AMEX_BLUE,
   AMEX_GOLD,
 ];
 
@@ -193,7 +191,6 @@ export class PersonalTransactions extends BaseTransactions {
     const today = new Date();
     return [
       ['WF Checking Balance', this.balances[WELLS_FARGO_CHECKING]],
-      ['Amex Blue Balance', this.balances[AMEX_BLUE]],
       ['WF Platinum Balance', this.balances[WELLS_FARGO_PLATINUM]],
       ['Chase Freedom Flex Balance', this.balances[CHASE_FREEDOM_FLEX]],
     ].map(([name, balance], index) => [name,

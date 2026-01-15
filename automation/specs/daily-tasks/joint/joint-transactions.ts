@@ -21,11 +21,12 @@ const {
   JOINT_FOOD = '',
   JOINT_MISC = '',
   JOINT_BILL = '',
+  AMEX_BLUE = '',
   CHASE_SAPPHIRE_PREFERRED = '',
-  WELLS_FARGO_ACTIVE_CASH = '',
   CITI_DOUBLE_CASH = '',
   CITI_PREMIER = '',
   CHASE_FREEDOM_UNLIMITED = '',
+  WELLS_FARGO_ACTIVE_CASH = '',
   WELLS_FARGO_AUTOGRAPH = '',
 } = process.env;
 
@@ -34,6 +35,7 @@ const INCLUDED_TRANSACTIONS = [
   JOINT_FOOD,
   JOINT_MISC,
   JOINT_BILL,
+  AMEX_BLUE,
   CHASE_SAPPHIRE_PREFERRED,
   WELLS_FARGO_ACTIVE_CASH,
   CITI_DOUBLE_CASH,
@@ -150,6 +152,7 @@ export class JointTransactions extends BaseTransactions {
     return [
       ['Joint Account Balance', this.actualBalances[JOINT_SOFI]],
       ['Pending Transactions', this.expectedBalances['Pending Transactions']],
+      ['Bill Balance (AMEX Blue)', this.actualBalances[AMEX_BLUE]],
       ['Bill Balance (Marriott Bold)', this.actualBalances[JOINT_BILL]],
       ['Bill Balance (Chase Sapphire Preferred)', this.actualBalances[CHASE_SAPPHIRE_PREFERRED]],
       ['Bill Balance (Chase Freedom Unlimited)', this.actualBalances[CHASE_FREEDOM_UNLIMITED]],
