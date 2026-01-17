@@ -17,7 +17,9 @@ class WalletRecordPage extends Page {
   }
 
   get transactionTypes() {
-    return $$('div.grid-cols-record-row-withCheckbox > div.flex.items-center.gap-3');
+    return $$(
+      'div.grid-cols-record-row-withCheckbox > div.flex.items-center.gap-3',
+    );
   }
 
   get transferNames() {
@@ -25,7 +27,9 @@ class WalletRecordPage extends Page {
   }
 
   get amounts() {
-    return $$('div.grid-cols-record-row-withCheckbox > div.flex.items-center.justify-end.gap-2 > div > p');
+    return $$(
+      'div.grid-cols-record-row-withCheckbox > div.flex.items-center.justify-end.gap-2 > div > p',
+    );
   }
 
   get ellipsis() {
@@ -85,12 +89,29 @@ class WalletRecordPage extends Page {
 
     return {
       chaseIncome: rowTexts.filter((r) => r.includes('Income')).length,
-      capitalOnePayments: rowTexts.filter((r) => r.includes('Autopay')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X))).length,
-      amexGold: rowTexts.filter((r) => r.includes('Autopay')).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.AMEX_GOLD))).length,
+      capitalOnePayments: rowTexts
+        .filter((r) => r.includes('Autopay'))
+        .filter((r) => r.includes(
+          this.truncateAccountName(WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X),
+        )).length,
+      amexGold: rowTexts
+        .filter((r) => r.includes('Autopay'))
+        .filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.AMEX_GOLD))).length,
 
-      citiCustomPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CITI_CUSTOM_CASH))).length,
-      chaseAmazonPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CHASE_AMAZON))).length,
-      discoverPayments: rowTexts.filter(this.isTransfer).filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.DISCOVER_IT))).length,
+      citiCustomPayments: rowTexts
+        .filter(this.isTransfer)
+        .filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CITI_CUSTOM_CASH))).length,
+      chaseAmazonPayments: rowTexts
+        .filter(this.isTransfer)
+        .filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CHASE_AMAZON))).length,
+      chaseFlexPayments: rowTexts
+        .filter(this.isTransfer)
+        .filter((r) => r.includes(
+          this.truncateAccountName(WALLET_ACCOUNT.CHASE_FREEDOM_FLEX),
+        )).length,
+      discoverPayments: rowTexts
+        .filter(this.isTransfer)
+        .filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.DISCOVER_IT))).length,
     };
   }
 
@@ -105,7 +126,10 @@ class WalletRecordPage extends Page {
 
     const amounts = await this.amounts;
     const amountsText = await Promise.all(amounts.map((a) => a.getText()));
-    return amountsText.reduce((total, amount) => total + formatFromDollars(amount), 0);
+    return amountsText.reduce(
+      (total, amount) => total + formatFromDollars(amount),
+      0,
+    );
   }
 
   async getPendingTransactions() {
@@ -127,7 +151,10 @@ class WalletRecordPage extends Page {
       datesText.push(date);
     }
 
-    return datesText.map((date, index) => ({ date, amount: formatFromDollars(amountsText[index]) }));
+    return datesText.map((date, index) => ({
+      date,
+      amount: formatFromDollars(amountsText[index]),
+    }));
   }
 
   async removeRecord(index: number) {

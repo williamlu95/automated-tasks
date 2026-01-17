@@ -1,10 +1,15 @@
 import { DateTime } from 'luxon';
-import { ExpectedJointTransaction, ExpectedTransaction, Transaction } from '../types/transaction';
+import {
+  ExpectedJointTransaction,
+  ExpectedTransaction,
+  Transaction,
+} from '../types/transaction';
 import { getSemiMonthylPayDaysForMonths } from '../utils/date-formatters';
 import { includesName } from '../utils/includes-name';
 
 const {
   CHASE_CHECKING = '',
+  CHASE_FREEDOM_FLEX = '',
   CAPITAL_ONE_VENTURE_X = '',
   CITI_CUSTOM_CASH = '',
   CHASE_AMAZON = '',
@@ -46,21 +51,24 @@ export const TEMPLATE_TRANSACTION = Object.freeze({
     template: 'Chase Income',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'chaseIncome',
-    isTransactionIncluded: (t: Transaction) => includesName(t.description, INCOME_NAME) && t.account?.endsWith(CHASE_CHECKING),
+    isTransactionIncluded: (t: Transaction) => includesName(t.description, INCOME_NAME)
+      && t.account?.endsWith(CHASE_CHECKING),
   },
   VENTURE_X: {
     walletAccountName: WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X,
     template: 'Venture X',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'capitalOnePayments',
-    isTransactionIncluded: (t: Transaction) => includesName(t.description, 'Capital One Autopay') && t.account.includes(CAPITAL_ONE_VENTURE_X),
+    isTransactionIncluded: (t: Transaction) => includesName(t.description, 'Capital One Autopay')
+      && t.account.includes(CAPITAL_ONE_VENTURE_X),
   },
   AMEX_GOLD: {
     walletAccountName: WALLET_ACCOUNT.AMEX_GOLD,
     template: 'Amex Gold',
     type: TRANSACTION_TYPE.CREDIT,
     transactionCountKey: 'amexGold',
-    isTransactionIncluded: (t: Transaction) => includesName(t.description, 'AUTOPAY PAYMENT') && t.account.includes(AMEX_GOLD),
+    isTransactionIncluded: (t: Transaction) => includesName(t.description, 'AUTOPAY PAYMENT')
+      && t.account.includes(AMEX_GOLD),
   },
 });
 
@@ -69,13 +77,24 @@ const isAutoPayTransaction = (autoPayName: string, accountName: string = CHASE_C
 export const AUTO_PAY = Object.freeze({
   CHASE_AMAZON: {
     paymentCountKey: 'chaseAmazonPayments',
-    isTransactionIncluded: isAutoPayTransaction('Automatic Payment', CHASE_AMAZON),
+    isTransactionIncluded: isAutoPayTransaction(
+      'Automatic Payment',
+      CHASE_AMAZON,
+    ),
     transfers: () => WALLET_ACCOUNT.CHASE_AMAZON,
   },
   CITI_CUSTOM: {
     paymentCountKey: 'citiCustomPayments',
     isTransactionIncluded: isAutoPayTransaction('Autopay', CITI_CUSTOM_CASH),
     transfers: () => WALLET_ACCOUNT.CITI_CUSTOM_CASH,
+  },
+  CHASE_FREEDOM_FLEX: {
+    paymentCountKey: 'chaseFlexPayments',
+    isTransactionIncluded: isAutoPayTransaction(
+      'Automatic Payment',
+      CHASE_FREEDOM_FLEX,
+    ),
+    transfers: () => WALLET_ACCOUNT.CHASE_FREEDOM_FLEX,
   },
   DISCOVER: {
     paymentCountKey: 'discoverPayments',
@@ -123,7 +142,10 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
     type: TRANSACTION_TYPE.DEBIT,
     validateTransaction: (t) => {
       const transactionDate = DateTime.fromISO(t.date);
-      return transactionDate.day >= 20 && transactionDate.month === DateTime.now().month;
+      return (
+        transactionDate.day >= 20
+        && transactionDate.month === DateTime.now().month
+      );
     },
   },
 });

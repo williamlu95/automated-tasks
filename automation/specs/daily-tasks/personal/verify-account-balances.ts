@@ -8,6 +8,7 @@ const {
   CAPITAL_ONE_VENTURE_X,
   CITI_CUSTOM_CASH,
   CHASE_AMAZON,
+  CHASE_FREEDOM_FLEX,
   AMEX_GOLD,
 } = process.env;
 
@@ -15,6 +16,7 @@ const ACCOUNTS = {
   [WALLET_ACCOUNT.CHASE_CHECKING]: CHASE_CHECKING,
   [WALLET_ACCOUNT.CHASE_AMAZON]: CHASE_AMAZON,
   [WALLET_ACCOUNT.CITI_CUSTOM_CASH]: CITI_CUSTOM_CASH,
+  [WALLET_ACCOUNT.CHASE_FREEDOM_FLEX]: CHASE_FREEDOM_FLEX,
   [WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X]: CAPITAL_ONE_VENTURE_X,
   [WALLET_ACCOUNT.AMEX_GOLD]: AMEX_GOLD,
 };
@@ -23,7 +25,10 @@ const balanceDifference = (expected: string, actual: string): string => {
   const expectedInPennies = parseInt((expected || '').replace(/\D/g, ''), 10) / 100;
   const actualInPennies = parseInt((actual || '').replace(/\D/g, ''), 10) / 100;
   const difference = expectedInPennies - actualInPennies;
-  return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(difference);
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(difference);
 };
 
 export const verifyAccountBalance = async (
