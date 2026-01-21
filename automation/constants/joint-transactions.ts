@@ -135,7 +135,7 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
   SPOTIFY: {
     identifier: 'Spotify',
     name: CREDIT_CARD_BILL.SPOTIFY,
-    amount: 20.0,
+    amount: 22.0,
     day: 20,
     type: TRANSACTION_TYPE.EXPENSE,
   },
