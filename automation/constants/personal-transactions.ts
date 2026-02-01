@@ -137,7 +137,7 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
   STUDENT_LOAN: {
     identifier: 'Student Loan',
     name: 'DEPT EDUCATION STUDENT',
-    amount: 348.0,
+    amount: 235.0,
     day: 28,
     type: TRANSACTION_TYPE.DEBIT,
     validateTransaction: (t) => {
@@ -147,5 +147,12 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
         && transactionDate.month === DateTime.now().month
       );
     },
+  },
+  DENTIST_PAYMENT_PLAN: {
+    identifier: 'Dentist Payment Plan',
+    name: 'NOT KNOWN YET', // TODO: update when the name is known
+    amount: 114.0,
+    day: 28,
+    type: TRANSACTION_TYPE.DEBIT,
   },
 });
