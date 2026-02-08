@@ -15,6 +15,7 @@ const {
   CHASE_AMAZON = '',
   WELLS_FARGO_PLATINUM = '',
   AMEX_GOLD = '',
+  DELTA_SYKMILES_GOLD = '',
 } = process.env;
 
 export const WALLET_ACCOUNT = Object.freeze({
@@ -32,6 +33,7 @@ export const WALLET_ACCOUNT = Object.freeze({
   CITI_DOUBLE_CASH: 'Citi Double Cash',
   CITI_PREMIER: 'Citi Strata Premier',
   CHASE_SAPPHIRE_PREFERRED: 'Chase Sapphire Preferred',
+  DELTA_SKYMILES_GOLD: 'Delta Skymiles Gold',
 });
 
 export const TRANSACTION_TYPE = Object.freeze({
@@ -99,6 +101,14 @@ export const AUTO_PAY = Object.freeze({
   DISCOVER: {
     paymentCountKey: 'discoverPayments',
     isTransactionIncluded: isAutoPayTransaction('DISCOVER E-PAYMENT'),
+    transfers: () => WALLET_ACCOUNT.DISCOVER_IT,
+  },
+  DELTA_SYKMILES_GOLD: {
+    paymentCountKey: 'deltaPayments',
+    isTransactionIncluded: isAutoPayTransaction(
+      'AUTOPAY PAYMENT',
+      DELTA_SYKMILES_GOLD,
+    ),
     transfers: () => WALLET_ACCOUNT.DISCOVER_IT,
   },
 });

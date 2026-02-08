@@ -30,6 +30,7 @@ const {
   WELLS_FARGO_CHECKING = '',
   WELLS_FARGO_PLATINUM = '',
   AMEX_GOLD = '',
+  DELTA_SKYMILES_GOLD = '',
 } = process.env;
 
 const INCLUDED_TRANSACTIONS = [
@@ -42,13 +43,18 @@ const INCLUDED_TRANSACTIONS = [
   WELLS_FARGO_CHECKING,
   WELLS_FARGO_PLATINUM,
   AMEX_GOLD,
+  DELTA_SKYMILES_GOLD,
 ];
 
 export type Template = Omit<
   Omit<TemplateTransaction, 'isTransactionIncluded'>,
   'transactionCountKey'
 > & { amount: string };
-export type AutoPay = { fromAccount: string; toAccount: string; amount: string };
+export type AutoPay = {
+  fromAccount: string;
+  toAccount: string;
+  amount: string;
+};
 
 export class PersonalTransactions extends BaseTransactions {
   private transactionCounts: Record<string, number>;
@@ -74,18 +80,42 @@ export class PersonalTransactions extends BaseTransactions {
     this.balances = DailyTaskData.getActualBalances();
 
     this.transactionsForCurrentMonth = this.getTransactionsForCurrentMonth(transactions);
-    console.log(`Transactions: ${JSON.stringify(this.transactionsForCurrentMonth, null, 4)}`);
+    console.log(
+      `Transactions: ${JSON.stringify(
+        this.transactionsForCurrentMonth,
+        null,
+        4,
+      )}`,
+    );
 
-    this.templateTransactions = Object.values(TEMPLATE_TRANSACTION).flatMap((t) => this.getTransactionsForTemplate(t));
+    this.templateTransactions = Object.values(TEMPLATE_TRANSACTION).flatMap(
+      (t) => this.getTransactionsForTemplate(t),
+    );
 
     this.autoPayTransactions = Object.values(AUTO_PAY).flatMap((p) => this.getTransactionsForAutoPay(p));
-    console.log(`AutoPay Transactions: ${JSON.stringify(this.autoPayTransactions, null, 4)}`);
+    console.log(
+      `AutoPay Transactions: ${JSON.stringify(
+        this.autoPayTransactions,
+        null,
+        4,
+      )}`,
+    );
 
-    this.outstandingExpenses = this.calculateOutstandingExpenses(EXPENSE).filter(this.filterExpenses);
-    console.log(`Outstanding Expenses: ${JSON.stringify(this.outstandingExpenses, null, 4)}`);
+    this.outstandingExpenses = this.calculateOutstandingExpenses(
+      EXPENSE,
+    ).filter(this.filterExpenses);
+    console.log(
+      `Outstanding Expenses: ${JSON.stringify(
+        this.outstandingExpenses,
+        null,
+        4,
+      )}`,
+    );
 
     this.outstandingIncome = this.calculateOutstandingIncome();
-    console.log(`Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`);
+    console.log(
+      `Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`,
+    );
   }
 
   private filterExpenses = (e: ExpectedJointTransaction) => !(['09/14/2025'].includes(e.day) && e.name === EXPENSE.FLEX_LOAN.name);
@@ -100,15 +130,19 @@ export class PersonalTransactions extends BaseTransactions {
           && DateTime.fromISO(t.date).hasSame(DateTime.now(), 'month'),
       );
 
-      const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map((day) => ({
-        ...value,
-        day,
-      }));
+      const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map(
+        (day) => ({
+          ...value,
+          day,
+        }),
+      );
 
       income.push(...unpaidSalary);
     });
 
-    return income.sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
+    return income.sort(
+      (a, b) => new Date(a.day).getTime() - new Date(b.day).getTime(),
+    );
   }
 
   private getTransactionsForTemplate({
@@ -126,7 +160,9 @@ export class PersonalTransactions extends BaseTransactions {
     }));
   }
 
-  protected getTransactionsForCurrentMonth(transactions: Transaction[]): Transaction[] {
+  protected getTransactionsForCurrentMonth(
+    transactions: Transaction[],
+  ): Transaction[] {
     const transactionsForCurrentMonth = transactions
       .filter((t) => INCLUDED_TRANSACTIONS.some((it) => t.account?.endsWith(it)))
       .filter((t) => {
@@ -137,8 +173,13 @@ export class PersonalTransactions extends BaseTransactions {
           return true;
         }
 
-        const lastDayOfLastMonth = DateTime.now().minus({ month: 1 }).endOf('month');
-        const isLastDayOfLastMonth = transactionDate.hasSame(lastDayOfLastMonth, 'day');
+        const lastDayOfLastMonth = DateTime.now()
+          .minus({ month: 1 })
+          .endOf('month');
+        const isLastDayOfLastMonth = transactionDate.hasSame(
+          lastDayOfLastMonth,
+          'day',
+        );
 
         if (isLastDayOfLastMonth) {
           return true;
@@ -193,10 +234,12 @@ export class PersonalTransactions extends BaseTransactions {
       ['WF Checking Balance', this.balances[WELLS_FARGO_CHECKING]],
       ['WF Platinum Balance', this.balances[WELLS_FARGO_PLATINUM]],
       ['Chase Freedom Flex Balance', this.balances[CHASE_FREEDOM_FLEX]],
-    ].map(([name, balance], index) => [name,
+    ].map(([name, balance], index) => [
+      name,
       format(today, 'P'),
       balance,
-      index === 0 ? INITIAL_FORMULA : OVERALL_FORMULA]);
+      index === 0 ? INITIAL_FORMULA : OVERALL_FORMULA,
+    ]);
   }
 
   getBalanceSheet() {
@@ -208,7 +251,12 @@ export class PersonalTransactions extends BaseTransactions {
 
     allTransactions.forEach((t) => {
       const amount = t.type === TRANSACTION_TYPE.CREDIT ? t.amount : -t.amount;
-      balanceSheet.push([t.identifier, t.day, formatToDollars(amount), OVERALL_FORMULA]);
+      balanceSheet.push([
+        t.identifier,
+        t.day,
+        formatToDollars(amount),
+        OVERALL_FORMULA,
+      ]);
     });
 
     return balanceSheet;

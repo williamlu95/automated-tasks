@@ -97,7 +97,6 @@ class WalletRecordPage extends Page {
       amexGold: rowTexts
         .filter((r) => r.includes('Autopay'))
         .filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.AMEX_GOLD))).length,
-
       citiCustomPayments: rowTexts
         .filter(this.isTransfer)
         .filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.CITI_CUSTOM_CASH))).length,
@@ -112,6 +111,11 @@ class WalletRecordPage extends Page {
       discoverPayments: rowTexts
         .filter(this.isTransfer)
         .filter((r) => r.includes(this.truncateAccountName(WALLET_ACCOUNT.DISCOVER_IT))).length,
+      deltaPayments: rowTexts
+        .filter(this.isTransfer)
+        .filter((r) => r.includes(
+          this.truncateAccountName(WALLET_ACCOUNT.DELTA_SKYMILES_GOLD),
+        )).length,
     };
   }
 
