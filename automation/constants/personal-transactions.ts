@@ -15,7 +15,7 @@ const {
   CHASE_AMAZON = '',
   WELLS_FARGO_PLATINUM = '',
   AMEX_GOLD = '',
-  DELTA_SYKMILES_GOLD = '',
+  DELTA_SKYMILES_GOLD = '',
 } = process.env;
 
 export const WALLET_ACCOUNT = Object.freeze({
@@ -98,18 +98,18 @@ export const AUTO_PAY = Object.freeze({
     ),
     transfers: () => WALLET_ACCOUNT.CHASE_FREEDOM_FLEX,
   },
-  // DISCOVER: {
-  //   paymentCountKey: 'discoverPayments',
-  //   isTransactionIncluded: isAutoPayTransaction('DISCOVER E-PAYMENT'),
-  //   transfers: () => WALLET_ACCOUNT.DISCOVER_IT,
-  // },
-  DELTA_SYKMILES_GOLD: {
+  DISCOVER: {
+    paymentCountKey: 'discoverPayments',
+    isTransactionIncluded: isAutoPayTransaction('DISCOVER E-PAYMENT'),
+    transfers: () => WALLET_ACCOUNT.DISCOVER_IT,
+  },
+  DELTA_SKYMILES_GOLD: {
     paymentCountKey: 'deltaPayments',
     isTransactionIncluded: isAutoPayTransaction(
       'AUTOPAY PAYMENT',
-      DELTA_SYKMILES_GOLD,
+      DELTA_SKYMILES_GOLD,
     ),
-    transfers: () => WALLET_ACCOUNT.DISCOVER_IT,
+    transfers: () => WALLET_ACCOUNT.DELTA_SKYMILES_GOLD,
   },
 });
 
