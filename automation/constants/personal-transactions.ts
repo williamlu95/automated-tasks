@@ -98,11 +98,11 @@ export const AUTO_PAY = Object.freeze({
     ),
     transfers: () => WALLET_ACCOUNT.CHASE_FREEDOM_FLEX,
   },
-  DISCOVER: {
-    paymentCountKey: 'discoverPayments',
-    isTransactionIncluded: isAutoPayTransaction('DISCOVER E-PAYMENT'),
-    transfers: () => WALLET_ACCOUNT.DISCOVER_IT,
-  },
+  // DISCOVER: {
+  //   paymentCountKey: 'discoverPayments',
+  //   isTransactionIncluded: isAutoPayTransaction('DISCOVER E-PAYMENT'),
+  //   transfers: () => WALLET_ACCOUNT.DISCOVER_IT,
+  // },
   DELTA_SYKMILES_GOLD: {
     paymentCountKey: 'deltaPayments',
     isTransactionIncluded: isAutoPayTransaction(
