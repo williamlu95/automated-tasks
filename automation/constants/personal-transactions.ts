@@ -136,6 +136,13 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
       return date.day >= 15 && date.month === DateTime.now().month;
     },
   },
+  DENTIST_PAYMENT_PLAN: {
+    identifier: 'Dentist Payment Plan',
+    name: 'NOT KNOWN YET', // TODO: update when the name is known
+    amount: 114.0,
+    day: 20,
+    type: TRANSACTION_TYPE.DEBIT,
+  },
   AMAZON: {
     identifier: 'Amazon',
     name: 'Amazon',
@@ -157,12 +164,5 @@ export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
         && transactionDate.month === DateTime.now().month
       );
     },
-  },
-  DENTIST_PAYMENT_PLAN: {
-    identifier: 'Dentist Payment Plan',
-    name: 'NOT KNOWN YET', // TODO: update when the name is known
-    amount: 114.0,
-    day: 28,
-    type: TRANSACTION_TYPE.DEBIT,
   },
 });
