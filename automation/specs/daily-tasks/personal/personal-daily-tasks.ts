@@ -11,9 +11,13 @@ export const runPersonalDailyTask = async () => {
   const transactions = new PersonalTransactions();
   transactions.initializeTransactions();
   const templateTransactions = transactions.getTemplateTransactions();
-  console.log(`Template Transactions: ${JSON.stringify(templateTransactions, null, 4)}`);
+  console.log(
+    `Template Transactions: ${JSON.stringify(templateTransactions, null, 4)}`,
+  );
   const paymentTransactions = transactions.getPaymentTransactions();
-  console.log(`Payment Transactions: ${JSON.stringify(paymentTransactions, null, 4)}`);
+  console.log(
+    `Payment Transactions: ${JSON.stringify(paymentTransactions, null, 4)}`,
+  );
 
   if (templateTransactions.length) {
     await addTransactionToWallet(templateTransactions);
@@ -23,6 +27,12 @@ export const runPersonalDailyTask = async () => {
     await addPaymentsToWallet(paymentTransactions);
   }
 
-  await DailyTaskData.refreshExpectedBalance();
-  await verifyAccountBalance(transactions.getBalances(), transactions.getBalanceSheet());
+  if (templateTransactions.length || paymentTransactions.length) {
+    await DailyTaskData.refreshExpectedBalance();
+  }
+
+  await verifyAccountBalance(
+    transactions.getBalances(),
+    transactions.getBalanceSheet(),
+  );
 };
