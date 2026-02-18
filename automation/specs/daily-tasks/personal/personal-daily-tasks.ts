@@ -31,8 +31,5 @@ export const runPersonalDailyTask = async () => {
     await DailyTaskData.refreshExpectedBalance();
   }
 
-  await verifyAccountBalance(
-    transactions.getBalances(),
-    transactions.getBalanceSheet(),
-  );
+  await verifyAccountBalance(transactions.getBalances());
 };

@@ -1,10 +1,4 @@
-import { DateTime } from 'luxon';
-import {
-  ExpectedJointTransaction,
-  ExpectedTransaction,
-  Transaction,
-} from '../types/transaction';
-import { getSemiMonthylPayDaysForMonths } from '../utils/date-formatters';
+import { Transaction } from '../types/transaction';
 import { includesName } from '../utils/includes-name';
 
 const {
@@ -13,7 +7,6 @@ const {
   CAPITAL_ONE_VENTURE_X = '',
   CITI_CUSTOM_CASH = '',
   CHASE_AMAZON = '',
-  WELLS_FARGO_PLATINUM = '',
   AMEX_GOLD = '',
   DELTA_SKYMILES_GOLD = '',
 } = process.env;
@@ -110,59 +103,5 @@ export const AUTO_PAY = Object.freeze({
       DELTA_SKYMILES_GOLD,
     ),
     transfers: () => WALLET_ACCOUNT.DELTA_SKYMILES_GOLD,
-  },
-});
-
-export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
-  WILL_SALARY: {
-    identifier: "William's Salary",
-    name: 'Betterlesson',
-    amount: 300.0,
-    day: '0',
-    days: getSemiMonthylPayDaysForMonths(),
-    type: TRANSACTION_TYPE.CREDIT,
-  },
-});
-
-export const EXPENSE: Record<string, ExpectedTransaction> = Object.freeze({
-  TMOBILE: {
-    identifier: 'T-Mobile',
-    name: 'T-mobile',
-    amount: 227.0,
-    day: 15,
-    type: TRANSACTION_TYPE.DEBIT,
-    validateTransaction: (t) => {
-      const date = DateTime.fromISO(t.date);
-      return date.day >= 15 && date.month === DateTime.now().month;
-    },
-  },
-  DENTIST_PAYMENT_PLAN: {
-    identifier: 'Dentist Payment Plan',
-    name: 'NOT KNOWN YET', // TODO: update when the name is known
-    amount: 114.0,
-    day: 20,
-    type: TRANSACTION_TYPE.DEBIT,
-  },
-  AMAZON: {
-    identifier: 'Amazon',
-    name: 'Amazon',
-    amount: 7.0,
-    day: 22,
-    type: TRANSACTION_TYPE.DEBIT,
-    validateTransaction: (t) => t.account.includes(WELLS_FARGO_PLATINUM),
-  },
-  STUDENT_LOAN: {
-    identifier: 'Student Loan',
-    name: 'DEPT EDUCATION STUDENT',
-    amount: 235.0,
-    day: 28,
-    type: TRANSACTION_TYPE.DEBIT,
-    validateTransaction: (t) => {
-      const transactionDate = DateTime.fromISO(t.date);
-      return (
-        transactionDate.day >= 20
-        && transactionDate.month === DateTime.now().month
-      );
-    },
   },
 });

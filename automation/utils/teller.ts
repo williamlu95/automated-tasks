@@ -26,7 +26,6 @@ const {
   CHASE_FREEDOM_UNLIMITED = '',
   CHASE_SAPPHIRE_PREFERRED = '',
   WELLS_FARGO_PLATINUM = '',
-  WELLS_FARGO_CHECKING = '',
   WELLS_FARGO_ACTIVE_CASH = '',
   AMEX_BLUE = '',
   WELLS_FARGO_AUTOGRAPH = '',
@@ -112,7 +111,6 @@ export const TOKEN_TO_ACCOUNTS: Record<string, string[]> = Object.fromEntries(
     [CAPITAL_ONE_TOKEN]: [CAPITAL_ONE_VENTURE_X],
     [AMEX_TOKEN]: [AMEX_GOLD, AMEX_BLUE, DELTA_SKYMILES_GOLD],
     [PERSONAL_WF_TOKEN]: [
-      WELLS_FARGO_CHECKING,
       WELLS_FARGO_PLATINUM,
       WELLS_FARGO_ACTIVE_CASH,
       WELLS_FARGO_AUTOGRAPH,
@@ -133,8 +131,4 @@ export const TOKEN_TO_BANK: Record<string, string> = Object.freeze({
   [MOTHER_CITI_TOKEN]: 'Citi (Mother)',
 });
 
-export const CHECKING_ACCOUNTS = Object.freeze([
-  CHASE_CHECKING,
-  WELLS_FARGO_CHECKING,
-  MOTHERS_WF,
-]);
+export const CHECKING_ACCOUNTS = Object.freeze([CHASE_CHECKING, MOTHERS_WF]);

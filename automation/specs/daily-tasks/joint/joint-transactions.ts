@@ -34,6 +34,7 @@ const {
   CHASE_FREEDOM_UNLIMITED = '',
   WELLS_FARGO_ACTIVE_CASH = '',
   WELLS_FARGO_AUTOGRAPH = '',
+  WELLS_FARGO_PLATINUM = '',
   DELTA_SKYMILES_GOLD = '',
 } = process.env;
 
@@ -49,6 +50,7 @@ const INCLUDED_TRANSACTIONS = [
   CITI_PREMIER,
   CHASE_FREEDOM_UNLIMITED,
   WELLS_FARGO_AUTOGRAPH,
+  WELLS_FARGO_PLATINUM,
   DELTA_SKYMILES_GOLD,
 ];
 
@@ -215,6 +217,7 @@ export class JointTransactions extends BaseTransactions {
         'Bill Balance (WF Autograph)',
         this.actualBalances[WELLS_FARGO_AUTOGRAPH],
       ],
+      ['Bill Balance (WF Platinum)', this.actualBalances[WELLS_FARGO_PLATINUM]],
       [
         'Misc Balance (Venture X)',
         this.expectedBalances[WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X],

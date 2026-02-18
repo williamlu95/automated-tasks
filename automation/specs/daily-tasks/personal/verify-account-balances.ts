@@ -1,5 +1,4 @@
 import { WALLET_ACCOUNT } from '../../../constants/personal-transactions';
-import { notifyOfNegativeBalance } from '../../../utils/balance';
 import { replaceSheetData } from '../../../utils/google-sheets';
 import { DailyTaskData } from '../daily-task-data';
 
@@ -35,10 +34,8 @@ const balanceDifference = (expected: string, actual: string): string => {
 
 export const verifyAccountBalance = async (
   actualBalances: Record<string, string>,
-  balanceSheet: string[][],
 ): Promise<void> => {
   const expectedBalances = DailyTaskData.getExpectedBalances();
-  await notifyOfNegativeBalance(balanceSheet, 'Personal');
 
   const accountBalance = Object.entries(ACCOUNTS).map(([name, number = '']) => {
     const actualBalance = actualBalances[number];
@@ -51,5 +48,4 @@ export const verifyAccountBalance = async (
   });
 
   await replaceSheetData("William's Balance", accountBalance);
-  await replaceSheetData('Personal Balance', balanceSheet);
 };

@@ -1,22 +1,14 @@
 import { DateTime } from 'luxon';
-import { format } from 'date-fns';
 import {
   AUTO_PAY,
-  EXPENSE,
-  INCOME,
   TEMPLATE_TRANSACTION,
-  TRANSACTION_TYPE,
   WALLET_ACCOUNT,
 } from '../../../constants/personal-transactions';
 import {
   Transaction,
   TemplateTransaction,
   AutoPayTransaction,
-  ExpectedJointTransaction,
 } from '../../../types/transaction';
-import { includesName } from '../../../utils/includes-name';
-import { formatToDollars } from '../../../utils/currency-formatter';
-import { INITIAL_FORMULA, OVERALL_FORMULA } from '../../../utils/balance';
 import { BaseTransactions } from '../../../utils/base-transaction';
 import { DailyTaskData } from '../daily-task-data';
 
@@ -27,8 +19,6 @@ const {
   DISCOVER_IT = '',
   CHASE_FREEDOM_FLEX = '',
   CHASE_AMAZON = '',
-  WELLS_FARGO_CHECKING = '',
-  WELLS_FARGO_PLATINUM = '',
   AMEX_GOLD = '',
   DELTA_SKYMILES_GOLD = '',
 } = process.env;
@@ -40,8 +30,6 @@ const INCLUDED_TRANSACTIONS = [
   CHASE_FREEDOM_FLEX,
   DISCOVER_IT,
   CHASE_AMAZON,
-  WELLS_FARGO_CHECKING,
-  WELLS_FARGO_PLATINUM,
   AMEX_GOLD,
   DELTA_SKYMILES_GOLD,
 ];
@@ -99,49 +87,6 @@ export class PersonalTransactions extends BaseTransactions {
         null,
         4,
       )}`,
-    );
-
-    this.outstandingExpenses = this.calculateOutstandingExpenses(
-      EXPENSE,
-    ).filter(this.filterExpenses);
-    console.log(
-      `Outstanding Expenses: ${JSON.stringify(
-        this.outstandingExpenses,
-        null,
-        4,
-      )}`,
-    );
-
-    this.outstandingIncome = this.calculateOutstandingIncome();
-    console.log(
-      `Outstanding Income: ${JSON.stringify(this.outstandingIncome, null, 4)}`,
-    );
-  }
-
-  private filterExpenses = (e: ExpectedJointTransaction) => !(['09/14/2025'].includes(e.day) && e.name === EXPENSE.FLEX_LOAN.name);
-
-  protected calculateOutstandingIncome(): ExpectedJointTransaction[] {
-    const income: ExpectedJointTransaction[] = [];
-
-    Object.values(INCOME).forEach((value) => {
-      const paidSalary = this.transactionsForCurrentMonth.filter(
-        (t) => includesName(t.description, value.name)
-          && t.account?.endsWith(WELLS_FARGO_CHECKING)
-          && DateTime.fromISO(t.date).hasSame(DateTime.now(), 'month'),
-      );
-
-      const unpaidSalary = (value.days?.slice(paidSalary.length) || []).map(
-        (day) => ({
-          ...value,
-          day,
-        }),
-      );
-
-      income.push(...unpaidSalary);
-    });
-
-    return income.sort(
-      (a, b) => new Date(a.day).getTime() - new Date(b.day).getTime(),
     );
   }
 
@@ -226,39 +171,5 @@ export class PersonalTransactions extends BaseTransactions {
 
   getBalances() {
     return this.balances;
-  }
-
-  private getInitialBalanceSheet() {
-    const today = new Date();
-    return [
-      ['WF Checking Balance', this.balances[WELLS_FARGO_CHECKING]],
-      ['WF Platinum Balance', this.balances[WELLS_FARGO_PLATINUM]],
-      ['Chase Freedom Flex Balance', this.balances[CHASE_FREEDOM_FLEX]],
-    ].map(([name, balance], index) => [
-      name,
-      format(today, 'P'),
-      balance,
-      index === 0 ? INITIAL_FORMULA : OVERALL_FORMULA,
-    ]);
-  }
-
-  getBalanceSheet() {
-    const balanceSheet = this.getInitialBalanceSheet();
-
-    const allTransactions = this.outstandingExpenses
-      .concat(this.outstandingIncome)
-      .sort((a, b) => new Date(a.day).getTime() - new Date(b.day).getTime());
-
-    allTransactions.forEach((t) => {
-      const amount = t.type === TRANSACTION_TYPE.CREDIT ? t.amount : -t.amount;
-      balanceSheet.push([
-        t.identifier,
-        t.day,
-        formatToDollars(amount),
-        OVERALL_FORMULA,
-      ]);
-    });
-
-    return balanceSheet;
   }
 }

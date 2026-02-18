@@ -1,5 +1,8 @@
 import { DateTime } from 'luxon';
-import { ExpectedJointTransaction, ExpectedTransaction } from '../types/transaction';
+import {
+  ExpectedJointTransaction,
+  ExpectedTransaction,
+} from '../types/transaction';
 import {
   calculateSemiYearlyTotalAmountDue,
   calculateQuarterlyTotalAmountDue,
@@ -7,6 +10,8 @@ import {
   calculateYearlyTotalAmountDue,
 } from '../utils/calculator';
 import { getSemiMonthylPayDaysForMonths } from '../utils/date-formatters';
+
+const { WELLS_FARGO_PLATINUM = '' } = process.env;
 
 export const TRANSACTION_TYPE = {
   INCOME: 'income',
@@ -39,14 +44,16 @@ export const INCOME: Record<string, ExpectedJointTransaction> = Object.freeze({
   WILL_SALARY: {
     identifier: "William's Salary",
     name: 'Betterlesson',
-    amount: 3000.0,
+    amount: 3300.0,
     day: '0',
     days: getSemiMonthylPayDaysForMonths(),
     type: TRANSACTION_TYPE.INCOME,
   },
 });
 
-export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedTransaction> => ({
+export const generateExpenseForDate = (
+  date: DateTime,
+): Record<string, ExpectedTransaction> => ({
   MORTGAGE: {
     identifier: 'Mortgage',
     name: 'Pennymac',
@@ -78,7 +85,11 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
   UFC_FIT: {
     identifier: 'UFC Fit',
     name: CREDIT_CARD_BILL.UFC_FIT,
-    amount: calculateYearlyTotalAmountDue(59, date, DateTime.fromISO('2025-11-26')),
+    amount: calculateYearlyTotalAmountDue(
+      59,
+      date,
+      DateTime.fromISO('2025-11-26'),
+    ),
     day: 26,
     type: TRANSACTION_TYPE.EXPENSE,
   },
@@ -118,6 +129,24 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     day: 15,
     type: TRANSACTION_TYPE.EXPENSE,
   },
+  TMOBILE: {
+    identifier: 'T-Mobile',
+    name: 'T-mobile',
+    amount: 227.0,
+    day: 15,
+    type: TRANSACTION_TYPE.EXPENSE,
+    validateTransaction: (t) => {
+      const date = DateTime.fromISO(t.date);
+      return date.day >= 15 && date.month === DateTime.now().month;
+    },
+  },
+  DENTIST_PAYMENT_PLAN: {
+    identifier: 'Dentist Payment Plan',
+    name: 'NOT KNOWN YET', // TODO: update when the name is known
+    amount: 114.0,
+    day: 20,
+    type: TRANSACTION_TYPE.EXPENSE,
+  },
   NATURAL_GAS: {
     identifier: 'Natural Gas',
     name: 'Southwest Gas',
@@ -152,6 +181,28 @@ export const generateExpenseForDate = (date: DateTime): Record<string, ExpectedT
     amount: 26.0,
     day: 21,
     type: TRANSACTION_TYPE.EXPENSE,
+  },
+  AMAZON: {
+    identifier: 'Amazon',
+    name: 'Amazon',
+    amount: 7.0,
+    day: 22,
+    type: TRANSACTION_TYPE.EXPENSE,
+    validateTransaction: (t) => t.account.includes(WELLS_FARGO_PLATINUM),
+  },
+  STUDENT_LOAN: {
+    identifier: 'Student Loan',
+    name: 'DEPT EDUCATION STUDENT',
+    amount: 235.0,
+    day: 28,
+    type: TRANSACTION_TYPE.EXPENSE,
+    validateTransaction: (t) => {
+      const transactionDate = DateTime.fromISO(t.date);
+      return (
+        transactionDate.day >= 20
+        && transactionDate.month === DateTime.now().month
+      );
+    },
   },
 });
 
