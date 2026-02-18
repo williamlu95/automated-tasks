@@ -9,7 +9,6 @@ import {
   formatToDollars,
 } from '../../../utils/currency-formatter';
 import {
-  CREDIT_CARD_BILL,
   EXPENSE,
   FOOD_BUDGET,
   INCOME,
@@ -120,16 +119,7 @@ export class JointTransactions extends BaseTransactions {
     });
   }
 
-  private filterExpenses = (e: ExpectedJointTransaction) => !(
-    [
-      '05/09/2025',
-      '06/09/2025',
-      '07/09/2025',
-      '08/09/2025',
-      '09/09/2025',
-      '10/09/2025',
-    ].includes(e.day) && e.name === CREDIT_CARD_BILL.CAR_INSURANCE_BILL
-  );
+  private filterExpenses = (e: ExpectedJointTransaction) => !(['02/15/2026'].includes(e.day) && e.name === 'T-mobile');
 
   protected calculateOutstandingExpenses(
     expenseTemplate: Record<string, ExpectedTransaction>,
