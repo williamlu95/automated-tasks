@@ -145,13 +145,6 @@ export const generateExpenseForDate = (
       return date.day >= 15 && date.month === DateTime.now().month;
     },
   },
-  DENTIST_PAYMENT_PLAN: {
-    identifier: 'Dentist Payment Plan',
-    name: 'COMENITY PAY',
-    amount: 114.0,
-    day: 20,
-    type: TRANSACTION_TYPE.EXPENSE,
-  },
   NATURAL_GAS: {
     identifier: 'Natural Gas',
     name: 'Southwest Gas',
@@ -206,7 +199,7 @@ export const generateExpenseForDate = (
   STUDENT_LOAN: {
     identifier: 'Student Loan',
     name: 'DEPT EDUCATION STUDENT',
-    amount: 235.0,
+    amount: 347.0,
     day: 28,
     type: TRANSACTION_TYPE.EXPENSE,
     validateTransaction: (t) => {
