@@ -17,6 +17,7 @@ const {
   PERSONAL_CITI_TOKEN = '',
   MOTHER_WF_TOKEN = '',
   MOTHER_CITI_TOKEN = '',
+  LISA_CHASE_TOKEN = '',
   CHASE_CHECKING = '',
   AMEX_GOLD = '',
   CAPITAL_ONE_VENTURE_X = '',
@@ -35,6 +36,8 @@ const {
   MOTHERS_CITI = '',
   JOINT_BILL = '',
   DELTA_SKYMILES_GOLD = '',
+  LISA_SW_PLUS = '',
+  LISA_FREEDOM_FLEX = '',
 } = process.env;
 
 const getAgent = () => new https.Agent({
@@ -118,6 +121,7 @@ export const TOKEN_TO_ACCOUNTS: Record<string, string[]> = Object.fromEntries(
     [PERSONAL_CITI_TOKEN]: [CITI_CUSTOM_CASH, CITI_DOUBLE_CASH, CITI_PREMIER],
     [MOTHER_WF_TOKEN]: [MOTHERS_WF],
     [MOTHER_CITI_TOKEN]: [MOTHERS_CITI],
+    [LISA_CHASE_TOKEN]: [LISA_SW_PLUS, LISA_FREEDOM_FLEX],
   }).filter(([key]) => key),
 );
 
@@ -129,6 +133,7 @@ export const TOKEN_TO_BANK: Record<string, string> = Object.freeze({
   [PERSONAL_CITI_TOKEN]: 'Citi (Personal)',
   [MOTHER_WF_TOKEN]: 'Wells Fargo (Mother)',
   [MOTHER_CITI_TOKEN]: 'Citi (Mother)',
+  [LISA_CHASE_TOKEN]: 'Chase (Lisa)',
 });
 
 export const CHECKING_ACCOUNTS = Object.freeze([CHASE_CHECKING, MOTHERS_WF]);
