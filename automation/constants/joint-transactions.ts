@@ -147,7 +147,7 @@ export const generateExpenseForDate = (
   },
   DENTIST_PAYMENT_PLAN: {
     identifier: 'Dentist Payment Plan',
-    name: 'NOT KNOWN YET', // TODO: update when the name is known
+    name: 'COMENITY PAY',
     amount: 114.0,
     day: 20,
     type: TRANSACTION_TYPE.EXPENSE,
