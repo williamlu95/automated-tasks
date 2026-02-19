@@ -19,7 +19,7 @@ const CSV_HEADERS = ['date', 'account', 'description', 'amount'];
 
 enum EnrollmentStatus {
   OK = 'ok',
-  UNHEALTHY = 'unhealthy'
+  UNHEALTHY = 'unhealthy',
 }
 
 export class TellerData {
@@ -33,7 +33,10 @@ export class TellerData {
 
   private transactions: Transaction[] = [];
 
-  private enrollments: Record<string, {id: string, status: EnrollmentStatus }> = {};
+  private enrollments: Record<
+    string,
+    { id: string; status: EnrollmentStatus }
+  > = {};
 
   // We want to add waits because Teller is secretive with rate limiting. To avoid 429's we just make requests very slowly
   private wait(milliseconds: number): Promise<void> {
@@ -46,21 +49,40 @@ export class TellerData {
     try {
       await this.initializeFromLocal();
     } catch (err) {
-      console.warn('Could not initialize from local, starting from empty state.');
+      console.warn(
+        'Could not initialize from local, starting from empty state.',
+      );
     }
 
     const tokenEntries = Object.entries(TOKEN_TO_ACCOUNTS);
     for (const tokenEntry of tokenEntries) {
       const [token, accounts] = tokenEntry;
       try {
+        const validAccounts = new Set(accounts);
         console.log(`Fetching accounts for token: ${token}`);
         const tellerAccounts = await getAccounts(token);
-        const accountToTellerAccount = Object.fromEntries(tellerAccounts.map((ta) => [ta.last_four, ta.id]));
-        console.log(`Receieved Accounts: ${tellerAccounts.map((ta) => ta.last_four).join(', ')}`);
-        const isMissingTellerAccount = accounts.filter((account) => !accountToTellerAccount[account]);
+
+        const accountToTellerAccount = Object.fromEntries(
+          tellerAccounts
+            .filter((ta) => validAccounts.has(ta.last_four))
+            .map((ta) => [ta.last_four, ta.id]),
+        );
+
+        console.log(
+          `Receieved Accounts: ${tellerAccounts
+            .map((ta) => ta.last_four)
+            .join(', ')}`,
+        );
+        const isMissingTellerAccount = accounts.filter(
+          (account) => !accountToTellerAccount[account],
+        );
 
         if (isMissingTellerAccount.length > 0) {
-          throw Error(`The following accounts are missing from the teller accounts API: ${isMissingTellerAccount.join(', ')}`);
+          throw Error(
+            `The following accounts are missing from the teller accounts API: ${isMissingTellerAccount.join(
+              ', ',
+            )}`,
+          );
         }
 
         await this.wait(DEFAULT_WAIT_TIME);
@@ -69,7 +91,10 @@ export class TellerData {
         const [firstAccount] = tellerAccounts;
         const enrollmentId = firstAccount?.enrollment_id || '';
         const bankName = TOKEN_TO_BANK[token];
-        this.enrollments[bankName] = { id: enrollmentId, status: EnrollmentStatus.OK };
+        this.enrollments[bankName] = {
+          id: enrollmentId,
+          status: EnrollmentStatus.OK,
+        };
       } catch (err) {
         console.error(`Intialization failed for token ${token}`, err);
         const bankName = TOKEN_TO_BANK[token];
@@ -81,19 +106,27 @@ export class TellerData {
 
     this.saveResults();
 
-    const failedAccounts = Object.entries(this.enrollments).filter((e) => e[1].status === EnrollmentStatus.UNHEALTHY).map((e) => e[0]);
+    const failedAccounts = Object.entries(this.enrollments)
+      .filter((e) => e[1].status === EnrollmentStatus.UNHEALTHY)
+      .map((e) => e[0]);
     if (failedAccounts.length > 0) {
       await sendEmail({
         subject: 'ACTION REQUIRED: Fix Unhealthy Accounts',
-        html: `<h1><strong>The following accounts are unhealthy, please fix the connection in the Teller Console: </strong><ul>${failedAccounts.map((a) => `<li>${a}</li>`).join('')}</ul></h1>`,
+        html: `<h1><strong>The following accounts are unhealthy, please fix the connection in the Teller Console: </strong><ul>${failedAccounts
+          .map((a) => `<li>${a}</li>`)
+          .join('')}</ul></h1>`,
       });
     }
   }
 
   async initializeFromLocal() {
     try {
-      this.balances = JSON.parse(fs.readFileSync(TellerData.BALANCE_FILE_LOCATION).toString());
-      this.enrollments = JSON.parse(fs.readFileSync(TellerData.ENROLLMENT_FILE_LOCATION).toString());
+      this.balances = JSON.parse(
+        fs.readFileSync(TellerData.BALANCE_FILE_LOCATION).toString(),
+      );
+      this.enrollments = JSON.parse(
+        fs.readFileSync(TellerData.ENROLLMENT_FILE_LOCATION).toString(),
+      );
       this.transactions = await csv({ headers: CSV_HEADERS }).fromFile(
         TellerData.TRANSACTION_FILE_LOCATION,
       );
@@ -104,8 +137,16 @@ export class TellerData {
   }
 
   private saveResults() {
-    fs.writeFileSync(TellerData.BALANCE_FILE_LOCATION, JSON.stringify(this.balances, null, 4), 'utf8');
-    fs.writeFileSync(TellerData.ENROLLMENT_FILE_LOCATION, JSON.stringify(this.enrollments, null, 4), 'utf8');
+    fs.writeFileSync(
+      TellerData.BALANCE_FILE_LOCATION,
+      JSON.stringify(this.balances, null, 4),
+      'utf8',
+    );
+    fs.writeFileSync(
+      TellerData.ENROLLMENT_FILE_LOCATION,
+      JSON.stringify(this.enrollments, null, 4),
+      'utf8',
+    );
 
     const csvContent = [`${CSV_HEADERS.join(',')}`];
 
@@ -114,10 +155,16 @@ export class TellerData {
       csvContent.push(`${values.join(',')}`);
     });
 
-    fs.writeFileSync(TellerData.TRANSACTION_FILE_LOCATION, csvContent.join('\n'));
+    fs.writeFileSync(
+      TellerData.TRANSACTION_FILE_LOCATION,
+      csvContent.join('\n'),
+    );
   }
 
-  private async initBalancesAndTransactions(token: string, accountToTellerAccount: Record<string, string>) {
+  private async initBalancesAndTransactions(
+    token: string,
+    accountToTellerAccount: Record<string, string>,
+  ) {
     const entries = Object.entries(accountToTellerAccount);
     for (const accountAndTellerAccount of entries) {
       const [account, tellerAccount] = accountAndTellerAccount;
@@ -126,20 +173,30 @@ export class TellerData {
       console.log(`Recieved balance of: ${balance.ledger}`);
       await this.wait(DEFAULT_WAIT_TIME);
       console.log(`Fetching transactions for account: ${account}`);
-      const transactions = await getTransactions(token, tellerAccount, DateTime.now().minus({ month: 1 }).set({ day: 1 }).toISODate());
+      const transactions = await getTransactions(
+        token,
+        tellerAccount,
+        DateTime.now().minus({ month: 1 }).set({ day: 1 }).toISODate(),
+      );
       console.log(`Recieved ${transactions.length} transactions`);
       await this.wait(DEFAULT_WAIT_TIME);
       const isCheckingAccount = CHECKING_ACCOUNTS.includes(account);
-      const amount = isCheckingAccount ? balance.available || '0' : balance.ledger || '0';
+      const amount = isCheckingAccount
+        ? balance.available || '0'
+        : balance.ledger || '0';
       const balanceAmount = isCheckingAccount ? amount : `-${amount}`;
       this.balances[account] = formatToDollars(balanceAmount);
-      this.transactions = this.transactions.filter((t) => t.account !== account);
-      this.transactions = this.transactions.concat(transactions.map((t) => ({
-        date: t.date,
-        account,
-        description: t.description,
-        amount: t.amount,
-      })));
+      this.transactions = this.transactions.filter(
+        (t) => t.account !== account,
+      );
+      this.transactions = this.transactions.concat(
+        transactions.map((t) => ({
+          date: t.date,
+          account,
+          description: t.description,
+          amount: t.amount,
+        })),
+      );
     }
   }
 
