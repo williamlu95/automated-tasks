@@ -35,6 +35,8 @@ const {
   WELLS_FARGO_AUTOGRAPH = '',
   WELLS_FARGO_PLATINUM = '',
   DELTA_SKYMILES_GOLD = '',
+  LISA_SW_PLUS = '',
+  LISA_FREEDOM_FLEX = '',
 } = process.env;
 
 const INCLUDED_TRANSACTIONS = [
@@ -51,6 +53,8 @@ const INCLUDED_TRANSACTIONS = [
   WELLS_FARGO_AUTOGRAPH,
   WELLS_FARGO_PLATINUM,
   DELTA_SKYMILES_GOLD,
+  LISA_SW_PLUS,
+  LISA_FREEDOM_FLEX,
 ];
 
 export class JointTransactions extends BaseTransactions {
@@ -208,6 +212,14 @@ export class JointTransactions extends BaseTransactions {
         this.actualBalances[WELLS_FARGO_AUTOGRAPH],
       ],
       ['Bill Balance (WF Platinum)', this.actualBalances[WELLS_FARGO_PLATINUM]],
+      [
+        'Bill Balance (Freedom Flex - Lisa)',
+        this.actualBalances[LISA_FREEDOM_FLEX],
+      ],
+      [
+        'Bill Balance (Southwest Plus - Lisa)',
+        this.actualBalances[LISA_SW_PLUS],
+      ],
       [
         'Misc Balance (Venture X)',
         this.expectedBalances[WALLET_ACCOUNT.CAPITAL_ONE_VENTURE_X],

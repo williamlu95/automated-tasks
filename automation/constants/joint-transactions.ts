@@ -11,7 +11,11 @@ import {
 } from '../utils/calculator';
 import { getSemiMonthylPayDaysForMonths } from '../utils/date-formatters';
 
-const { WELLS_FARGO_PLATINUM = '' } = process.env;
+const {
+  WELLS_FARGO_PLATINUM = '',
+  LISA_FREEDOM_FLEX = '',
+  LISA_SW_PLUS = '',
+} = process.env;
 
 export const TRANSACTION_TYPE = {
   INCOME: 'income',
@@ -113,6 +117,7 @@ export const generateExpenseForDate = (
     amount: 90.0,
     day: 14,
     type: TRANSACTION_TYPE.EXPENSE,
+    validateTransaction: (t) => !t.account.includes(LISA_SW_PLUS),
   },
   MAMA_KO_LOAN: {
     identifier: 'Mama Ko Loan',
@@ -190,6 +195,14 @@ export const generateExpenseForDate = (
     type: TRANSACTION_TYPE.EXPENSE,
     validateTransaction: (t) => t.account.includes(WELLS_FARGO_PLATINUM),
   },
+  AMAZON_KO_FAMILY: {
+    identifier: 'Amazon (Ko Family)',
+    name: 'Amazon',
+    amount: 15.0,
+    day: 26,
+    type: TRANSACTION_TYPE.EXPENSE,
+    validateTransaction: (t) => t.account.includes(LISA_FREEDOM_FLEX),
+  },
   STUDENT_LOAN: {
     identifier: 'Student Loan',
     name: 'DEPT EDUCATION STUDENT',
@@ -203,6 +216,14 @@ export const generateExpenseForDate = (
         && transactionDate.month === DateTime.now().month
       );
     },
+  },
+  INTERNET_KO_FAMILY: {
+    identifier: 'Internet (Ko Family)',
+    name: CREDIT_CARD_BILL.INTERNET_BILL,
+    amount: 52.0,
+    day: 30,
+    type: TRANSACTION_TYPE.EXPENSE,
+    validateTransaction: (t) => t.account.includes(LISA_SW_PLUS),
   },
 });
 
