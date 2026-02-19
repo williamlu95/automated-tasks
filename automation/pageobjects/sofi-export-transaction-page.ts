@@ -79,6 +79,7 @@ class SofiExportTransactionPage extends Page {
   async downloadTransactions() {
     await SofiLoginPage.login();
     await this.open();
+    await browser.pause(5000);
     await browser.waitUntil(
       () => this.exportButton && this.exportButton.isClickable(),
     );
