@@ -199,7 +199,7 @@ export const generateExpenseForDate = (
   STUDENT_LOAN: {
     identifier: 'Student Loan',
     name: 'DEPT EDUCATION STUDENT',
-    amount: 347.0,
+    amount: 343.0,
     day: 28,
     type: TRANSACTION_TYPE.EXPENSE,
     validateTransaction: (t) => {
